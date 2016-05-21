@@ -29,7 +29,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # SET THIS:
-KERNEL-BUILDER_DIR="/usr/local/src/kernel-builder"
+KERNEL_BUILDER_DIR="/usr/local/src/kernel-builder"
 
 REPO_ROOT="/usr/local/src/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -187,8 +187,8 @@ if [ ! -f .config ]; then
   fi
 fi
 ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL-BUILDER_DIR/v1_saved_config ****"
-cp .config $KERNEL-BUILDER_DIR/v1_saved_config
+echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/v1_saved_config ****"
+cp .config $KERNEL_BUILDER_DIR/v1_saved_config
 echo "**** COMPILING v1 KERNEL ****"
 ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
 ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
@@ -210,8 +210,8 @@ if [ ! -f .config ]; then
   fi
 fi
 ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL-BUILDER_DIR/v2_saved_config ****"
-cp .config $KERNEL-BUILDER_DIR/v2_saved_config
+echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/v2_saved_config ****"
+cp .config $KERNEL_BUILDER_DIR/v2_saved_config
 echo "**** COMPILING v2 KERNEL ****"
 ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
 ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
@@ -222,7 +222,7 @@ ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
 cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
 
 # copy overlays
-cp -r $KERNEL-BUILDER_DIR/boot/* $PKG_DIR/boot
+cp -r $KERNEL_BUILDER_DIR/boot/* $PKG_DIR/boot
 
 # tar up firmware
 cd $PKG_TMP
@@ -248,17 +248,17 @@ mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
 cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
 rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/raspberrypi-kernel-headers*
-cp $KERNEL-BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL-BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
-cp $KERNEL-BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL-BUILDER_DIR/docs/Re4son-Kali-Pi-TFT-Kernel-Changelog.txt re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
-cp $KERNEL-BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL-BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
-cp $KERNEL-BUILDER_DIR/tools/xinput-calibrator_0.7.5-1_armhf.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
+cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
+cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
+cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
+cp $KERNEL_BUILDER_DIR/docs/Re4son-Kali-Pi-TFT-Kernel-Changelog.txt re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
+cp $KERNEL_BUILDER_DIR/tools/xinput-calibrator_0.7.5-1_armhf.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools/adafruit-pitft-touch-cal
 tar czf re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz $KERNEL-BUILDER_DIR
+mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz $KERNEL_BUILDER_DIR
 
 echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
