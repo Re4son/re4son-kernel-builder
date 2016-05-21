@@ -51,10 +51,10 @@ V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
 ## GIT_BRANCH="rpi-4.1.y-re4son"
 GIT_BRANCH="rpi-4.4.y-re4son"
 
-V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-## V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-## V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+## V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+## V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
 V1_CONFIG=""
 v2_CONFIG=""
@@ -136,7 +136,6 @@ fi
 if [ ! -d $FIRMWARE_DIR ]; then
   echo "**** CLONING FIRMWARE REPO ****"
   git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
-  git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
 fi
 
 ##if [ ! -d $DEBIAN_DIR ]; then
