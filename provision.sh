@@ -22,7 +22,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-add-apt-repository -y ppa:git-core
+
 apt-get update
 apt-get install -y git unzip build-essential libncurses5-dev debhelper quilt devscripts emacs vim
 
@@ -32,6 +32,7 @@ fi
 
 ## Adjust this:
 ln -s /usr/local/src/kernel-builder/build.sh /usr/sbin/re4sonbuild
+chmod +x /usr/local/src/kernel-builder/build.sh
 
 if ! grep -Fq "Re4son" ~/.bashrc; then
   echo 'export EMAIL="re4son@users.noreply.github.com"' >> ~/.bashrc
