@@ -31,7 +31,7 @@ if [ -L /usr/sbin/re4sonbuild ]; then
 fi
 
 ## Adjust this:
-ln -s /[kernel-builder_directory]/build.sh /usr/sbin/re4sonbuild
+ln -s /usr/local/src/kernel-builder/build.sh /usr/sbin/re4sonbuild
 
 if ! grep -Fq "Re4son" ~/.bashrc; then
   echo 'export EMAIL="re4son@users.noreply.github.com"' >> ~/.bashrc
