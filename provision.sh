@@ -3,6 +3,7 @@
 # The MIT License (MIT)
 #
 # Copyright (c) 2015 Adafruit
+# Borrowed by Re4son
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +30,8 @@ if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
 fi
 
-ln -s /vagrant/build.sh /usr/sbin/re4sonbuild
+## Adjust this:
+ln -s /[kernel-builder_directory]/build.sh /usr/sbin/re4sonbuild
 
 if ! grep -Fq "Re4son" ~/.bashrc; then
   echo 'export EMAIL="re4son@users.noreply.github.com"' >> ~/.bashrc
