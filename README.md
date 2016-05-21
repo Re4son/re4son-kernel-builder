@@ -11,6 +11,12 @@ $ git clone https://github.com/Re4son/re4son-kernel-builder.git kernel-builder
 $ cd kernel-builder
 ```
 
+If running on a 64bit architecture, install additional 32bit packages required by the toolchain
+
+```
+$ sudo apt-get install lib32z1 lib32ncurses5
+```
+
 Setup the kernel-builder
 
 ```
