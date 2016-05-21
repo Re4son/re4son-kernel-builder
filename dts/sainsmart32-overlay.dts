@@ -1,0 +1,91 @@
+/*
+ * Device Tree overlay for Sainsmart 3.2" Display by Alexander Lehmann
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
+
+	fragment@0 {
+		target = <&spi0>;
+		__overlay__ {
+			status = "okay";
+
+			spidev@0{
+				status = "disabled";
+			};
+
+			spidev@1{
+				status = "disabled";
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&gpio>;
+		__overlay__ {
+			disp_pins: disp_pins {
+				brcm,pins = <17 24 25>;
+				brcm,function = <0 1 1>; /* in out out */
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&spi0>;
+		__overlay__ {
+			/* needed to avoid dtc warning */
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			disp: disp@0{
+				compatible = "solomon,ssd1289";
+				reg = <0>;
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&disp_pins>;
+				buswidth = <8>;
+				bgr;
+
+				spi-max-frequency = <16000000>;
+				rotate = <90>;
+				reset-gpios = <&gpio 25 0>;
+				dc-gpios = <&gpio 24 1>;
+				debug = <3>;
+			};
+
+			touch: touch@1 {
+				compatible = "ti,ads7846";
+				reg = <1>;
+				
+				spi-max-frequency = <2000000>;
+				interrupts = <17 2>;
+				interrupt-parent = <&gpio>;
+				pendown-gpio = <&gpio 17 0>;
+
+				ti,x-min = /bits/ 16 <300>;
+				ti,x-max = /bits/ 16 <3800>;
+				ti,y-min = /bits/ 16 <700>;
+				ti,y-max = /bits/ 16 <3400>;
+
+				ti,keep-vref-on;
+				ti,swap-xy;
+				ti,x-plate-ohms = /bits/ 16 <60>;
+				ti,pressure-max = /bits/ 16 <255>;
+			};
+		};
+	};
+	__overrides__ {
+		speed =		<&disp>,"spi-max-frequency:0";
+		rotate =	<&disp>,"rotate:0";
+		debug =		<&disp>,"debug:0";
+		xohms =		<&touch>,"ti,x-plate-ohms;0";
+		resetgpio =	<&disp>,"reset-gpios:4",
+				<&disp_pins>, "brcm,pins:1";
+		dcgpio =	<&disp>,"dc-gpios:4",
+				<&disp_pins>, "brcm,pins:2";
+	};
+};

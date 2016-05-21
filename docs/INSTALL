@@ -1,0 +1,67 @@
+# Installation
+
+Copy the custom kernel tar.gz archive to your Raspberry Pi, and use
+the `tar` command to extract the archive. In the example, the archive
+we will be using is called `re4son_pi-tft_kali-kernel_1.20150207-1.tar.gz`. Replace
+the name of the example archive with the name of the pitft kernel
+tar.gz archive.
+
+```
+$ tar xf re4son_kali-pi-tft_kernel_1.20160513-1.tar.gz
+```
+
+You can now `cd` into the extracted folder. The extracted
+folder will have the same name as the archive, minus the
+.tar.gz suffix.
+
+```
+$ cd re4son_kali-pi-tft_kernel_1.20160513-1
+```
+
+Now you are ready to run the install script. **Warning!** *Installing
+a broken kernel can render your Raspberry Pi unusable. Please backup
+your SD card before continuing.*
+
+```
+$ sudo ./install.sh
+```
+
+If you see an error message, the kernel install failed. If everything goes
+well, you will see this message: **Kernel install complete!**. You will
+need to reboot for the changes to take effect but you can continue with the 
+setup of your screen and reboot later.
+
+Just press "N" when prompted to reboot and continue with the setup of your TFT screen.
+
+You can now run the Re4son Universal TFT Setup Tool to configure the system for your TFT screen.
+The command syntax is:
+
+```
+$ sudo ./re4son-pi-tft-setup -t <type>
+```
+
+The following types are supported:
+
+'28r'      (Adafruit 2.8" PID 1601)
+'28c'      (Adafruit 2.8" PID 1983)
+'35r'      (Adafruit 3.5")
+'22'       (Adafruit 2.2")
+'elec22'   (Elecfreak 2.2")
+'jb35'     (JBTek 3.5")
+'sain32'   (Sainsmart 3.2")
+'wave32'   (Waveshare 3.2")
+'wave35'   (Waveshare 3.5")
+
+Example command for setting up an Adafruit PiTFT 3.5" on a typical Kali Linux system:
+
+```
+./re4son-pi-tft-setup -t 35r -u /root
+```
+
+Press 'Y' when prompted to reboot.
+
+If you have any problems with the kernel, please file an issue on GitHub:
+https://github.com/Re4son/re4son-raspberrypi-linux/issues
+
+For any other feedback or questions, please join the discussions in our forum:
+https://whitedome.com.au/re4son/forums/
