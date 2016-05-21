@@ -29,20 +29,20 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # SET THIS:
-KERNEL-BUILDER_DIR=
+KERNEL-BUILDER_DIR="/usr/local/src/kernel-builder"
 
-REPO_ROOT="/kernel_repos/"
+REPO_ROOT="/usr/local/src/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
-TOOLS_DIR="/kernel_repos/tools"
+TOOLS_DIR="/usr/local/src/kernel-builder_tools"
 
 ## Lates firmware commit breaks everything, using a local copy of old commit instead
 ## FIRMWARE_DIR="/opt/rpi_firmware"
 ## DEBIAN_DIR="/opt/rpi_debian"
 ## FIRMWARE_DIR="/opt/firmware-ab142aecf589115556287378b30c15d986dc2e7d"
 ## DEBIAN_DIR="/opt/firmware-ab142aecf589115556287378b30c15d986dc2e7d"
-FIRMWARE_DIR="/kernel_repos/firmware"
-DEBIAN_DIR="/kernel_repos/firmware"
+FIRMWARE_DIR="/usr/local/src/kernel-builder_firmware"
+DEBIAN_DIR="/usr/local/src/kernel-builder_firmware"
 
 NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -133,11 +133,11 @@ if [ ! -d $TOOLS_DIR ]; then
   git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
 fi
 
-##if [ ! -d $FIRMWARE_DIR ]; then
-##  echo "**** CLONING FIRMWARE REPO ****"
-##  git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
-## git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
-##fi
+if [ ! -d $FIRMWARE_DIR ]; then
+  echo "**** CLONING FIRMWARE REPO ****"
+  git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
+  git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
+fi
 
 ##if [ ! -d $DEBIAN_DIR ]; then
 ##  echo "**** CLONING DEBIAN BUILD REPO ****"
