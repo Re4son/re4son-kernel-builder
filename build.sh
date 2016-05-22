@@ -3,7 +3,7 @@
 # The MIT License (MIT)
 #
 # Copyright (c) 2015 Adafruit
-# Adopted by Re4son
+# Upgraded by Re4son for latest toolchain, firmware and kernel versions
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -35,12 +35,6 @@ REPO_ROOT="/usr/local/src/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 TOOLS_DIR="/usr/local/src/kernel-builder_tools"
-
-## Lates firmware commit breaks everything, using a local copy of old commit instead
-## FIRMWARE_DIR="/opt/rpi_firmware"
-## DEBIAN_DIR="/opt/rpi_debian"
-## FIRMWARE_DIR="/opt/firmware-ab142aecf589115556287378b30c15d986dc2e7d"
-## DEBIAN_DIR="/opt/firmware-ab142aecf589115556287378b30c15d986dc2e7d"
 FIRMWARE_DIR="/usr/local/src/kernel-builder_firmware"
 DEBIAN_DIR="/usr/local/src/kernel-builder_firmware"
 
@@ -138,11 +132,6 @@ if [ ! -d $FIRMWARE_DIR ]; then
   git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
 fi
 
-##if [ ! -d $DEBIAN_DIR ]; then
-##  echo "**** CLONING DEBIAN BUILD REPO ****"
-##  git clone --depth 1 https://github.com/RPi-Distro/firmware $DEBIAN_DIR
-##  git clone --depth 1 https://github.com/raspberrypi/firmware $DEBIAN_DIR
-##fi
 
 ## Lets only update the repos when I'm sure they don't break anything.
 
