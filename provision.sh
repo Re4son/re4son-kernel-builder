@@ -3,7 +3,8 @@
 # The MIT License (MIT)
 #
 # Copyright (c) 2015 Adafruit
-# Borrowed by Re4son
+# Copyright (c) 2016 Re4son, redesigned for standalone use, latest toolchain,
+#                            firmware and kernel versions
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
