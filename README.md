@@ -1,8 +1,8 @@
 # Re4son's Kernel Builder for Raspbery Pi
-#### V 1.0.1
-#### Created for kernel version 4.4 and newer
-####             raspberry toolchain published 17-May-2016 and later
-####             raspberry firmware released 4-May-2016 and later
+###### V 1.0.1
+###### Created for kernel version 4.4 and newer
+######             raspberry toolchain published 17-May-2016 and later
+######             raspberry firmware released 4-May-2016 and later
 
 
 
