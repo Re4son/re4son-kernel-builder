@@ -24,10 +24,15 @@
 # THE SOFTWARE.
 
 
-for f in dts/*.dts; do
-  dtc -@ -I dts -O dtb -o boot/overlays/${f%.*}.dtb $f
-  dtc -@ -O dtb -o boot/overlays/${f%.*}.dtbo -b 0 $f
-  chmod +x boot/overlays/${f%.*}.dtb
-  chmod +x boot/overlays/${f%.*}.dtbo
+for f in ../dts/*.dts; do
+  dtb=${f#../dts/}
+  dtb=${dtb%.*}
+  dtbo=${dtb%-overlay}
+  echo "compiling ${dtb}.dtb"
+  dtc -@ -I dts -O dtb -o ../boot/overlays/${dtb}.dtb $f
+  echo "compiling ${dtbo}.dtbo"
+  dtc -@ -O dtb -o ../boot/overlays/${dtbo}.dtbo -b 0 $f
+  chmod +x ../boot/overlays/${dtb}.dtb
+  chmod +x ../boot/overlays/${dtbo}.dtbo
 done
 
