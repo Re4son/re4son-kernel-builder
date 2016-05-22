@@ -24,7 +24,7 @@
 # THE SOFTWARE.
 
 apt-get update
-apt-get install -y git unzip build-essential libncurses5-dev debhelper quilt devscripts emacs vim
+apt-get install -y git bc unzip build-essential libncurses5-dev debhelper quilt devscripts emacs vim
 
 if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
