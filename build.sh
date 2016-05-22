@@ -136,7 +136,7 @@ fi
 ## Lets only update the repos when I'm sure they don't break anything.
 
 # make sure tools dir is up to date
-cd $TOOLS_DIR
+## cd $TOOLS_DIR
 ## git pull
 
 # make sure firmware dir is up to date
@@ -145,13 +145,6 @@ cd $TOOLS_DIR
 ## git checkout debian
 ## git pull
 
-# make sure debian package dir is up to date
-## Update to the firmware repository has broken the structure - using an old commit for now
-## cd $DEBIAN_DIR
-## git checkout debian
-## git reset --hard 9bfac8714e3f75de5742c2ecb34984dbc34e14ac
-## git checkout debian
-## git pull
 
 # pull together the debian package folder
 CURRENT_DATE=`date +%Y%m%d`
