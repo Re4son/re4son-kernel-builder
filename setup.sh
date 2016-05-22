@@ -31,6 +31,14 @@ if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
 fi
 
+if [ ! -d Re4son-Pi-TFT-Setup ]; then
+  echo "**** CLONING Re4son-Pi-TFT-Setup REPO ****"
+  git clone --depth 1 https://github.com/Re4son/Re4son-Pi-TFT-Setup
+else
+  cd Re4son-Pi-TFT-Setup
+  git pull
+fi
+
 ## Adjust this:
 ln -s /usr/local/src/kernel-builder/build.sh /usr/sbin/re4sonbuild
 chmod +x /usr/local/src/kernel-builder/build.sh
