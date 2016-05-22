@@ -24,9 +24,10 @@ $ sudo apt-get install lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6
 Setup the kernel-builder
 
 ```
-$ ./provision.sh
+$ ./setup.sh
 ```
-edit build.sh and set the variable KERNEL-BUILDER_DIR= to the kernel builder directory 
+edit build.sh and set the variable KERNEL-BUILDER_DIR= to the kernel builder directory.
+default is "/usr/local/src/kernel-builder"
 
 ```
 ~$ sudo re4sonbuild -h
