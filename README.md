@@ -18,7 +18,7 @@ $ cd kernel-builder
 If running on a 64bit architecture, install additional 32bit packages required by the toolchain
 
 ```
-$ sudo apt-get install lib32z1 lib32ncurses5
+$ sudo apt-get install lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6
 ```
 
 Setup the kernel-builder
