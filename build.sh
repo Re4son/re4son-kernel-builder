@@ -220,14 +220,11 @@ tar czf raspberrypi-firmware_${NEW_VERSION}.orig.tar.gz raspberrypi-firmware_${N
 cp -r $DEBIAN_DIR/debian $PKG_DIR
 touch $PKG_DIR/debian/files
 cd $PKG_DIR/debian
-## source ... is broken, trying ./... instead
-## source gen_bootloader_postinst_preinst.sh
 ./gen_bootloader_postinst_preinst.sh
 
 cd $PKG_DIR
 dch -v ${NEW_VERSION}-1 --package raspberrypi-firmware 'Adds re4son kali-pi-tft kernel'
-chown -R vagrant $PKG_TMP
-su vagrant -c "debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc"
+debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
 
 cd $PKG_TMP
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1

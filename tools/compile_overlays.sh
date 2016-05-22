@@ -3,7 +3,8 @@
 # The MIT License (MIT)
 #
 # Copyright (c) 2015 Adafruit
-#
+# Copyright (c) 2016 Re4son, added support for dtbo required after linux
+# kernel version 4.4
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -22,8 +23,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-for f in *.dts; do
+
+for f in dts/*.dts; do
   dtc -@ -I dts -O dtb -o boot/overlays/${f%.*}.dtb $f
+  dtc -@ -O dtb -o boot/overlays/${f%.*}.dtbo -b 0 $f
   chmod +x boot/overlays/${f%.*}.dtb
+  chmod +x boot/overlays/${f%.*}.dtbo
 done
 
