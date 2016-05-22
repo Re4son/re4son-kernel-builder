@@ -239,10 +239,10 @@ rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/raspberrypi-kernel-headers*
 cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
 cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
 cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL_BUILDER_DIR/docs/Re4son-Kali-Pi-TFT-Kernel-Changelog.txt re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
+cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
-cp $KERNEL_BUILDER_DIR/tools/xinput-calibrator_0.7.5-1_armhf.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
+cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools/adafruit-pitft-touch-cal
