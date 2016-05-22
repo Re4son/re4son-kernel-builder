@@ -50,7 +50,7 @@ Compile with default options:
 ~$ sudo re4sonbuild
 ```
 
-Compile [re4son-raspberrypi-linux][1] using the `rpi-4.1.y-re4son` branch:
+Compile [re4son-raspberrypi-linux][1] using the `rpi-4.4.y-re4son` branch:
 
 ```
 ~$ sudo re4son -r https://github.com/Re4son/re4son-raspberrypi-linux -b rpi-4.1.y-re4son
