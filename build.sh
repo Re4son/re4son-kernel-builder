@@ -149,7 +149,7 @@ fi
 
 # pull together the debian package folder
 CURRENT_DATE=`date +%Y%m%d`
-NEW_VERSION="${VERSION}.${CURRENT_DATE}"
+NEW_VERSION="${VERSION}-${CURRENT_DATE}"
 PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
 mkdir $PKG_DIR
 cp -r $FIRMWARE_DIR/* $PKG_DIR
@@ -223,27 +223,27 @@ cd $PKG_DIR/debian
 ./gen_bootloader_postinst_preinst.sh
 
 cd $PKG_DIR
-dch -v ${NEW_VERSION}-1 --package raspberrypi-firmware 'Adds re4son kali-pi-tft kernel'
+dch -v ${NEW_VERSION} --package raspberrypi-firmware 'Adds re4son kali-pi-tft kernel'
 debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
 
 cd $PKG_TMP
-mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
-mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
-mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
-cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/raspberrypi-kernel-headers*
-cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/dts
-cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/docs
-cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
-cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools
-chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/install.sh
-chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/re4son-pi-tft-setup
-chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}-1/tools/adafruit-pitft-touch-cal
-tar czf re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz re4son_kali-pi-tft_kernel_${NEW_VERSION}-1
-mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz $KERNEL_BUILDER_DIR
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
+cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
+rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
+cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
+cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
+cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
+chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/install.sh
+chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/re4son-pi-tft-setup
+chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
+tar czf re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz re4son_kali-pi-tft_kernel_${NEW_VERSION}
+mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz $KERNEL_BUILDER_DIR
 
-echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}-1.tar.gz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
+echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
