@@ -43,13 +43,12 @@ NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-## GIT_BRANCH="rpi-4.1.y-re4son"
-GIT_BRANCH="rpi-4.4.y-re4son"
+GIT_BRANCH="rpi-4.1.y-ada-re4son"
 
-## V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-## V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+## V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+## V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
 V1_CONFIG=""
 v2_CONFIG=""
