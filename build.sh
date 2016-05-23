@@ -31,6 +31,7 @@ fi
 
 # SET THIS:
 KERNEL_BUILDER_DIR="/usr/local/src/kernel-builder"
+VERSION="4.4.11"
 
 REPO_ROOT="/usr/local/src/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -149,7 +150,7 @@ fi
 
 # pull together the debian package folder
 CURRENT_DATE=`date +%Y%m%d`
-NEW_VERSION="1.${CURRENT_DATE}"
+NEW_VERSION="${VERSION}.${CURRENT_DATE}"
 PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
 mkdir $PKG_DIR
 cp -r $FIRMWARE_DIR/* $PKG_DIR
