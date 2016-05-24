@@ -30,15 +30,15 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # SET THIS:
-KERNEL_BUILDER_DIR="/usr/local/src/kernel-builder"
+KERNEL_BUILDER_DIR="/opt/kernel-builder"
 VERSION="4.1.21"
 
-REPO_ROOT="/usr/local/src/kernel-builder_repos/"
+REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
-TOOLS_DIR="/usr/local/src/kernel-builder_tools"
-FIRMWARE_DIR="/usr/local/src/kernel-builder_firmware"
-DEBIAN_DIR="/usr/local/src/kernel-builder_firmware"
+TOOLS_DIR="/opt/kernel-builder_tools"
+FIRMWARE_DIR="/opt/kernel-builder_firmware"
+DEBIAN_DIR="/opt/kernel-builder_firmware"
 
 NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
