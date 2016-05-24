@@ -31,7 +31,7 @@ fi
 
 # SET THIS:
 KERNEL_BUILDER_DIR="/usr/local/src/kernel-builder"
-VERSION="4.4.11"
+VERSION="4.1.21"
 
 REPO_ROOT="/usr/local/src/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -44,13 +44,13 @@ NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-## GIT_BRANCH="rpi-4.1.y-re4son"
-GIT_BRANCH="rpi-4.4.y-re4son"
+GIT_BRANCH="rpi-4.1.y-re4son"
+## GIT_BRANCH="rpi-4.4.y-re4son"
 
-## V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-## V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+## V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+## V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
 V1_CONFIG=""
 v2_CONFIG=""
@@ -161,7 +161,7 @@ git fetch
 git checkout ${GIT_BRANCH}
 git pull
 git submodule update --init
-CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
 if [ ! -f .config ]; then
   if [ "$V1_CONFIG" == "" ]; then
     cp ${V1_DEFAULT_CONFIG} .config
