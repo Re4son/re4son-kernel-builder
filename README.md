@@ -8,7 +8,7 @@
 
 ## Compiling The Raspberry Pi Kernel
 
-Clone the git repo to /usr/local/src/kernel-builder
+Clone the git repo to /opt/kernel-builder
 
 ```
 $ git clone https://github.com/Re4son/re4son-kernel-builder.git kernel-builder
