@@ -27,7 +27,7 @@ Setup the kernel-builder
 $ ./setup.sh
 ```
 edit build.sh and set the variable KERNEL-BUILDER_DIR= to the kernel builder directory.
-default is "/usr/local/src/kernel-builder"
+default is "/opt/kernel-builder"
 
 ```
 ~$ sudo re4sonbuild -h
