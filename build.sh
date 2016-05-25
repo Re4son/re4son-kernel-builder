@@ -94,7 +94,7 @@ function clone() {
   cp -r $V1_DIR $V2_DIR
 }
 
-while getopts "hb:r:1:2:" opt; do
+while getopts "hc:b:r:1:2:" opt; do
   case "$opt" in
   h)  usage
       exit 0
