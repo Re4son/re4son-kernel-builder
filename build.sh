@@ -60,6 +60,7 @@ usage: re4sonbuild [options]
  This will build the Raspberry Pi Kernel.
  OPTIONS:
     -h        Show this message
+    -c        Clean source directories (i.e. make mrproper - run this before compiling new kernels)
     -r        The remote github repo to clone in user/repo format
               Default: $GIT_REPO
     -b        The git branch to use
@@ -70,6 +71,19 @@ usage: re4sonbuild [options]
               Default: $V2_DEFAULT_CONFIG
 
 EOF
+}
+
+function clear() {
+   echo "**** Cleaning up kernel source ****"
+   V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
+   V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
+   cd $V1_DIR
+   echo "**** Cleaning ${V1_DIR}"
+   make mrproper
+   cd $V2_DIR
+   echo "**** Cleaning ${V1_DIR}"
+   make mrproper
+   echo "**** Kernel source directories cleaned up ****"
 }
 
 function clone() {
@@ -83,6 +97,9 @@ function clone() {
 while getopts "hb:r:1:2:" opt; do
   case "$opt" in
   h)  usage
+      exit 0
+      ;;
+  c)  clean
       exit 0
       ;;
   b)  GIT_BRANCH="$OPTARG"
