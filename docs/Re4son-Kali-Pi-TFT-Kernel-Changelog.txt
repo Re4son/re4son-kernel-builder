@@ -1,6 +1,23 @@
 Package History:
 
-re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_1.20160520-1
+re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.1.21_current
+re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160525
+re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160525
+
+
+re4son_kali-pi-tft_kernel_4.1.21-20160525.tar.gz
+================================================
+RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
+- Included kernel version in package name
+- Includeed Re4son Pi-TFT Setup v1.1.2
+
+re4son_kali-pi-tft_kernel_4.1.14-20160525.tar.gz
+================================================
+RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #12
+- Included kernel version in package name
+- Includeed Re4son Pi-TFT Setup v1.1.2
 
 re4son_kali-pi-tft_kernel_1.20160520-1
 ================================================
@@ -81,6 +98,11 @@ Kernel history:
 
 RPi V1:
 ********
+4.1.21-Re4son-Kali-PiTFT+ #12 - 25-May-2016:
+--------------------------------------------
+- based on 4.1.21-Re4son-Kali-Pi-TFT+ #5
+- using new re4son-kernel-builder
+
 4.1.21-Re4son-Kali-Pi-TFT+ #5 - 20-May-2016:
 --------------------------------------------
 - Updated RPi-Distro/firmware repo to latest
@@ -92,6 +114,13 @@ RPi V1:
 - change source repo to https://github.com/Re4son/re4son-raspberrypi-linux
 - bump to 4.1.21
 - add kali-pi boot image for easier debugging
+
+4.1.14-Re4son-Kali-PiTFT+ #12 - 25-May-2016:
+--------------------------------------------
+- using new re4son-kernel-builder
+- ada_pi1_defconfig with kernel 4.14
+- applied wifi injection patch
+
 
 4.1.14-Re4son-Kali-PiTFT+ #2 - 04-May-2016:
 --------------------------------------------
@@ -107,6 +136,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.1.21-v7_Re4son-Kali-PiTFT+ #12 - 25-May-2016:
+--------------------------------------------
+- based on 4.1.21-v7_Re4son-Kali-Pi-TFT+ #9
+- using new re4son-kernel-builder
+
 4.1.21-v7_Re4son-Kali-Pi-TFT+ #9 - 20-May-2016:
 ------------------------------------------------
 - Updated RPi-Distro/firmware repo to latest
@@ -115,8 +149,15 @@ RPi V2:
 
 4.1.21-v7_Re4son-Kali-Pi-TFT+ #7 - 08-May-2016:
 ------------------------------------------------
+- based on 4.1.14-v7_Re4son-Kali-PiTFT+ #6
 - change source repo to https://github.com/Re4son/re4son-raspberrypi-linux
 - bump to 4.1.21
+
+4.1.14-v7_Re4son-Kali-PiTFT+ #12 - 25-May-2016:
+--------------------------------------------
+- using new re4son-kernel-builder
+- ada_pi1_defconfig with kernel 4.14
+- applied wifi injection patch
 
 4.1.14-v7_Re4son-Kali-PiTFT+ #7 - 07-May-2016:
 ------------------------------------------------
