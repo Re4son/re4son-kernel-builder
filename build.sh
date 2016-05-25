@@ -73,15 +73,15 @@ usage: re4sonbuild [options]
 EOF
 }
 
-function clear() {
+function clean() {
    echo "**** Cleaning up kernel source ****"
    V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
    V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
    cd $V1_DIR
-   echo "**** Cleaning ${V1_DIR}"
+   echo "**** Cleaning ${V1_DIR} ****"
    make mrproper
    cd $V2_DIR
-   echo "**** Cleaning ${V1_DIR}"
+   echo "**** Cleaning ${V2_DIR} ****"
    make mrproper
    echo "**** Kernel source directories cleaned up ****"
 }
@@ -94,15 +94,15 @@ function clone() {
   cp -r $V1_DIR $V2_DIR
 }
 
-while getopts "hc:b:r:1:2:" opt; do
+while getopts "hb:cr:1:2:" opt; do
   case "$opt" in
   h)  usage
       exit 0
       ;;
+  b)  GIT_BRANCH="$OPTARG"
+      ;;
   c)  clean
       exit 0
-      ;;
-  b)  GIT_BRANCH="$OPTARG"
       ;;
   r)  GIT_REPO="$OPTARG"
       ;;
