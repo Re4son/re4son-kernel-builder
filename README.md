@@ -11,7 +11,7 @@
 Clone the git repo to /opt/kernel-builder
 
 ```
-$ git clone https://github.com/Re4son/re4son-kernel-builder.git kernel-builder
+$ sudo git clone https://github.com/Re4son/re4son-kernel-builder.git /opt/kernel-builder
 $ cd kernel-builder
 ```
 
