@@ -1,9 +1,21 @@
 Package History:
 
 re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.1.21_current
-re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160525
-re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160525
+re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160530
+re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.1.21-20160530.tar.gz
+================================================
+RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
+- Includeed Re4son Pi-TFT Setup v1.5.1
+
+re4son_kali-pi-tft_kernel_4.1.21-20160529.tar.gz
+================================================
+RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
+- Includeed Re4son Pi-TFT Setup v1.4.5
 
 re4son_kali-pi-tft_kernel_4.1.21-20160525.tar.gz
 ================================================
@@ -11,6 +23,18 @@ RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
 - Included kernel version in package name
 - Includeed Re4son Pi-TFT Setup v1.1.2
+
+re4son_kali-pi-tft_kernel_4.1.14-20160530.tar.gz
+================================================
+RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #12
+- Includeed Re4son Pi-TFT Setup v1.5.1
+
+re4son_kali-pi-tft_kernel_4.1.14-20160529.tar.gz
+================================================
+RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #12
+RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #12
+- Includeed Re4son Pi-TFT Setup v1.4.5
 
 re4son_kali-pi-tft_kernel_4.1.14-20160525.tar.gz
 ================================================
