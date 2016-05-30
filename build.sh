@@ -33,6 +33,9 @@ fi
 KERNEL_BUILDER_DIR="/opt/kernel-builder"
 VERSION="4.1.21"
 
+V1_VERSION="12"
+V2_VERSION="12"
+
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
@@ -79,11 +82,23 @@ function clean() {
    V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
    V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
    cd $V1_DIR
+   git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V1_DIR} ****"
    make mrproper
+   if [ "$V1_VERSION" != "" ]; then
+     echo "**** Setting version to ${V1_VERSION} ****"
+     ((version = $V1_VERSION -1))
+     echo $version > .version
+   fi
    cd $V2_DIR
+   git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V2_DIR} ****"
    make mrproper
+   if [ "$V2_VERSION" != "" ]; then
+     echo "**** Setting version to ${V2_VERSION} ****"
+     ((version = $V2_VERSION -1))
+     echo $version > .version
+   fi
    echo "**** Kernel source directories cleaned up ****"
 }
 
