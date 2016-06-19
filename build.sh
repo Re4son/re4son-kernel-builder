@@ -36,6 +36,9 @@ VERSION="4.1.21"
 V1_VERSION="12"
 V2_VERSION="12"
 
+# Branch of Re4son-Pi-TFT-Setup
+RPTS_VERSION="rpts-4.1"
+
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
@@ -48,7 +51,7 @@ GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
 GIT_BRANCH="rpi-4.1.y-re4son"
-## GIT_BRANCH="rpi-4.4.y-re4son"
+
 
 V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
 V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
@@ -193,7 +196,7 @@ git fetch
 git checkout ${GIT_BRANCH}
 git pull
 git submodule update --init
-CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
 if [ ! -f .config ]; then
   if [ "$V1_CONFIG" == "" ]; then
     cp ${V1_DEFAULT_CONFIG} .config
@@ -258,6 +261,10 @@ cd $PKG_DIR/debian
 cd $PKG_DIR
 dch -v ${NEW_VERSION} --package raspberrypi-firmware 'Adds re4son kali-pi-tft kernel'
 debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+
+cd $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/
+git checkout $RPTS_VERSION
+git pull
 
 cd $PKG_TMP
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}

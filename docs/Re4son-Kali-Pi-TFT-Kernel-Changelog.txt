@@ -1,21 +1,39 @@
 Package History:
 
 re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.1.21_current
+re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.13_current
+
+re4son_kali-pi-tft_kernel_4.4.13_current = re4son_kali-pi-tft_kernel_4.4.13-20160619
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160530
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.4.13-20160619.tar.gz
+================================================
+RPi V1: Kernel 4.4.13-Re4son-Kali-PiTFT+ #3
+RPi V2: Kernel 4.4.13-v7_Re4son-Kali-PiTFT+ #3
+
+re4son_kali-pi-tft_kernel_4.4.11-20160603.tar.gz
+================================================
+RPi V1: Kernel 4.4.11-Re4son-Kali-PiTFT+ #2
+RPi V2: Kernel 4.4.11-v7_Re4son-Kali-PiTFT+ #2
+
+re4son_kali-pi-tft_kernel_4.4.11-1-20160603.tar.gz
+================================================
+RPi V1: Kernel 4.4.11-Re4son-Kali-PiTFT+ #1
+RPi V2: Kernel 4.4.11-v7_Re4son-Kali-PiTFT+ #1
 
 re4son_kali-pi-tft_kernel_4.1.21-20160530.tar.gz
 ================================================
 RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
-- Includeed Re4son Pi-TFT Setup v1.5.1
+- Included Re4son Pi-TFT Setup v1.5.1
 
 re4son_kali-pi-tft_kernel_4.1.21-20160529.tar.gz
 ================================================
 RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #12
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #12
-- Includeed Re4son Pi-TFT Setup v1.4.5
+- Included Re4son Pi-TFT Setup v1.4.5
 
 re4son_kali-pi-tft_kernel_4.1.21-20160525.tar.gz
 ================================================
@@ -48,9 +66,8 @@ re4son_kali-pi-tft_kernel_1.20160520-1
 RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #5
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #9
 - Updated RPi-Distro/firmware repo to latest
-  commit with new package structure 
+  commit with new package structure
   (bootloader, kernel & headers are now split up)
-
 
 re4son_kali-pi-tft_kernel_1.20160516-1
 ================================================
@@ -60,13 +77,11 @@ Included tools/xinput-calibrator_0.7.5-1_armhf
 Included tools/adafruit-pitft-touch-cal
 Moved Changelog to doc/
 
-
 re4son_kali-pi-tft_kernel_1.20160515-1
 ================================================
 RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #3
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #7
 Included re4son-pi-tft-setup v0.1.0
-
 
 re4son_kali-pi-tft_kernel_1.20160511-1
 ================================================
@@ -75,12 +90,10 @@ RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #7
 Renamed elecfreaks_22_tft to elecfreaks22-overlay
 Adjusted install.sh
 
-
 re4son_kali-pi-tft_kernel_1.20160508-1
 ================================================
 RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #3
 RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #7
-
 
 re4son_kali-pi-tft_kernel_1.20160507-1
 ================================================
@@ -92,24 +105,20 @@ Elecfreaks TFT 22
 Sainsmart TFT 32
 Waveshare 32a, 35b
 
-
 re4son_adafruit_pitft_kali-kernel_1.20160504-1
 ================================================
 RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #2
 RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #6
-
 
 re4son_adafruit_pitft_kali-kernel_1.20160503-1
 ================================================
 RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #1
 RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #6
 
-
 re4son_adafruit_pitft_kali-kernel_1.20160501-1
 ================================================
 RPi V1: Kernel 4.1.14-Re4son-Kali-PiTFT+ #1
 RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #2
-
 
 re4son_adafruit_pitft_kali-kernel_1.20160323-1
 ================================================
@@ -122,6 +131,21 @@ Kernel history:
 
 RPi V1:
 ********
+4.4.13-Re4son-Kali-PiTFT+ #3 - 19-June-2016:
+--------------------------------------------
+- based on 4.4.11-Re4son-Kali-PiTFT+ #2
+- added adafruit pitft drivers
+
+4.4.11-Re4son-Kali-PiTFT+ #2 - 03-June-2016:
+--------------------------------------------
+- based on 4.4.11-Re4son-Kali-PiTFT+ #1
+- applied Wifi injection patch and
+  4.1.21-Re4son-Kali-PiTFT+ #12 config
+
+4.4.11-Re4son-Kali-PiTFT+ #1 - 03-June-2016:
+--------------------------------------------
+- Vanilla 4.4.11 Kernel with standard config
+
 4.1.21-Re4son-Kali-PiTFT+ #12 - 25-May-2016:
 --------------------------------------------
 - based on 4.1.21-Re4son-Kali-Pi-TFT+ #5
@@ -132,7 +156,7 @@ RPi V1:
 - Updated RPi-Distro/firmware repo to latest
   commit with new package structure
   (bootloader, kernel & headers are now split up)
-  
+
 4.1.21-Re4son-Kali-Pi-TFT+ #3 - 08-May-2016:
 --------------------------------------------
 - change source repo to https://github.com/Re4son/re4son-raspberrypi-linux
@@ -144,7 +168,6 @@ RPi V1:
 - using new re4son-kernel-builder
 - ada_pi1_defconfig with kernel 4.14
 - applied wifi injection patch
-
 
 4.1.14-Re4son-Kali-PiTFT+ #2 - 04-May-2016:
 --------------------------------------------
@@ -160,6 +183,21 @@ RPi V1:
 
 RPi V2:
 ********
+4.4.13-v7_Re4son-Kali-PiTFT+ #3 - 19-June-2016:
+--------------------------------------------
+- based on 4.4.11-v7_Re4son-Kali-PiTFT+ #2
+- added adafruit pitft drivers
+
+4.4.11-v7_Re4son-Kali-PiTFT+ #2 - 03-June-2016:
+-----------------------------------------------
+- based on 4.4.11-v7_Re4son-Kali-PiTFT+ #1
+- applied Wifi injection patch and
+  4.1.21-Re4son-Kali-PiTFT+ #12 config
+
+4.4.11-v7_Re4son-Kali-PiTFT+ #1 - 03-June-2016:
+--------------------------------------------
+- Vanilla 4.4.11 Kernel with standard config
+
 4.1.21-v7_Re4son-Kali-PiTFT+ #12 - 25-May-2016:
 --------------------------------------------
 - based on 4.1.21-v7_Re4son-Kali-Pi-TFT+ #9
@@ -168,7 +206,7 @@ RPi V2:
 4.1.21-v7_Re4son-Kali-Pi-TFT+ #9 - 20-May-2016:
 ------------------------------------------------
 - Updated RPi-Distro/firmware repo to latest
-  commit with new package structure 
+  commit with new package structure
   (bootloader, kernel & headers are now split up)
 
 4.1.21-v7_Re4son-Kali-Pi-TFT+ #7 - 08-May-2016:
