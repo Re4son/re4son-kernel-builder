@@ -27,6 +27,9 @@
 apt-get update
 apt-get install -y git bc unzip build-essential libncurses5-dev debhelper quilt devscripts emacs vim
 
+## Download calibration tool to be included in kernel packages
+wget -P ./tools/ http://whitedome.com.au/download/xinput-calibrator_0.7.5-1_armhf.deb
+
 if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
 fi
@@ -37,6 +40,7 @@ if [ ! -d Re4son-Pi-TFT-Setup/.git ]; then
 else
   cd Re4son-Pi-TFT-Setup
   git pull
+  cd ..
 fi
 
 ## Adjust this:
