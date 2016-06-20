@@ -54,6 +54,7 @@ apt-get update
 exitonerr apt-get install device-tree-compiler
 exitonerr dpkg -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
 exitonerr dpkg -i raspberrypi-kernel_*
+exitonerr dpkg -i raspberrypi-kernel-headers_*
 exitonerr dpkg -i libraspberrypi0_*
 exitonerr dpkg -i libraspberrypi-dev_*
 exitonerr dpkg -i libraspberrypi-doc_*

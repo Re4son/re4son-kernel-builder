@@ -272,7 +272,7 @@ mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
-rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
+## rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
 cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}
