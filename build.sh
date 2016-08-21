@@ -283,7 +283,7 @@ cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
-tar czf re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz re4son_kali-pi-tft_kernel_${NEW_VERSION}
-mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz $KERNEL_BUILDER_DIR
+tar cJf re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz re4son_kali-pi-tft_kernel_${NEW_VERSION}
+mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
 
-echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
+echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
