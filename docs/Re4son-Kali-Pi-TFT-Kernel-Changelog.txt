@@ -4,9 +4,15 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.1.21_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.13_current
 
 re4son_kali-pi-tft_kernel_4.4.13_current = re4son_kali-pi-tft_kernel_4.4.13-20160620
-re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160822
+re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.1.21-20160929.tar.gz
+================================================
+RPi V1: Kernel 4.1.21-Re4son-Kali-PiTFT+ #13
+RPi V2: Kernel 4.1.21-v7_Re4son-Kali-PiTFT+ #13
+- Included Re4son Pi-TFT Setup v4.1-1.11.5
 
 re4son_kali-pi-tft_kernel_4.1.21-20160822.tar.gz
 ================================================
@@ -178,6 +184,11 @@ RPi V1:
 --------------------------------------------
 - Vanilla 4.4.11 Kernel with standard config
 
+4.1.21-Re4son-Kali-PiTFT+ #13 - 29-September-2016:
+--------------------------------------------
+- based on 4.1.21-Re4son-Kali-Pi-TFT+ #12
+- enable i2c-tiny-usb support
+
 4.1.21-Re4son-Kali-PiTFT+ #12 - 25-May-2016:
 --------------------------------------------
 - based on 4.1.21-Re4son-Kali-Pi-TFT+ #5
@@ -235,6 +246,11 @@ RPi V2:
 4.4.11-v7_Re4son-Kali-PiTFT+ #1 - 03-June-2016:
 --------------------------------------------
 - Vanilla 4.4.11 Kernel with standard config
+
+4.1.21-v7_Re4son-Kali-PiTFT+ #13 - 29-September-2016:
+--------------------------------------------
+- based on 4.1.21-v7_Re4son-Kali-Pi-TFT+ #12
+- enable i2c-tiny-usb support
 
 4.1.21-v7_Re4son-Kali-PiTFT+ #12 - 25-May-2016:
 --------------------------------------------

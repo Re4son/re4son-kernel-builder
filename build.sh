@@ -33,8 +33,8 @@ fi
 KERNEL_BUILDER_DIR="/opt/kernel-builder"
 VERSION="4.1.21"
 
-V1_VERSION="12"
-V2_VERSION="12"
+V1_VERSION="13"
+V2_VERSION="13"
 
 # Branch of Re4son-Pi-TFT-Setup
 RPTS_VERSION="rpts-4.1"
