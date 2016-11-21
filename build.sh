@@ -31,10 +31,10 @@ fi
 
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/kernel-builder"
-VERSION="4.4.11"
+VERSION="4.4.33"
 
-V1_VERSION="1"
-V2_VERSION="1"
+V1_VERSION="6"
+V2_VERSION="6"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -47,13 +47,13 @@ NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-## GIT_BRANCH="rpi-4.1.y-re4son"
-GIT_BRANCH="rpi-4.4.y"
+GIT_BRANCH="rpi-4.4.y-re4son"
+## GIT_BRANCH="rpi-4.4.y"
 
-## V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-## V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+## V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+## V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
 V1_CONFIG=""
 v2_CONFIG=""
@@ -265,7 +265,7 @@ mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
-rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
+## rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
 cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi-tft_kernel_${NEW_VERSION}
@@ -276,7 +276,7 @@ cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
-tar czf re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz re4son_kali-pi-tft_kernel_${NEW_VERSION}
-mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz $KERNEL_BUILDER_DIR
+tar cJf re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz re4son_kali-pi-tft_kernel_${NEW_VERSION}
+mv -f re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
 
-echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.gz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
+echo -e "THE re4son_kali-pi-tft_kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
