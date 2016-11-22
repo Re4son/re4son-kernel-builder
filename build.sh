@@ -33,8 +33,8 @@ fi
 KERNEL_BUILDER_DIR="/opt/kernel-builder"
 VERSION="4.4.33"
 
-V1_VERSION="6"
-V2_VERSION="6"
+V1_VERSION="7"
+V2_VERSION="7"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
