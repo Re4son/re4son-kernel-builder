@@ -30,11 +30,11 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # SET THIS:
-KERNEL_BUILDER_DIR="/opt/kernel-builder"
+KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 VERSION="4.4.33"
 
-V1_VERSION="7"
-V2_VERSION="7"
+V1_VERSION="8"
+V2_VERSION="8"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
