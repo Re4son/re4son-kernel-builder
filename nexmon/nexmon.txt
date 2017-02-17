@@ -1,0 +1,5 @@
+To install drivers:
+-------------------
+
+cp ./brcmfmac.ko /root/
+cp ./brcmfmac43430-sdio.bin /lib/firmware/brcm/

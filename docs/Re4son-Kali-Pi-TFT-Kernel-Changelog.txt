@@ -3,10 +3,17 @@ Package History:
 re4son_kali-pi-tft_kernel_old = re4son_kali-pi-tft_kernel_4.1.21_current
 re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.33_current
 
-re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20161123
+re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170217
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.4.33-20170217.tar.gz
+================================================
+RPi V1: Kernel 4.4.33-Re4son-Kali-PiTFT+ #8
+RPi V2: Kernel 4.4.33-v7_Re4son-Kali-PiTFT+ #8
+- Included nexmon drivers
+- Included Re4son Pi-TFT Setup v4.4-1.11.6
 
 re4son_kali-pi-tft_kernel_4.4.33-20161123.tar.gz
 ================================================
@@ -175,6 +182,10 @@ Kernel history:
 
 RPi V1:
 ********
+4.4.33-Re4son-Kali-PiTFT+ #7 - 17-Febuary-2017:
+--------------------------------------------
+- based on 4.4.13-Re4son-Kali-PiTFT+ #7
+
 4.4.33-Re4son-Kali-PiTFT+ #7 - 23-November-2016:
 --------------------------------------------
 - based on 4.4.13-Re4son-Kali-PiTFT+ #5
@@ -249,6 +260,10 @@ RPi V1:
 
 RPi V2:
 ********
+4.4.33-v7_Re4son-Kali-PiTFT+ #7 - 17-Febuary-2017:
+--------------------------------------------
+- based on 4.4.13-v7_Re4son-Kali-PiTFT+ #7
+
 4.4.33-v7_Re4son-Kali-PiTFT+ #7 - 23-November-2016:
 --------------------------------------------
 - based on 4.4.13-v7_Re4son-Kali-PiTFT+ #5
