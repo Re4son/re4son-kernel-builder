@@ -31,10 +31,10 @@ fi
 
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
-VERSION="4.4.33"
+VERSION="4.4.49"
 
-V1_VERSION="8"
-V2_VERSION="8"
+V1_VERSION="1"
+V2_VERSION="1"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -279,7 +279,6 @@ cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
 ## rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
 cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon
 cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon
-cp -r ${NEXMON_DIR}/utilities re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon/
 cp $KERNEL_BUILDER_DIR/nexmon/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon
 cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi-tft_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
