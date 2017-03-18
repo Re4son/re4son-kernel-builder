@@ -74,8 +74,30 @@ function exitonerr {
 
 }
 
+function install_bluetooth {
+    echo "**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****"
+    ARCH=`dpkg --print-architecture`
+    apt install bluez-firmware
+
+    if [ "armel" == "$ARCH" ]; then
+        dpkg -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
+    else
+        dpkg -i ./repo/bluez_5.23-2+rpi2_armhf.deb
+    fi
+    dpkg -i ./repo/pi-bluetooth_0.1.3+re4son_all.deb
+    apt-mark hold bluez-firmware bluez pi-bluetooth
+
+    if ask "Enable bluetooth services?"; then
+        systemctl unmask bluetooth.service
+        systemctl enable bluetooth
+        systemctl start bluetooth
+        systemctl enable hciuart
+        systemctl start hciuart
+    fi
+    echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****"
+}
 function install_firmware {
-    echo "**** Installing firmware for onboard wifi and bluetooth ****"
+    echo "**** Installing firmware for RasPi bluetooth chip ****"
     #Raspberry Pi 3 & Zero W
     if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
@@ -92,7 +114,7 @@ function install_firmware {
         cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.txt
     fi
     echo
-    echo "**** Onboard wifi and bluetooth setup ****"
+    echo "**** Firmware installed ****"
     return
 }
 
@@ -102,8 +124,16 @@ echo "**** Installing custom Re4son kernel with kali wifi injection patch and TF
 ##exitonerr dpkg -i libraspberrypi0*
 ##exitonerr dpkg -i libraspberrypi-*
 ## New structure ##
-apt-get update
-exitonerr apt-get install device-tree-compiler
+
+## Install device-tree-compiler
+PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' device-tree-compiler|grep "install ok installed")
+echo "Checking for device-tree-compiler:" $PKG_STATUS
+if [ "" == "$PKG_STATUS" ]; then
+    echo "No device-tree-compiler. Installing it now."
+    apt update
+    apt install device-tree-compiler
+fi
+
 exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
 exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
 exitonerr dpkg --force-architecture -i libraspberrypi0_*
@@ -130,6 +160,7 @@ echo
 
 if ask "Install onboard wifi & bluetooth firmware for RasPi 3 & Zero W?" "N"; then
         install_firmware
+        install_bluetooth
 fi
 
 
