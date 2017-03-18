@@ -43,6 +43,27 @@ function exitonerr {
 
 }
 
+function install_firmware {
+    echo "**** Installing firmware for onboard wifi and bluetooth ****"
+    #Raspberry Pi 3 & Zero W
+    if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
+        cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
+    fi
+    if [ ! -f  /etc/udev/rules.d/99-com.rules]; then
+      cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
+    fi
+
+    #Raspberry Pi Zero W
+    if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
+        cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
+    fi
+    if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
+        cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.txt
+    fi
+    echo
+    echo "**** Onboard wifi and bluetooth setup ****"
+    return
+}
 
 echo "**** Installing custom Re4son kernel with kali wifi injection patch and TFT support ****"
 ## Old structure ##
@@ -75,24 +96,10 @@ touch /etc/kbd/config
 echo
 echo "**** Unmet dependencies in Kali Linux fixed ****"
 echo
-echo "**** Setup onboard wifi and bluetooth ****"
-#Raspberry Pi 3 & Zero W
-if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
-  cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
-if [ ! -f  /etc/udev/rules.d/99-com.rules]; then
-  cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
 
-
-#Raspberry Pi Zero W
-if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
-  cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
-if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
-  cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.txt
-
-echo
-echo "**** Onboard wifi and bluetooth setup ****"
-
-
+if ask "Install onboard wifi & bluetooth firmware for RasPi 3 & Zero W?"; then
+        install_firmware
+fi
 
 
 
