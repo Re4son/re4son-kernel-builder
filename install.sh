@@ -90,9 +90,7 @@ function install_bluetooth {
     if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
-        systemctl start bluetooth
         systemctl enable hciuart
-        systemctl start hciuart
     fi
     echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****"
 }
