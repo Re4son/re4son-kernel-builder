@@ -31,8 +31,7 @@ fi
 
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
-VERSION="4.4.49"
-
+VERSION="4.4.50"
 V1_VERSION="1"
 V2_VERSION="1"
 
@@ -49,7 +48,7 @@ NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-GIT_BRANCH="rpi-4.4.y-re4son"
+GIT_BRANCH="rpi-4.4.y-re4son-0w"
 ## GIT_BRANCH="rpi-4.4.y"
 
 V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
@@ -274,6 +273,7 @@ mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/firmware
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon
 cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
 ## rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
@@ -287,6 +287,7 @@ cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tft_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
+cp $KERNEL_BUILDER_DIR/firmware/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/firmware
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal

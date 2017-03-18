@@ -52,12 +52,12 @@ echo "**** Installing custom Re4son kernel with kali wifi injection patch and TF
 ## New structure ##
 apt-get update
 exitonerr apt-get install device-tree-compiler
-exitonerr dpkg -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
-exitonerr dpkg -i raspberrypi-kernel_*
-exitonerr dpkg -i libraspberrypi0_*
-exitonerr dpkg -i libraspberrypi-dev_*
-exitonerr dpkg -i libraspberrypi-doc_*
-exitonerr dpkg -i libraspberrypi-bin_*
+exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
+exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
+exitonerr dpkg --force-architecture -i libraspberrypi0_*
+exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
+exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
+exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
 
 echo "**** Installing device tree overlays for various screens ****"
 echo "++++ Adafruit"
@@ -75,6 +75,27 @@ touch /etc/kbd/config
 echo
 echo "**** Unmet dependencies in Kali Linux fixed ****"
 echo
+echo "**** Setup onboard wifi and bluetooth ****"
+#Raspberry Pi 3 & Zero W
+if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
+  cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
+if [ ! -f  /etc/udev/rules.d/99-com.rules]; then
+  cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
+
+
+#Raspberry Pi Zero W
+if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
+  cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
+if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
+  cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.txt
+
+echo
+echo "**** Onboard wifi and bluetooth setup ****"
+
+
+
+
+
 echo "**** Documentation and help can be found in Sticky Finger's Kali-Pi forums at ****"
 echo "**** https://whitedome.com.au/forums ****"
 echo
