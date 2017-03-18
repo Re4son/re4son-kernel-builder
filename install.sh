@@ -80,7 +80,7 @@ function install_firmware {
     if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
     fi
-    if [ ! -f  /etc/udev/rules.d/99-com.rules]; then
+    if [ ! -f  /etc/udev/rules.d/99-com.rules ]; then
       cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
     fi
 
