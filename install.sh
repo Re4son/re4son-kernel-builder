@@ -116,7 +116,7 @@ function install_firmware {
         cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
     fi
     if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
-        cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.txt
+        cp firmware/brcmfmac43430-sdio.txt /lib/firmware/brcm/brcmfmac43430-sdio.txt
     fi
     echo
     echo "**** Firmware installed ****"
