@@ -91,6 +91,9 @@ function install_bluetooth {
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
+        if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
+          cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
+        fi
     fi
     echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****"
 }
