@@ -274,6 +274,7 @@ mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/docs
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/dts
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/firmware
+mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/repo
 mkdir re4son_kali-pi-tft_kernel_${NEW_VERSION}/nexmon
 cp *.deb re4son_kali-pi-tft_kernel_${NEW_VERSION}
 ## rm -f re4son_kali-pi-tft_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
@@ -288,6 +289,7 @@ cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi-tf
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools
 cp $KERNEL_BUILDER_DIR/firmware/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/firmware
+cp $KERNEL_BUILDER_DIR/repo/* re4son_kali-pi-tft_kernel_${NEW_VERSION}/repo
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/install.sh
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/re4son-pi-tft-setup
 chmod +x re4son_kali-pi-tft_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal

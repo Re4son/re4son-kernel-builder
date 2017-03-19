@@ -84,7 +84,7 @@ function install_bluetooth {
     else
         dpkg -i ./repo/bluez_5.23-2+rpi2_armhf.deb
     fi
-    dpkg -i ./repo/pi-bluetooth_0.1.3+re4son_all.deb
+    dpkg -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
     apt-mark hold bluez-firmware bluez pi-bluetooth
 
     if ask "Enable bluetooth services?"; then
@@ -156,7 +156,7 @@ echo
 echo "**** Unmet dependencies in Kali Linux fixed ****"
 echo
 
-if ask "Install onboard wifi & bluetooth firmware for RasPi 3 & Zero W?" "N"; then
+if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
         install_firmware
         install_bluetooth
 fi
