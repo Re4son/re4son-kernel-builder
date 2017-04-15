@@ -32,8 +32,8 @@ fi
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 VERSION="4.4.50"
-V1_VERSION="3"
-V2_VERSION="3"
+V1_VERSION="4"
+V2_VERSION="4"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -48,7 +48,7 @@ NUM_CPUS=`nproc`
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-GIT_BRANCH="rpi-4.4.y-re4son-0w"
+GIT_BRANCH="rpi-4.4.y-re4son"
 ## GIT_BRANCH="rpi-4.4.y"
 
 V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"

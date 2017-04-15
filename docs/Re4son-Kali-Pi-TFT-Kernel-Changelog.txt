@@ -1,16 +1,28 @@
 Package History:
 
 re4son_kali-pi-tft_kernel_old = re4son_kali-pi-tft_kernel_4.1.21_current
-re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.49_current
+re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.50_current
 
 
-re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170319
+re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170325
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.4.50-20170414.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #4
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #4
+- Included Re4son Pi-TFT Setup v4.4-1.13.3
+
+re4son_kali-pi-tft_kernel_4.4.50-20170325.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #3
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #3
+- Included Re4son Pi-TFT Setup v4.4-1.13.1
 
 re4son_kali-pi-tft_kernel_4.4.50-20170319.tar.gz
 ================================================
@@ -199,6 +211,11 @@ Kernel history:
 
 RPi V1:
 ********
+4.4.50-Re4son-Kali-PiTFT+ #4 - 14-April-2017:
+--------------------------------------------
+- based on 4.4.50-Re4son-Kali-PiTFT+ #3
+- align defconfigs with latest raspberry pi defaults
+
 4.4.50-Re4son-Kali-PiTFT+ #3 - 19-March-2017:
 --------------------------------------------
 - based on 4.4.49-Re4son-Kali-PiTFT+ #1
@@ -287,6 +304,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.4.50-v7_Re4son-Kali-PiTFT+ #4 - 14-April-2017:
+--------------------------------------------
+- based on 4.4.50-v7_Re4son-Kali-PiTFT+ #3
+- align defconfigs with latest raspberry pi defaults
+
 4.4.50-v7_Re4son-Kali-PiTFT+ #3 - 19-March-2017:
 --------------------------------------------
 - based on 4.4.49-v7_Re4son-Kali-PiTFT+ #1
