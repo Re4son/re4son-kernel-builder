@@ -86,6 +86,9 @@ function clean() {
    git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V1_DIR} ****"
    make mrproper
+   ## Overwrite with remote repo - use if mrproper goes too far
+   git reset --hard HEAD
+   git pull
    if [ "$V1_VERSION" != "" ]; then
      echo "**** Setting version to ${V1_VERSION} ****"
      ((version = $V1_VERSION -1))
@@ -95,6 +98,9 @@ function clean() {
    git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V2_DIR} ****"
    make mrproper
+   ## Overwrite with remote repo - use if mrproper goes too far
+   git reset --hard HEAD
+   git pull
    if [ "$V2_VERSION" != "" ]; then
      echo "**** Setting version to ${V2_VERSION} ****"
      ((version = $V2_VERSION -1))
@@ -194,6 +200,17 @@ git fetch
 git checkout ${GIT_BRANCH}
 git pull
 git submodule update --init
+
+## Get the object files back for the 4D-Hat drivers after a clean
+cd $V1_DIR/drivers/video/4d-hats
+if [ ! -f compress-v6.o ]; then
+    git checkout compress-v6.o
+fi
+if [ ! -f compress-v7.o ]; then
+    git checkout compress-v7.o
+fi
+cd $V1_DIR
+
 CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
 if [ ! -f .config ]; then
   if [ "$V1_CONFIG" == "" ]; then
@@ -214,12 +231,24 @@ ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS
 ${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
 cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
 
+
 # RasPi v2 build
 cd $V2_DIR
 git fetch
 git checkout ${GIT_BRANCH}
 git pull
 git submodule update --init
+
+## Get the object files back for the 4D-Hat drivers after a clean
+cd $V2_DIR/drivers/video/4d-hats
+if [ ! -f compress-v6.o ]; then
+    git checkout compress-v6.o
+fi
+if [ ! -f compress-v7.o ]; then
+    git checkout compress-v7.o
+fi
+cd $V2_DIR
+
 CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
 if [ ! -f .config ]; then
   if [ "$V2_CONFIG" == "" ]; then
