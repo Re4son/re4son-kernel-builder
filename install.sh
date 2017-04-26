@@ -137,11 +137,6 @@ function install_firmware {
 }
 
 echo "**** Installing custom Re4son kernel with kali wifi injection patch and TFT support ****"
-## Old structure ##
-##exitonerr dpkg -i raspberrypi-bootloader*
-##exitonerr dpkg -i libraspberrypi0*
-##exitonerr dpkg -i libraspberrypi-*
-## New structure ##
 
 ## Install device-tree-compiler
 PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' device-tree-compiler|grep "install ok installed")
@@ -160,14 +155,6 @@ exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
 exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
 
 echo "**** Installing device tree overlays for various screens ****"
-echo "++++ Adafruit"
-echo "++++ Elecfreak"
-echo "++++ JBTek"
-echo "++++ Sainsmart"
-echo "++++ Waveshare"
-echo "**** Device tree overlays installed ****"
-echo "**** Kernel install complete! ****"
-echo
 
 echo "**** Fixing unmet dependencies in Kali Linux ****"
 mkdir -p /etc/kbd
@@ -187,7 +174,7 @@ echo "**** Documentation and help can be found in Sticky Finger's Kali-Pi forums
 echo "**** https://whitedome.com.au/forums ****"
 echo
 echo "**** next you can run the universal setup tool to activate your TFT screen via ****"
-echo "**** ./re4son-pi-tft-setup -t [pitfttype] ****"
+echo "**** ./re4son-pi-tft-setup -t [pitfttype] -d [home directory]****"
 echo
 read -p "Reboot to apply changes? (y/n): " -n 1 -r
 echo
