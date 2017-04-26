@@ -5,14 +5,26 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.50_current
 
 
-re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170325
+re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170426
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son_kali-pi-tft_kernel_4.4.50-20170417.tar.gz
+re4son_kali-pi-tft_kernel_4.4.50-20170426.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Fixed unmet dependencies in Kali 2007.1
+
+re4son_kali-pi-tft_kernel_4.4.50-20170419.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Merged modules directories
+
+re4son_kali-pi-tft_kernel_4.4.50-20170418.tar.gz
 ================================================
 RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
 RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5

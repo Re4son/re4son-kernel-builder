@@ -79,6 +79,19 @@ function install_bluetooth {
     ARCH=`dpkg --print-architecture`
     apt install bluez-firmware
 
+    ## Install dependencies
+    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' libreadline6|grep "install ok installed")
+    echo "Checking for device-tree-compiler:" $PKG_STATUS
+    if [ "" == "$PKG_STATUS" ]; then
+        echo "Fixing unmet dependencies. Installing libreadline6."
+        if [ "armel" == "$ARCH" ]; then
+            dpkg -i ./repo/libreadline6_6.3-8+b3_armel.deb
+        else
+            dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
+        fi
+    fi
+
+
     if [ "armel" == "$ARCH" ]; then
         dpkg -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
     else
