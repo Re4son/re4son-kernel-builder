@@ -5,12 +5,36 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.50_current
 
 
-re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170325
+re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170428
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.4.50-20170428.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Cosmetic improvements in install.sh
+
+re4son_kali-pi-tft_kernel_4.4.50-20170427.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Fixed unmet dependencies in Kali 2007.1
+
+re4son_kali-pi-tft_kernel_4.4.50-20170419.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Merged modules directories
+
+re4son_kali-pi-tft_kernel_4.4.50-20170418.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Included Re4son Pi-TFT Setup v4.4-1.13.4
 
 re4son_kali-pi-tft_kernel_4.4.50-20170414.tar.gz
 ================================================
@@ -211,10 +235,10 @@ Kernel history:
 
 RPi V1:
 ********
-4.4.50-Re4son-Kali-PiTFT+ #4 - 14-April-2017:
+4.4.50-Re4son-Kali-PiTFT+ #5 - 17-April-2017:
 --------------------------------------------
-- based on 4.4.50-Re4son-Kali-PiTFT+ #3
-- align defconfigs with latest raspberry pi defaults
+- based on 4.4.50-Re4son-Kali-PiTFT+ #4
+- add 4D Systems display drivers
 
 4.4.50-Re4son-Kali-PiTFT+ #3 - 19-March-2017:
 --------------------------------------------
@@ -304,6 +328,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.4.50-v7_Re4son-Kali-PiTFT+ #5 - 17-April-2017:
+--------------------------------------------
+- based on 4.4.50-v7_Re4son-Kali-PiTFT+ #4
+- add 4D Systems display drivers
+
 4.4.50-v7_Re4son-Kali-PiTFT+ #4 - 14-April-2017:
 --------------------------------------------
 - based on 4.4.50-v7_Re4son-Kali-PiTFT+ #3
@@ -327,7 +356,7 @@ RPi V2:
 --------------------------------------------
 - based on 4.4.13-v7_Re4son-Kali-PiTFT+ #5
 - bump to 4.4.33
-- enbled CONFIG_GPIO_MCP23S08, CONFIG_RPI_POWER_SWITCH, CONFIG_TOUCHSCREEN_FT6X06
+- enabled CONFIG_GPIO_MCP23S08, CONFIG_RPI_POWER_SWITCH, CONFIG_TOUCHSCREEN_FT6X06
 
 4.4.31-v7_Re4son-Kali-PiTFT+ #5 - 20-November-2016:
 --------------------------------------------

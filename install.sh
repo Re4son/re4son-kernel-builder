@@ -1,27 +1,4 @@
 #!/usr/bin/env bash
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2015 Adafruit
-# Adjusted for Sticky Finger's Kali-Pi by re4son [at] whitedome.com.au
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
 
 if [[ $EUID -ne 0 ]]; then
    echo "install.sh must be run as root. try: sudo install.sh"
@@ -79,6 +56,19 @@ function install_bluetooth {
     ARCH=`dpkg --print-architecture`
     apt install bluez-firmware
 
+    ## Install dependencies
+    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' libreadline6|grep "install ok installed")
+    echo "Checking for libreadline6:" $PKG_STATUS
+    if [ "" == "$PKG_STATUS" ]; then
+        echo "Fixing unmet dependencies. Installing libreadline6."
+        if [ "armel" == "$ARCH" ]; then
+            dpkg -i ./repo/libreadline6_6.3-8+b3_armel.deb
+        else
+            dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
+        fi
+    fi
+
+
     if [ "armel" == "$ARCH" ]; then
         dpkg -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
     else
@@ -124,11 +114,6 @@ function install_firmware {
 }
 
 echo "**** Installing custom Re4son kernel with kali wifi injection patch and TFT support ****"
-## Old structure ##
-##exitonerr dpkg -i raspberrypi-bootloader*
-##exitonerr dpkg -i libraspberrypi0*
-##exitonerr dpkg -i libraspberrypi-*
-## New structure ##
 
 ## Install device-tree-compiler
 PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' device-tree-compiler|grep "install ok installed")
@@ -147,14 +132,6 @@ exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
 exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
 
 echo "**** Installing device tree overlays for various screens ****"
-echo "++++ Adafruit"
-echo "++++ Elecfreak"
-echo "++++ JBTek"
-echo "++++ Sainsmart"
-echo "++++ Waveshare"
-echo "**** Device tree overlays installed ****"
-echo "**** Kernel install complete! ****"
-echo
 
 echo "**** Fixing unmet dependencies in Kali Linux ****"
 mkdir -p /etc/kbd
@@ -174,7 +151,7 @@ echo "**** Documentation and help can be found in Sticky Finger's Kali-Pi forums
 echo "**** https://whitedome.com.au/forums ****"
 echo
 echo "**** next you can run the universal setup tool to activate your TFT screen via ****"
-echo "**** ./re4son-pi-tft-setup -t [pitfttype] ****"
+echo "**** ./re4son-pi-tft-setup -t [pitfttype] -d [home directory]****"
 echo
 read -p "Reboot to apply changes? (y/n): " -n 1 -r
 echo
