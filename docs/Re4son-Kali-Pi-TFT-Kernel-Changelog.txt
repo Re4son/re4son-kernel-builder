@@ -5,12 +5,18 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.4.50_current
 
 
-re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170427
+re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170428
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.4.50-20170428.tar.gz
+================================================
+RPi V1: Kernel 4.4.50-Re4son-Kali-PiTFT+ #5
+RPi V2: Kernel 4.4.50-v7_Re4son-Kali-PiTFT+ #5
+- Cosmetic improvements in install.sh
 
 re4son_kali-pi-tft_kernel_4.4.50-20170427.tar.gz
 ================================================

@@ -1,27 +1,4 @@
 #!/usr/bin/env bash
-#
-# The MIT License (MIT)
-#
-# Copyright (c) 2015 Adafruit
-# Adjusted for Sticky Finger's Kali-Pi by re4son [at] whitedome.com.au
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
 
 if [[ $EUID -ne 0 ]]; then
    echo "install.sh must be run as root. try: sudo install.sh"
@@ -81,7 +58,7 @@ function install_bluetooth {
 
     ## Install dependencies
     PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' libreadline6|grep "install ok installed")
-    echo "Checking for device-tree-compiler:" $PKG_STATUS
+    echo "Checking for libreadline6:" $PKG_STATUS
     if [ "" == "$PKG_STATUS" ]; then
         echo "Fixing unmet dependencies. Installing libreadline6."
         if [ "armel" == "$ARCH" ]; then
