@@ -1,15 +1,15 @@
 --- a/net/mac80211/cfg.c
 +++ b/net/mac80211/cfg.c
-@@ -580,7 +580,8 @@ static int ieee80211_set_monitor_channel
- 			ret = ieee80211_vif_use_channel(sdata, chandef,
- 					IEEE80211_CHANCTX_EXCLUSIVE);
- 		}
--	} else if (local->open_count == local->monitors) {
+@@ -540,7 +540,8 @@ static int ieee80211_set_monitor_channel(struct wiphy *wiphy,
+                        ret = ieee80211_vif_use_channel(sdata, chandef,
+                                        IEEE80211_CHANCTX_EXCLUSIVE);
+                }
+-       } else if (local->open_count == local->monitors) {
 +       // Patch: Always allow channel change, even if a normal virtual interface is present
 +       } else /*if (local->open_count == local->monitors)*/ {
- 		local->_oper_chandef = *chandef;
- 		ieee80211_hw_config(local, 0);
- 	}
+                local->_oper_chandef = *chandef;
+                ieee80211_hw_config(local, 0);
+        }
 --- a/net/mac80211/tx.c
 +++ b/net/mac80211/tx.c
 @@ -795,11 +795,19 @@ ieee80211_tx_h_sequence(struct ieee80211
