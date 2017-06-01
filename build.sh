@@ -8,8 +8,8 @@ fi
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 VERSION="4.4.50"
-V1_VERSION="5"
-V2_VERSION="5"
+V1_VERSION="6"
+V2_VERSION="6"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
