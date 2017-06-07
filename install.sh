@@ -87,7 +87,11 @@ function install_bluetooth {
     ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
     SYSTEMD_VER=$(systemd --version|grep systemd|sed 's/systemd //')
     if (( $SYSTEMD_VER >= 232 )); then
-        sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
+        if [ -f /lib/systemd/system/systemd-udevd.service ]; then
+            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /lib/systemd/system/systemd-udevd.service
+        elif [ -f /etc/systemd/system/systemd-udevd.service ]; then
+            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
+        fi
     fi
     if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
