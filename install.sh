@@ -72,7 +72,7 @@ function install_bluetooth {
     if [ "armel" == "$ARCH" ]; then
         dpkg -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
     else
-        dpkg -i ./repo/bluez_5.23-2+rpi2_armhf.deb
+        dpkg -i ./repo/bluez_5.39-1+rpi3+re4son_armhf.deb
     fi
     dpkg -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
     apt-mark hold bluez-firmware bluez pi-bluetooth
