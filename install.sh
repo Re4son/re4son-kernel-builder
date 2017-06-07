@@ -77,17 +77,18 @@ function install_bluetooth {
     dpkg -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
     apt-mark hold bluez-firmware bluez pi-bluetooth
 
+    if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
+      cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
+    fi
+    ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
+    if [ ! -f  /bin/hciconfig ]; then
+      ln -s /usr/bin/hciconfig /bin/hciconfig
+    fi
+    
     if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
-        if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
-          cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
-        fi
-        ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
-        if [ ! -f  /bin/hciconfig ]; then
-          ln -s /usr/bin/hciconfig /bin/hciconfig
-        fi
     fi
     echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****"
 }
