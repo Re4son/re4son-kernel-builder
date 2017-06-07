@@ -1,0 +1,24 @@
+From 8e09501a41ed3fe3fd98d0285dfdcabada013639 Mon Sep 17 00:00:00 2001
+From: Todd Treece <toddtreece@gmail.com>
+Date: Tue, 16 May 2017 20:45:59 +0000
+Subject: [PATCH 2/8] add 28c to overlay makefile
+
+---
+ arch/arm/boot/dts/overlays/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
+index e2f66a55dc5a..8d052cf22f85 100644
+--- a/arch/arm/boot/dts/overlays/Makefile
++++ b/arch/arm/boot/dts/overlays/Makefile
+@@ -67,6 +67,7 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
+ 	pisound.dtbo \
+ 	pitft22.dtbo \
+ 	pitft28-capacitive.dtbo \
++	pitft28c.dtbo \
+ 	pitft28-resistive.dtbo \
+ 	pitft35-resistive.dtbo \
+ 	pps-gpio.dtbo \
+-- 
+2.11.0
+

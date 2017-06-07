@@ -1,0 +1,163 @@
+From c93f21cac1eb0f5f7dd2b2d1a6744f454464e178 Mon Sep 17 00:00:00 2001
+From: "limor@ladyada.net" <limor@ladyada.net>
+Date: Tue, 16 May 2017 21:09:04 +0000
+Subject: [PATCH 3/8] update touchscreen STMPE driver
+
+---
+ drivers/input/touchscreen/stmpe-ts.c | 85 +++++++++++++++++++++---------------
+ 1 file changed, 49 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/input/touchscreen/stmpe-ts.c b/drivers/input/touchscreen/stmpe-ts.c
+index 2a78e27b4495..409b81fd70e5 100644
+--- a/drivers/input/touchscreen/stmpe-ts.c
++++ b/drivers/input/touchscreen/stmpe-ts.c
+@@ -48,6 +48,7 @@
+ #define STMPE_FIFO_STA_RESET		(1<<0)
+ 
+ #define STMPE_IRQ_TOUCH_DET		0
++#define STMPE_IRQ_FIFO_TH		1
+ 
+ #define SAMPLE_TIME(x)			((x & 0xf) << 4)
+ #define MOD_12B(x)			((x & 0x1) << 3)
+@@ -63,37 +64,6 @@
+ #define STMPE_TS_NAME			"stmpe-ts"
+ #define XY_MASK				0xfff
+ 
+-/**
+- * struct stmpe_touch - stmpe811 touch screen controller state
+- * @stmpe: pointer back to STMPE MFD container
+- * @idev: registered input device
+- * @work: a work item used to scan the device
+- * @dev: a pointer back to the MFD cell struct device*
+- * @sample_time: ADC converstion time in number of clock.
+- * (0 -> 36 clocks, 1 -> 44 clocks, 2 -> 56 clocks, 3 -> 64 clocks,
+- * 4 -> 80 clocks, 5 -> 96 clocks, 6 -> 144 clocks),
+- * recommended is 4.
+- * @mod_12b: ADC Bit mode (0 -> 10bit ADC, 1 -> 12bit ADC)
+- * @ref_sel: ADC reference source
+- * (0 -> internal reference, 1 -> external reference)
+- * @adc_freq: ADC Clock speed
+- * (0 -> 1.625 MHz, 1 -> 3.25 MHz, 2 || 3 -> 6.5 MHz)
+- * @ave_ctrl: Sample average control
+- * (0 -> 1 sample, 1 -> 2 samples, 2 -> 4 samples, 3 -> 8 samples)
+- * @touch_det_delay: Touch detect interrupt delay
+- * (0 -> 10 us, 1 -> 50 us, 2 -> 100 us, 3 -> 500 us,
+- * 4-> 1 ms, 5 -> 5 ms, 6 -> 10 ms, 7 -> 50 ms)
+- * recommended is 3
+- * @settling: Panel driver settling time
+- * (0 -> 10 us, 1 -> 100 us, 2 -> 500 us, 3 -> 1 ms,
+- * 4 -> 5 ms, 5 -> 10 ms, 6 for 50 ms, 7 -> 100 ms)
+- * recommended is 2
+- * @fraction_z: Length of the fractional part in z
+- * (fraction_z ([0..7]) = Count of the fractional part)
+- * recommended is 7
+- * @i_drive: current limit value of the touchscreen drivers
+- * (0 -> 20 mA typical 35 mA max, 1 -> 50 mA typical 80 mA max)
+- */
+ struct stmpe_touch {
+ 	struct stmpe *stmpe;
+ 	struct input_dev *idev;
+@@ -110,6 +80,9 @@ struct stmpe_touch {
+ 	u8 i_drive;
+ };
+ 
++static unsigned debug;
++module_param(debug, uint, 0);
++
+ static int __stmpe_reset_fifo(struct stmpe *stmpe)
+ {
+ 	int ret;
+@@ -131,6 +104,9 @@ static void stmpe_work(struct work_struct *work)
+ 	struct stmpe_touch *ts =
+ 	    container_of(work, struct stmpe_touch, work.work);
+ 
++	if (debug > 1)
++		printk("%s()\n", __func__);
++
+ 	int_sta = stmpe_reg_read(ts->stmpe, STMPE_REG_INT_STA);
+ 
+ 	/*
+@@ -146,12 +122,36 @@ static void stmpe_work(struct work_struct *work)
+ 		udelay(100);
+ 	}
+ 
++	if (debug > 1)
++		printk("    timeout=%u, INT_STA=0x%02X\n", timeout, int_sta);
++
+ 	/* reset the FIFO before we report release event */
+ 	__stmpe_reset_fifo(ts->stmpe);
+ 
+ 	input_report_abs(ts->idev, ABS_PRESSURE, 0);
+ 	input_report_key(ts->idev, BTN_TOUCH, 0);
+ 	input_sync(ts->idev);
++
++	/*
++	 * Sometimes the FIFO_TH interrupt flag is not cleared.
++	 * This prevents the controller from generating a new interrupt.
++	 * Clear the flag and re-enable the touchscreen controller to be
++	 * sure it's in working order again.
++	 * If a touch IRQ happens while in this function, FIFO_TH will be set,
++	 * but it doesn't indicate a hang. We reset anyway since the
++	 * consequence is loosing just one data point.
++	 */
++	if (int_sta & (1 << STMPE_IRQ_FIFO_TH)) {
++		stmpe_set_bits(ts->stmpe, STMPE_REG_TSC_CTRL,
++				STMPE_TSC_CTRL_TSC_EN, 0);
++		stmpe_reg_write(ts->stmpe, STMPE_REG_INT_STA, (1 << STMPE_IRQ_FIFO_TH));
++		__stmpe_reset_fifo(ts->stmpe);
++		stmpe_set_bits(ts->stmpe, STMPE_REG_TSC_CTRL,
++			STMPE_TSC_CTRL_TSC_EN, STMPE_TSC_CTRL_TSC_EN);
++		if (debug)
++			printk("    cleared interrupt flag FIFO_TH, INT_STA: 0x%02X -> 0x%02X\n",
++				int_sta, stmpe_reg_read(ts->stmpe, STMPE_REG_INT_STA));
++	}
+ }
+ 
+ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+@@ -160,6 +160,9 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 	int x, y, z;
+ 	struct stmpe_touch *ts = data;
+ 
++	if (debug > 1)
++		printk("%s()\n", __func__);
++
+ 	/*
+ 	 * Cancel scheduled polling for release if we have new value
+ 	 * available. Wait if the polling is already running.
+@@ -181,11 +184,19 @@ static irqreturn_t stmpe_ts_handler(int irq, void *data)
+ 	y = ((data_set[1] & 0xf) << 8) | data_set[2];
+ 	z = data_set[3];
+ 
+-	input_report_abs(ts->idev, ABS_X, x);
+-	input_report_abs(ts->idev, ABS_Y, y);
+-	input_report_abs(ts->idev, ABS_PRESSURE, z);
+-	input_report_key(ts->idev, BTN_TOUCH, 1);
+-	input_sync(ts->idev);
++	/*
++	 * Skip empty datasets
++	 * If stmpe_ts_handler() interrupts stmpe_work(), and stmpe_work
++	 * hasn't reset the FIFO yet, the FIFO will be empty here.
++	 * This is because stmpe_ts_handler waits for stmpe_work to finish
++	 */
++	if (x && y && z) {
++	       input_report_abs(ts->idev, ABS_X, x);
++	       input_report_abs(ts->idev, ABS_Y, y);
++	       input_report_abs(ts->idev, ABS_PRESSURE, 0xff - z);
++	       input_report_key(ts->idev, BTN_TOUCH, 1);
++	       input_sync(ts->idev);
++	}
+ 
+        /* flush the FIFO after we have read out our values. */
+ 	__stmpe_reset_fifo(ts->stmpe);
+@@ -377,6 +388,8 @@ static int stmpe_input_probe(struct platform_device *pdev)
+ 	input_set_abs_params(idev, ABS_X, 0, XY_MASK, 0, 0);
+ 	input_set_abs_params(idev, ABS_Y, 0, XY_MASK, 0, 0);
+ 	input_set_abs_params(idev, ABS_PRESSURE, 0x0, 0xff, 0, 0);
++	set_bit(ABS_PRESSURE, idev->absbit); 
++	set_bit(BTN_TOUCH, idev->keybit); 
+ 
+ 	error = input_register_device(idev);
+ 	if (error) {
+-- 
+2.11.0
+

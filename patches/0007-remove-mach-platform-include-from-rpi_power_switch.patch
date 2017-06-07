@@ -1,0 +1,24 @@
+From e44c7319617571eeb2bf3c8cde097dfea94e2759 Mon Sep 17 00:00:00 2001
+From: Todd Treece <toddtreece@gmail.com>
+Date: Wed, 17 May 2017 12:47:17 +0000
+Subject: [PATCH 7/8] remove mach/platform include from rpi_power_switch
+
+---
+ drivers/power/reset/rpi_power_switch.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/power/reset/rpi_power_switch.c b/drivers/power/reset/rpi_power_switch.c
+index a6a9e70d6039..049af002122a 100644
+--- a/drivers/power/reset/rpi_power_switch.c
++++ b/drivers/power/reset/rpi_power_switch.c
+@@ -22,7 +22,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/init.h>
+ #include <linux/workqueue.h>
+-#include <mach/platform.h>
+ 
+ 
+ /* the BCM2709 redefines this for us right!
+-- 
+2.11.0
+

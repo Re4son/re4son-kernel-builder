@@ -1,0 +1,24 @@
+From 29fcebec80c3b5534d8317a5a4fbdd6e2b4bd790 Mon Sep 17 00:00:00 2001
+From: Re4son Protagonist <Re4son@users.noreply.github.com>
+Date: Wed, 7 Jun 2017 12:13:07 +1000
+Subject: [PATCH] add u32 mntr_flags for wifi injection patch
+
+---
+ net/mac80211/ieee80211_i.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index 34c2add2c455..bbd855dfeabc 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -948,6 +948,7 @@ struct ieee80211_sub_if_data {
+ 		struct ieee80211_if_ocb ocb;
+ 		struct ieee80211_if_mntr mntr;
+ 		struct ieee80211_if_nan nan;
++		u32 mntr_flags;
+ 	} u;
+ 
+ #ifdef CONFIG_MAC80211_DEBUGFS
+-- 
+2.11.0
+

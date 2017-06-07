@@ -1,0 +1,281 @@
+From 80e37dab791674f464d53c0eb69540068675f9af Mon Sep 17 00:00:00 2001
+From: Todd Treece <toddtreece@gmail.com>
+Date: Tue, 16 May 2017 21:33:52 +0000
+Subject: [PATCH 5/8] add 28c, 28r, & 35r overlays
+
+---
+ arch/arm/boot/dts/overlays/Makefile             |   2 +
+ arch/arm/boot/dts/overlays/pitft28c-overlay.dts |   0
+ arch/arm/boot/dts/overlays/pitft28r-overlay.dts | 120 ++++++++++++++++++++++++
+ arch/arm/boot/dts/overlays/pitft35r-overlay.dts | 115 +++++++++++++++++++++++
+ 4 files changed, 237 insertions(+)
+ mode change 100644 => 100755 arch/arm/boot/dts/overlays/pitft28c-overlay.dts
+ create mode 100644 arch/arm/boot/dts/overlays/pitft28r-overlay.dts
+ create mode 100755 arch/arm/boot/dts/overlays/pitft35r-overlay.dts
+
+diff --git a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
+index 8d052cf22f85..d2c39203a545 100644
+--- a/arch/arm/boot/dts/overlays/Makefile
++++ b/arch/arm/boot/dts/overlays/Makefile
+@@ -68,6 +68,8 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
+ 	pitft22.dtbo \
+ 	pitft28-capacitive.dtbo \
+ 	pitft28c.dtbo \
++	pitft28r.dtbo \
++	pitft35r.dtbo \
+ 	pitft28-resistive.dtbo \
+ 	pitft35-resistive.dtbo \
+ 	pps-gpio.dtbo \
+diff --git a/arch/arm/boot/dts/overlays/pitft28c-overlay.dts b/arch/arm/boot/dts/overlays/pitft28c-overlay.dts
+old mode 100644
+new mode 100755
+diff --git a/arch/arm/boot/dts/overlays/pitft28r-overlay.dts b/arch/arm/boot/dts/overlays/pitft28r-overlay.dts
+new file mode 100644
+index 000000000000..3e2ebe760fe4
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/pitft28r-overlay.dts
+@@ -0,0 +1,120 @@
++/*
++ * Device Tree overlay for pitft by Adafruit
++ *
++ */
++
++/dts-v1/;
++/plugin/;
++
++/ {
++        compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
++
++        fragment@0 {
++                target = <&spi0>;
++                __overlay__ {
++                        status = "okay";
++
++                        spidev@0{
++                                status = "disabled";
++                        };
++
++                        spidev@1{
++                                status = "disabled";
++                        };
++                };
++        };
++
++        fragment@1 {
++                target = <&gpio>;
++                __overlay__ {
++                        pitft_pins: pitft_pins {
++                                brcm,pins = <24 25>;
++                                brcm,function = <0 1>; /* in out */
++                                brcm,pull = <2 0>; /* pullup none */
++                        };
++                };
++        };
++
++        fragment@2 {
++                target = <&spi0>;
++                __overlay__ {
++                        /* needed to avoid dtc warning */
++                        #address-cells = <1>;
++                        #size-cells = <0>;
++
++                        pitft: pitft@0{
++                                compatible = "ilitek,ili9340";
++                                reg = <0>;
++                                pinctrl-names = "default";
++                                pinctrl-0 = <&pitft_pins>;
++
++                                spi-max-frequency = <32000000>;
++                                rotate = <90>;
++                                fps = <25>;
++                                bgr;
++                                buswidth = <8>;
++                                dc-gpios = <&gpio 25 0>;
++                                debug = <0>;
++                        };
++
++                        pitft_ts@1 {
++                                #address-cells = <1>;
++                                #size-cells = <0>;
++                                compatible = "st,stmpe610";
++                                reg = <1>;
++
++                                spi-max-frequency = <500000>;
++                                irq-gpio = <&gpio 24 0x2>; /* IRQF_TRIGGER_FALLING */
++                                interrupts = <24 2>; /* high-to-low edge triggered */
++                                interrupt-parent = <&gpio>;
++                                interrupt-controller;
++
++                                stmpe_touchscreen {
++                                        compatible = "st,stmpe-ts";
++                                        st,sample-time = <4>;
++                                        st,mod-12b = <1>;
++                                        st,ref-sel = <0>;
++                                        st,adc-freq = <2>;
++                                        st,ave-ctrl = <3>;
++                                        st,touch-det-delay = <4>;
++                                        st,settling = <2>;
++                                        st,fraction-z = <7>;
++                                        st,i-drive = <0>;
++                                        st,rotation = <90>;
++                                        st,min-x = <250>;
++                                        st,min-y = <200>;
++                                        st,max-x = <3800>;
++                                        st,max-y = <3750>;
++                                };
++
++                                stmpe_gpio: stmpe_gpio {
++                                        #gpio-cells = <2>;
++                                        compatible = "st,stmpe-gpio";
++                                        /*
++                                         * only GPIO2 is wired/available
++                                         * and it is wired to the backlight
++                                         */
++                                        st,norequest-mask = <0x7b>;
++                                };
++                        };
++                };
++        };
++
++        fragment@3 {
++                target-path = "/soc";
++                __overlay__ {
++                        backlight {
++                                compatible = "gpio-backlight";
++                                gpios = <&stmpe_gpio 2 0>;
++                                default-on;
++                        };
++                };
++        };
++
++        __overrides__ {
++                speed =   <&pitft>,"spi-max-frequency:0";
++                rotate =  <&pitft>,"rotate:0";
++                fps =     <&pitft>,"fps:0";
++                debug =   <&pitft>,"debug:0";
++        };
++};
+diff --git a/arch/arm/boot/dts/overlays/pitft35r-overlay.dts b/arch/arm/boot/dts/overlays/pitft35r-overlay.dts
+new file mode 100755
+index 000000000000..87183f5b66b1
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/pitft35r-overlay.dts
+@@ -0,0 +1,115 @@
++/*
++ * Device Tree overlay for pitft by Adafruit
++ *
++ */
++
++/dts-v1/;
++/plugin/;
++
++/ {
++        compatible = "brcm,bcm2835", "brcm,bcm2708", "brcm,bcm2709";
++
++        fragment@0 {
++                target = <&spi0>;
++                __overlay__ {
++                        status = "okay";
++
++                        spidev@0{
++                                status = "disabled";
++                        };
++
++                        spidev@1{
++                                status = "disabled";
++                        };
++                };
++        };
++
++        fragment@1 {
++                target = <&gpio>;
++                __overlay__ {
++                        pitft_pins: pitft_pins {
++                                brcm,pins = <24 25>;
++                                brcm,function = <0 1>; /* in out */
++                                brcm,pull = <2 0>; /* pullup none */
++                        };
++                };
++        };
++
++        fragment@2 {
++                target = <&spi0>;
++                __overlay__ {
++                        /* needed to avoid dtc warning */
++                        #address-cells = <1>;
++                        #size-cells = <0>;
++
++                        pitft: pitft@0{
++                                compatible = "himax,hx8357d";
++                                reg = <0>;
++                                pinctrl-names = "default";
++                                pinctrl-0 = <&pitft_pins>;
++
++                                spi-max-frequency = <32000000>;
++                                rotate = <90>;
++                                fps = <25>;
++                                bgr;
++                                buswidth = <8>;
++                                dc-gpios = <&gpio 25 0>;
++                                debug = <0>;
++                        };
++
++                        pitft_ts@1 {
++                                #address-cells = <1>;
++                                #size-cells = <0>;
++                                compatible = "st,stmpe610";
++                                reg = <1>;
++
++                                spi-max-frequency = <500000>;
++                                irq-gpio = <&gpio 24 0x2>; /* IRQF_TRIGGER_FALLING */
++                                interrupts = <24 2>; /* high-to-low edge triggered */
++                                interrupt-parent = <&gpio>;
++                                interrupt-controller;
++
++                                stmpe_touchscreen {
++                                        compatible = "st,stmpe-ts";
++                                        st,sample-time = <4>;
++                                        st,mod-12b = <1>;
++                                        st,ref-sel = <0>;
++                                        st,adc-freq = <2>;
++                                        st,ave-ctrl = <3>;
++                                        st,touch-det-delay = <4>;
++                                        st,settling = <2>;
++                                        st,fraction-z = <7>;
++                                        st,i-drive = <0>;
++                                };
++
++                                stmpe_gpio: stmpe_gpio {
++                                        #gpio-cells = <2>;
++                                        compatible = "st,stmpe-gpio";
++                                        /*
++                                         * only GPIO2 is wired/available
++                                         * and it is wired to the backlight
++                                         */
++                                        st,norequest-mask = <0x7b>;
++                                };
++                        };
++                };
++        };
++
++        fragment@3 {
++                target-path = "/soc";
++                __overlay__ {
++                        backlight {
++                                compatible = "gpio-backlight";
++                                gpios = <&stmpe_gpio 2 0>;
++                                default-on;
++                        };
++                };
++        };
++
++        __overrides__ {
++                speed =   <&pitft>,"spi-max-frequency:0";
++                rotate =  <&pitft>,"rotate:0";
++                fps =     <&pitft>,"fps:0";
++                debug =   <&pitft>,"debug:0";
++        };
++};
+-- 
+2.11.0
+
