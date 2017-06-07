@@ -291,7 +291,7 @@ cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi_kernel_${NEW_VERSION}/dts
 cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi_kernel_${NEW_VERSION}/docs
-cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-setup re4son_kali-pi_kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi_kernel_${NEW_VERSION}
 cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi_kernel_${NEW_VERSION}/tools
 cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi_kernel_${NEW_VERSION}/tools
 cp $KERNEL_BUILDER_DIR/firmware/* re4son_kali-pi_kernel_${NEW_VERSION}/firmware
