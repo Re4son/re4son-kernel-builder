@@ -84,6 +84,8 @@ function install_bluetooth {
     if [ ! -f  /bin/hciconfig ]; then
       ln -s /usr/bin/hciconfig /bin/hciconfig
     fi
+    ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
+    sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
     
     if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
