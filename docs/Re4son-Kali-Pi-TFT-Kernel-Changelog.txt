@@ -5,7 +5,7 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.9.30_current
 
 
-re4son_kali-pi-tft_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170607
+re4son_kali-pi-tft_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170608-2
 re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170601
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
@@ -13,7 +13,12 @@ re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-2016
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son_kali-pi-tft_kernel_4.9.30-20170608.tar.gz
+re4son_kali-pi-tft_kernel_4.9.30-20170608-2.tar.gz
+================================================
+RPi V1: Kernel 4.9.30-Re4son-Kali-PiTFT+ #2
+RPi V2: Kernel 4.9.30-v7_Re4son-Kali-PiTFT+ #2
+
+re4son_kali-pi-tft_kernel_4.9.30-20170608-1.tar.gz
 ================================================
 RPi V1: Kernel 4.9.30-Re4son-Kali-PiTFT+ #1
 RPi V2: Kernel 4.9.30-v7_Re4son-Kali-PiTFT+ #1
@@ -247,7 +252,12 @@ Kernel history:
 
 RPi V1:
 ********
-4.9.30-Re4son-Kali-PiTFT+ #1 - 08-June-2017:
+4.9.30-Re4son-Kali-Pi+ #2 - 08-June-2017:
+--------------------------------------------
+- based on 4.9.30-Re4son-Kali-Pi+ #1
+- Add Adafruit patches
+
+4.9.30-Re4son-Kali-Pi+ #1 - 08-June-2017:
 --------------------------------------------
 - vanilla 4.9.30 with re4son-master patch
 - master re4son_defconfig
@@ -350,7 +360,12 @@ RPi V1:
 
 RPi V2:
 ********
-4.9.30-v7_Re4son-Kali-PiTFT+ #1 - 08-June-2017:
+4.9.30-v7_Re4son-Kali-Pi+ #2 - 08-June-2017:
+--------------------------------------------
+- based on 4.9.30-v7_Re4son-Kali-Pi+ #1
+- Add Adafruit patches
+
+4.9.30-v7_Re4son-Kali-Pi+ #1 - 08-June-2017:
 --------------------------------------------
 - vanilla 4.9.30_v7 with re4son-master patch
 - master re4son_defconfig
