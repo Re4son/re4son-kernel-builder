@@ -157,7 +157,7 @@ index 000000000000..a6a9e70d6039
 +static int raw_gpio_set(int gpio, int val) {
 +	if (gpio < 0 || gpio > 63)
 +		return -1;
-+	else if (gpio < 32) 
++	else if (gpio < 32)
 +		__raw_writel(1<<gpio, val?GPSET0:GPCLR0);
 +	else if (gpio < 64)
 +		__raw_writel(1<<gpio, val?GPSET1:GPCLR1);
@@ -494,4 +494,3 @@ index 000000000000..a6a9e70d6039
 +module_param(mode, int, 0);
 -- 
 2.11.0
-

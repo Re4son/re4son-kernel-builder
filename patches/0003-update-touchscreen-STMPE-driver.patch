@@ -153,8 +153,8 @@ index 2a78e27b4495..409b81fd70e5 100644
  	input_set_abs_params(idev, ABS_X, 0, XY_MASK, 0, 0);
  	input_set_abs_params(idev, ABS_Y, 0, XY_MASK, 0, 0);
  	input_set_abs_params(idev, ABS_PRESSURE, 0x0, 0xff, 0, 0);
-+	set_bit(ABS_PRESSURE, idev->absbit); 
-+	set_bit(BTN_TOUCH, idev->keybit); 
++	set_bit(ABS_PRESSURE, idev->absbit);
++	set_bit(BTN_TOUCH, idev->keybit);
  
  	error = input_register_device(idev);
  	if (error) {
