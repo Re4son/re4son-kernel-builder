@@ -17,6 +17,7 @@ re4son_kali-pi-tft_kernel_4.9.30-20170608.tar.gz
 ================================================
 RPi V1: Kernel 4.9.30-Re4son-Kali-PiTFT+ #1
 RPi V2: Kernel 4.9.30-v7_Re4son-Kali-PiTFT+ #1
+- Update bluez_5.23-2+rpi2_armhf to bluez_5.39-1+rpi3+re4son_armhf
 
 re4son_kali-pi-tft_kernel_4.4.50-20170601.tar.gz
 ================================================
