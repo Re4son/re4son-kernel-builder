@@ -2,16 +2,21 @@ Package History:
 
 re4son_kali-pi-tft_kernel_old = re4son_kali-pi-tft_kernel_4.1.21_current
 re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
-re4son_kali-pi-tft_kernel_testing = re4son_kali-pi-tft_kernel_4.9.30_current
+re4son_kali-pi_kernel_testing = re4son_kali-pi_kernel_4.9.30_current
 
 
-re4son_kali-pi-tft_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170608-2
+re4son_kali-pi_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170608-2
 re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170601
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.9.30-20170608.tar.gz
+================================================
+RPi V1: Kernel 4.9.30-Re4son-Kali-PiTFT+ #3
+RPi V2: Kernel 4.9.30-v7_Re4son-Kali-PiTFT+ #3
 
 re4son_kali-pi-tft_kernel_4.9.30-20170608-2.tar.gz
 ================================================
@@ -252,6 +257,11 @@ Kernel history:
 
 RPi V1:
 ********
+4.9.30-Re4son-Kali-Pi+ #3 - 08-June-2017:
+--------------------------------------------
+- based on 4.9.30-Re4son-Kali-Pi+ #2
+- Add 4DHat drivers
+
 4.9.30-Re4son-Kali-Pi+ #2 - 08-June-2017:
 --------------------------------------------
 - based on 4.9.30-Re4son-Kali-Pi+ #1
@@ -360,6 +370,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.9.30-v7_Re4son-Kali-Pi+ #3 - 08-June-2017:
+--------------------------------------------
+- based on 4.9.30-v7_Re4son-Kali-Pi+ #2
+- Add 4DHat drivers
+
 4.9.30-v7_Re4son-Kali-Pi+ #2 - 08-June-2017:
 --------------------------------------------
 - based on 4.9.30-v7_Re4son-Kali-Pi+ #1
