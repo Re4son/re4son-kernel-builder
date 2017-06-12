@@ -1,0 +1,101 @@
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+   printf "\n\t\t$(basename $0) must be run as root.\n\t\ttry: sudo $(basename $0) <image name>\n\n"
+   exit 1
+fi
+
+if [ -z "$1" ]
+  then
+    printf "\n\t\tMissing file name\n"
+    printf "\t\tUsage: sudo $(basename $0) <image name>\n\n"
+    exit 1
+fi
+
+SOURCE="/dev/mmcblk0"
+IMG_FILE=$1-`date +%y%m%d`.img.xz
+SHA_FILE=$IMG_FILE.sha1
+
+## Get the total size of both partitions rather than the total size of the card
+## This allows to create 8gB images using 16GB cards
+#size=`fdisk -l $SOURCE | grep "Disk $SOURCE" | sed -e 's/[^ ]* [^ ]* [^ ]* [^ ]* \([0-9]*\).*/\1/g'`
+last_sector=`fdisk -l $SOURCE | grep "/dev/mmcblk0p2" | sed -e 's/[^ ]* *[^ ]* *\([0-9]*\).*/\1/g'`
+echo $last_sector
+sectors=$((last_sector + 1))
+size=$((sectors / 2 / 1024))
+
+function ask() {
+    # http://djm.me/ask
+    while true; do
+
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+
+        # Ask the question
+        read -p "$1 [$prompt] " REPLY
+
+        # Default?
+        if [ -z "$REPLY" ]; then
+            REPLY=$default
+        fi
+
+        # Check if the reply is valid
+        case "$REPLY" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+    done
+}
+
+printf "\nPreparing backup:\n"
+printf "===================\n"
+if [ -f  $IMG_FILE ]; then
+    if [ ! -d ../archive ]; then
+        sudo mkdir ../archive
+    fi
+    echo "Moving $IMG_FILE to ../archive"
+    mv $IMG_FILE ../archive/
+fi
+
+if [ -f  $SHA_FILE ]; then
+    if [ ! -d ../archive ]; then
+        sudo mkdir ../archive
+    fi
+    echo "Moving $SHA_FILE to ../archive"
+    mv $SHA_FILE ../archive/
+fi
+
+printf "\nSource SD-Card:\n"
+printf "=================\n"
+fdisk -l $SOURCE
+printf "\nBackup parameters:\n"
+printf "==================\n"
+printf "Reading $sectors sectors @ 512 bytes each / 2 / 1024  = $size MB\n"
+printf "Writing image to $IMG_FILE\n"
+printf "Writing SHA256 sum to $SHA_FILE\n\n"
+printf "\n"
+
+if ask "Continue?" "N"; then
+    printf "*** Start creating image at `date +%H:%M:%S`\n"
+    SECONDS=0
+    dd if=$SOURCE bs=1M count=$size status=progress | xz -T 0 >$IMG_FILE
+    duration=$SECONDS
+    printf "*** Finish creating image at `date +%H:%M:%S`, after $(($duration / 60)) minutes and $(($duration % 60)) seconds\n\n"
+    SECONDS=0
+    printf "*** Start creating SHA256SUM at `date +%H:%M:%S`\n"
+    sha256sum $IMG_FILE>$SHA_FILE
+    duration=$SECONDS
+    printf "*** Finish creating SHA256SUM: `date +%H:%M:%S`, after $(($duration / 60)) minutes and $(($duration % 60)) seconds\n\n"
+
+else
+    exit 1
+fi
+
+exit 0

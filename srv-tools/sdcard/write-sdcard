@@ -1,0 +1,91 @@
+#!/bin/bash
+if [[ $EUID -ne 0 ]]; then
+   printf "\n\t\t$(basename $0) must be run as root.\n\t\ttry: sudo $(basename $0) <image name>\n\n"
+   exit 1
+fi
+
+if [ -z "$1" ]
+  then
+    printf "\n\t\tError: Missing file name\n"
+    printf "\t\tUsage: sudo $(basename $0) <image name>\n\n"
+    exit 1
+fi
+
+if [ ! -f "$1" ]
+  then
+    printf "\n\t\tError: File does not exist\n"
+    printf "\t\tUsage: sudo $(basename $0) <image name>\n\n"
+    exit 1
+fi
+
+DEST="/dev/mmcblk0"
+BS="32MB"
+IMG_FILE=$1
+EXTENSION="${IMG_FILE##*.}"
+
+function ask() {
+    # http://djm.me/ask
+    while true; do
+
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+
+        # Ask the question
+        read -p "$1 [$prompt] " REPLY
+
+        # Default?
+        if [ -z "$REPLY" ]; then
+            REPLY=$default
+        fi
+
+        # Check if the reply is valid
+        case "$REPLY" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+    done
+}
+
+
+printf "\n\nSource image:\n"
+printf "=================\n"
+ls -lh $IMG_FILE
+printf "Compression: "
+if [ $EXTENSION = "xz" ]; then
+    printf "xz\n"
+elif [ $EXTENSION = "img" ]; then
+    printf "none\n"
+else
+    printf "not sure\n"
+fi
+printf "\n\nDestination SD-Card:\n"
+printf "========================\n"
+fdisk -l $DEST
+
+if ask "Continue?" "N"; then
+    printf "*** Start writing to SD-Card at `date +%H:%M:%S`\n"
+    SECONDS=0
+    if [ $EXTENSION = "xz" ]; then
+        xzcat -T 0 $IMG_FILE | dd of=$DEST bs=$BS status=progress;sync
+    elif [ $EXTENSION = "img" ]; then
+        dd if=$IMG_FILE of=$DEST bs=$BS status=progress;sync
+    else
+        printf "\n\t\t!!! Unknown file type, aborting !!!\n\n"
+        exit 1
+    fi
+    duration=$SECONDS
+    printf "*** Finish writing to SD-Card at `date +%H:%M:%S`, after $(($duration / 60)) minutes and $(($duration % 60)) seconds\n\n"
+
+else
+    exit 1
+fi
+
+exit 0
