@@ -8,8 +8,8 @@ fi
 # SET THIS:
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 VERSION="4.9.30"
-V1_VERSION="4"
-V2_VERSION="4"
+V1_VERSION="5"
+V2_VERSION="5"
 
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
@@ -207,6 +207,9 @@ ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS
 ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
 ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
 ${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+## Remove symbolic links to non-existent headers and sources
+rm -f ${MOD_DIR}/lib/modules/*/build
+rm -f ${MOD_DIR}/lib/modules/*/source
 cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
 
 
@@ -247,7 +250,10 @@ cp arch/arm/boot/dts/overlays/README $PKG_DIR/boot/overlays/
 ## mkknlimg is no longer in tools
 ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
 ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+${V2_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+## Remove symbolic links to non-existent headers and sources
+rm -f ${MOD_DIR}/lib/modules/*-v7_*/build
+rm -f ${MOD_DIR}/lib/modules/*-v7_*/source
 cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
 
 # copy overlays
