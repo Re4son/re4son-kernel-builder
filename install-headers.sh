@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $EUID -ne 0 ]]; then
-   echo "install.sh must be run as root. try: sudo install.sh"
+   echo "install-headers.sh must be run as root. try: sudo install-headers.sh"
    exit 1
 fi
 
