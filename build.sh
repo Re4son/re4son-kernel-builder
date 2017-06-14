@@ -282,31 +282,31 @@ make
 
 
 cd $PKG_TMP
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/docs
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/dts
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/tools
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/firmware
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/repo
-mkdir re4son_kali-pi_kernel_${NEW_VERSION}/nexmon
-cp *.deb re4son_kali-pi_kernel_${NEW_VERSION}
-## rm -f re4son_kali-pi_kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
-cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son_kali-pi_kernel_${NEW_VERSION}/nexmon
-cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son_kali-pi_kernel_${NEW_VERSION}/nexmon
-cp $KERNEL_BUILDER_DIR/nexmon/* re4son_kali-pi_kernel_${NEW_VERSION}/nexmon
-cp $KERNEL_BUILDER_DIR/install.sh re4son_kali-pi_kernel_${NEW_VERSION}
-cp $KERNEL_BUILDER_DIR/dts/*.dts re4son_kali-pi_kernel_${NEW_VERSION}/dts
-cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son_kali-pi_kernel_${NEW_VERSION}
-cp $KERNEL_BUILDER_DIR/docs/* re4son_kali-pi_kernel_${NEW_VERSION}/docs
-cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son_kali-pi_kernel_${NEW_VERSION}
-cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son_kali-pi_kernel_${NEW_VERSION}/tools
-cp $KERNEL_BUILDER_DIR/tools/* re4son_kali-pi_kernel_${NEW_VERSION}/tools
-cp $KERNEL_BUILDER_DIR/firmware/* re4son_kali-pi_kernel_${NEW_VERSION}/firmware
-cp $KERNEL_BUILDER_DIR/repo/* re4son_kali-pi_kernel_${NEW_VERSION}/repo
-chmod +x re4son_kali-pi_kernel_${NEW_VERSION}/install.sh
-chmod +x re4son_kali-pi_kernel_${NEW_VERSION}/re4son-pi-tft-setup
-chmod +x re4son_kali-pi_kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
-tar cJf re4son_kali-pi_kernel_${NEW_VERSION}.tar.xz re4son_kali-pi_kernel_${NEW_VERSION}
-mv -f re4son_kali-pi_kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
+mkdir re4son-kernel_${NEW_VERSION}
+mkdir re4son-kernel_${NEW_VERSION}/docs
+mkdir re4son-kernel_${NEW_VERSION}/dts
+mkdir re4son-kernel_${NEW_VERSION}/tools
+mkdir re4son-kernel_${NEW_VERSION}/firmware
+mkdir re4son-kernel_${NEW_VERSION}/repo
+mkdir re4son-kernel_${NEW_VERSION}/nexmon
+cp *.deb re4son-kernel_${NEW_VERSION}
+## rm -f re4son-kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
+cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son-kernel_${NEW_VERSION}/nexmon
+cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
+cp $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
+cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
+cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son-kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/docs/* re4son-kernel_${NEW_VERSION}/docs
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son-kernel_${NEW_VERSION}
+cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son-kernel_${NEW_VERSION}/tools
+cp $KERNEL_BUILDER_DIR/tools/* re4son-kernel_${NEW_VERSION}/tools
+cp $KERNEL_BUILDER_DIR/firmware/* re4son-kernel_${NEW_VERSION}/firmware
+cp $KERNEL_BUILDER_DIR/repo/* re4son-kernel_${NEW_VERSION}/repo
+chmod +x re4son-kernel_${NEW_VERSION}/install.sh
+chmod +x re4son-kernel_${NEW_VERSION}/re4son-pi-tft-setup
+chmod +x re4son-kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
+tar cJf re4son-kernel_${NEW_VERSION}.tar.xz re4son-kernel_${NEW_VERSION}
+mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
 
-echo -e "THE re4son_kali-pi_kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
+echo -e "THE re4son-kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
