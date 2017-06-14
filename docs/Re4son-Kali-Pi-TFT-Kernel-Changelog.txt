@@ -5,13 +5,18 @@ re4son_kali-pi-tft_kernel_current = re4son_kali-pi-tft_kernel_4.4.50_current
 re4son_kali-pi_kernel_testing = re4son_kali-pi_kernel_4.9.30_current
 
 
-re4son_kali-pi_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170609
+re4son_kali-pi_kernel_4.9.30_current = re4son_kali-pi-tft_kernel_4.9.30-20170614
 re4son_kali-pi-tft_kernel_4.4.50_current = re4son_kali-pi-tft_kernel_4.4.50-20170601
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son_kali-pi-tft_kernel_4.9.30-20170614.tar.gz
+================================================
+RPi V1: Kernel 4.9.30-Re4son-Kali-PiTFT+ #7
+RPi V2: Kernel 4.9.30-v7_Re4son-Kali-PiTFT+ #7
 
 re4son_kali-pi-tft_kernel_4.9.30-20170609.tar.gz
 ================================================
@@ -266,6 +271,12 @@ Kernel history:
 
 RPi V1:
 ********
+4.9.30-Re4son+ #7 - 14-June-2017:
+----------------------------------
+- based on 4.9.30-Re4son-Kali-Pi+ #4
+- shorten name to Re4son
+- align module naming
+
 4.9.30-Re4son-Kali-Pi+ #4 - 09-June-2017:
 --------------------------------------------
 - based on 4.9.30-Re4son-Kali-Pi+ #3
@@ -384,6 +395,12 @@ RPi V1:
 
 RPi V2:
 ********
+4.9.30-Re4son-v7+ #7 - 14-June-2017:
+----------------------------------
+- based on 4.9.30-Re4son-Kali-Pi+ #4
+- shorten name to Re4son-v7
+- align module naming
+
 4.9.30-v7_Re4son-Kali-Pi+ #4 - 09-June-2017:
 --------------------------------------------
 - based on 4.9.30-v7_Re4son-Kali-Pi+ #3
