@@ -11,14 +11,15 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.9.28"
-V1_VERSION="8"
-V2_VERSION="8"
+VERSION="4.4.50"
+V1_VERSION="9"
+V2_VERSION="9"
 
 ## Source repo
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
 ##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
+##GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
+GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170515 release
 ##GIT_BRANCH="rpi-4.9.y-re4son"
 ##GIT_BRANCH="rpi-4.9.y-re4son-4d"
 ##GIT_BRANCH="rpi-4.9.y-re4son-master"
@@ -41,9 +42,7 @@ REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 TOOLS_DIR="/opt/kernel-builder_tools"
-DEBIAN_DIR="/opt/kernel-builder_RPi-Distro-firmware"
-##FIRMWARE_DIR="/opt/kernel-builder_firmware" ## We use RPi-Distro for both DEBIAN and FIRMWARE
-FIRMWARE_DIR=$DEBIAN_DIR
+FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
 KERN_MOD_DIR="/opt/kernel-builder_mod"  ## Target directory for pi2/3 modules that can be used for compiling drivers
@@ -86,7 +85,6 @@ function debug_info() {
         printf "MOD_DIR:\t$MOD_DIR\n"
         printf "KERN_MOD_DIR:\t$KERN_MOD_DIR\n"
         printf "NEXMON_DIR:\t$NEXMON_DIR\n"
-        printf "DEBIAN_DIR:\t$DEBIAN_DIR\n"
         printf "NEW_VERSION:\t$NEW_VERSION\n"
     fi
 }
@@ -174,14 +172,9 @@ function setup_repos(){
         git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
     fi
 
-    ## if [ ! -d $FIRMWARE_DIR ]; then
-    ##    echo "**** CLONING FIRMWARE REPO ****"
-    ##    git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
-    ## fi
-
-    if [ ! -d $DEBIAN_DIR ]; then
+    if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-        git clone --depth 1 https://github.com/RPi-Distro/firmware $DEBIAN_DIR
+        git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
     fi
 }
 
@@ -325,7 +318,7 @@ function create_debs() {
     tar czf raspberrypi-firmware_${NEW_VERSION}.orig.tar.gz raspberrypi-firmware_${NEW_VERSION}
 
     # copy debian files to package directory
-    cp -r $DEBIAN_DIR/debian $PKG_DIR
+    cp -r $FIRMWARE_DIR/debian $PKG_DIR
     touch $PKG_DIR/debian/files
     cd $PKG_DIR/debian
     sh ./gen_bootloader_postinst_preinst.sh
