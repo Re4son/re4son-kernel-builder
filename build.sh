@@ -83,9 +83,17 @@ function debug_info() {
         printf "PKG_TMP:\t$PKG_TMP\n"
         printf "PKG_DIR:\t$PKG_DIR\n"
         printf "MOD_DIR:\t$MOD_DIR\n"
+        printf "FIRMWARE_DIR:\t$FIRMWARE_DIR\n"
         printf "KERN_MOD_DIR:\t$KERN_MOD_DIR\n"
         printf "NEXMON_DIR:\t$NEXMON_DIR\n"
         printf "NEW_VERSION:\t$NEW_VERSION\n"
+        printf "\nFIRMWARE INFO:\n\n"
+        FW_GIT_HASH=`cat ${FIRMWARE_DIR}/extra/git_hash`
+        FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
+        FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
+        printf "FW_GIT_HASH:\t$FW_GIT_HASH\n"
+        printf "FW_UNAME:\t$FW_UNAME\n"
+        printf "FW_UNAME7:\t$FW_UNAME7\n"
     fi
 }
 
