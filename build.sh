@@ -42,7 +42,7 @@ MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 TOOLS_DIR="/opt/kernel-builder_tools"
 DEBIAN_DIR="/opt/kernel-builder_RPi-Distro-firmware"
-##FIRMWARE_DIR="/opt/kernel-builder_firmware"
+##FIRMWARE_DIR="/opt/kernel-builder_firmware" ## We use RPi-Distro for both DEBIAN and FIRMWARE
 FIRMWARE_DIR=$DEBIAN_DIR
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
@@ -112,8 +112,6 @@ EOF
 
 function clean() {
    echo "**** Cleaning up kernel source ****"
-   V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
-   V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
    cd $V1_DIR
    git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V1_DIR} ****"
@@ -122,10 +120,11 @@ function clean() {
    git reset --hard HEAD
    git pull
    if [ "$V1_VERSION" != "" ]; then
-     echo "**** Setting version to ${V1_VERSION} ****"
-     ((version = $V1_VERSION -1))
-     echo $version > .version
+       echo "**** Setting version to ${V1_VERSION} ****"
+       ((version = $V1_VERSION -1))
+       echo $version > .version
    fi
+   
    cd $V2_DIR
    git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V2_DIR} ****"
@@ -134,9 +133,9 @@ function clean() {
    git reset --hard HEAD
    git pull
    if [ "$V2_VERSION" != "" ]; then
-     echo "**** Setting version to ${V2_VERSION} ****"
-     ((version = $V2_VERSION -1))
-     echo $version > .version
+       echo "**** Setting version to ${V2_VERSION} ****"
+       ((version = $V2_VERSION -1))
+       echo $version > .version
    fi
    echo "**** Kernel source directories cleaned up ****"
 }
@@ -153,40 +152,36 @@ function setup_repos(){
     printf "\n**** SETTING UP REPOSITORIES ****\n"
 
     if [ ! -d $REPO_ROOT ]; then
-      mkdir $REPO_ROOT
+        mkdir $REPO_ROOT
     fi
 
     if [ "$GIT_REPO" != "raspberrypi/linux" ]; then
 
-      if [[ "$GIT_REPO" =~ "http" ]]; then
-          echo "please provide a valid githubuser/repo path"
-          usage
-          exit 1
-      fi
-
-      V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
-      V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-
+        if [[ "$GIT_REPO" =~ "http" ]]; then
+            echo "please provide a valid githubuser/repo path"
+            usage
+            exit 1
+        fi
     fi
 
     if [ ! -d $V1_DIR ]; then
-      mkdir -p $V1_DIR
-      clone_source
+        mkdir -p $V1_DIR
+        clone_source
     fi
 
     if [ ! -d $TOOLS_DIR ]; then
-      echo "**** CLONING TOOL REPO ****"
-      git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
+        echo "**** CLONING TOOL REPO ****"
+        git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
     fi
 
-    if [ ! -d $FIRMWARE_DIR ]; then
-      echo "**** CLONING FIRMWARE REPO ****"
-      git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
-    fi
+    ## if [ ! -d $FIRMWARE_DIR ]; then
+    ##    echo "**** CLONING FIRMWARE REPO ****"
+    ##    git clone --depth 1 https://github.com/raspberrypi/firmware $FIRMWARE_DIR
+    ## fi
 
-    if [ ! -d $FIRMWARE_DIR ]; then
-      echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-      git clone --depth 1 https://github.com/RPi-Distro/firmware $DEBIAN_DIR
+    if [ ! -d $DEBIAN_DIR ]; then
+        echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
+        git clone --depth 1 https://github.com/RPi-Distro/firmware $DEBIAN_DIR
     fi
 }
 
@@ -248,11 +243,11 @@ function make_v1() {
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
     if [ ! -f .config ]; then
-      if [ "$V1_CONFIG" == "" ]; then
-        cp ${V1_DEFAULT_CONFIG} .config
-      else
-        cp ${V1_CONFIG} .config
-      fi
+        if [ "$V1_CONFIG" == "" ]; then
+            cp ${V1_DEFAULT_CONFIG} .config
+        else
+            cp ${V1_CONFIG} .config
+        fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
     echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/v1_saved_config ****"
@@ -284,11 +279,11 @@ function make_v2() {
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     if [ ! -f .config ]; then
-      if [ "$V2_CONFIG" == "" ]; then
-        cp ${V2_DEFAULT_CONFIG} .config
-      else
-        cp ${V2_CONFIG} .config
-      fi
+        if [ "$V2_CONFIG" == "" ]; then
+          cp ${V2_DEFAULT_CONFIG} .config
+        else
+          cp ${V2_CONFIG} .config
+        fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
     echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/v2_saved_config ****"
@@ -421,16 +416,21 @@ breakpoint "020-Repos set up"
 setup_pkg_dir
 debug_info
 breakpoint "050-Pkg dir set up"
+
 make_v1
 breakpoint "060-Kernel v1 compiled"
+
 make_v2
 debug_info
 breakpoint "070-Kernel v2 compiled"
+
 create_debs
 debug_info
 breakpoint "080-Debian packages created"
+
 ##make_nexmon
 ##breakpoint "090-Nexmon drivers compiled"
+
 create_tar
 debug_info
 
