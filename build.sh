@@ -8,7 +8,7 @@
 ## SET THESE:                                 ##
 
 ## Debug - set to "1" to enable debugging (mainly breakpoints)
-DEBUG="1"
+DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.28"
@@ -17,7 +17,8 @@ V2_VERSION="8"
 
 ## Source repo
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
+GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
+##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
 ##GIT_BRANCH="rpi-4.9.y-re4son"
 ##GIT_BRANCH="rpi-4.9.y-re4son-4d"
 ##GIT_BRANCH="rpi-4.9.y-re4son-master"
