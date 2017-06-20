@@ -6,7 +6,7 @@ index 000000000000..8cd4dcc374cd
 @@ -0,0 +1,1345 @@
 +# CONFIG_ARM_PATCH_PHYS_VIRT is not set
 +CONFIG_PHYS_OFFSET=0
-+CONFIG_LOCALVERSION="-Re4son-Kali-Pi-TFT"
++CONFIG_LOCALVERSION="-Re4son"
 +# CONFIG_LOCALVERSION_AUTO is not set
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -1357,7 +1357,7 @@ index 000000000000..465741d87296
 @@ -0,0 +1,1351 @@
 +# CONFIG_ARM_PATCH_PHYS_VIRT is not set
 +CONFIG_PHYS_OFFSET=0
-+CONFIG_LOCALVERSION="-v7_Re4son-Kali-Pi-TFT"
++CONFIG_LOCALVERSION="-Re4son-v7"
 +# CONFIG_LOCALVERSION_AUTO is not set
 +CONFIG_SYSVIPC=y
 +CONFIG_POSIX_MQUEUE=y
@@ -2731,8 +2731,8 @@ index b7f72f9c7988..d7f6b1b09a00 100644
  	 * HW will perform CTS-to-self when both RTS and CTS flags are set.
 diff --git a/drivers/net/wireless/zd1211rw/zd_mac.c b/drivers/net/wireless/zd1211rw/zd_mac.c
 index e539d9b1b562..60ed5a7d06a3 100644
---- a/drivers/net/wireless/zydas/zd1211rw/zd_mac.c
-+++ b/drivers/net/wireless/zydas/zd1211rw/zd_mac.c
+--- a/drivers/net/wireless/zd1211rw/zd_mac.c
++++ b/drivers/net/wireless/zd1211rw/zd_mac.c
 @@ -242,14 +242,19 @@ void zd_mac_clear(struct zd_mac *mac)
  static int set_rx_filter(struct zd_mac *mac)
  {
