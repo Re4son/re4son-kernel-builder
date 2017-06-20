@@ -7,7 +7,8 @@
 
 ## SET THESE:                                 ##
 
-## Debug - set to "1" to enable debugging (mainly breakpoints)
+## Debug - set to "1" to enable debugging
+##         (mainly breakpoints)
 DEBUG="0"
 
 ## Version strings:
@@ -92,8 +93,8 @@ function debug_info() {
         FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
         FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
         printf "FW_GIT_HASH:\t$FW_GIT_HASH\n"
-        printf "FW_UNAME:\t$FW_UNAME\n"
-        printf "FW_UNAME7:\t$FW_UNAME7\n"
+        printf "FW_UNAME:\t${FW_UNAME}+\n"
+        printf "FW_UNAME7:\t${FW_UNAME7}+\n"
     fi
 }
 
@@ -130,7 +131,7 @@ function clean() {
        ((version = $V1_VERSION -1))
        echo $version > .version
    fi
-   
+
    cd $V2_DIR
    git checkout ${GIT_BRANCH}
    echo "**** Cleaning ${V2_DIR} ****"
@@ -214,7 +215,7 @@ function setup_pkg_dir() {
     cp -r $FIRMWARE_DIR/* $PKG_DIR
 
     # Remove the pre-compiled modules - we'll compile them ourselves
-    ## rm -r $PKG_DIR/modules/*
+    rm -r $PKG_DIR/modules/*
 }
 
 function get_4d_obj() {
@@ -379,6 +380,7 @@ function create_tar() {
 ##                    MAIN                    ##
 
 check_root
+debug_info
 breakpoint "010-Root privileges checked"
 
 while getopts "hb:cr:1:2:" opt; do
