@@ -49,6 +49,10 @@ KERN_MOD_DIR="/opt/kernel-builder_mod"  ## Target directory for pi2/3 modules th
 NEXMON_DIR="/opt/re4son-nexmon"
 
 NUM_CPUS=`nproc`
+FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
+FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
+
+
 
 ##                                            ##
 ################################################
@@ -89,8 +93,6 @@ function debug_info() {
         printf "NEW_VERSION:\t$NEW_VERSION\n"
         printf "\nFIRMWARE INFO:\n\n"
         FW_GIT_HASH=`cat ${FIRMWARE_DIR}/extra/git_hash`
-        FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
-        FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
         printf "FW_GIT_HASH:\t$FW_GIT_HASH\n"
         printf "FW_UNAME:\t${FW_UNAME}+\n"
         printf "FW_UNAME7:\t${FW_UNAME7}+\n"
@@ -182,7 +184,7 @@ function setup_repos(){
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-        git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
+        git clone --depth 1 https://github.com/Re4son/RPi-Distro-firmware $FIRMWARE_DIR
     fi
 }
 
@@ -265,6 +267,8 @@ function make_v1() {
     rm -f ${MOD_DIR}/lib/modules/*/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp ${V1_DIR}/Module.symvers $FIRMWARE_DIR/headers/usr/src/linux-headers-$FW_UNAME/ 
 }
 
 function make_v2() {
@@ -304,17 +308,19 @@ function make_v2() {
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp -f ${V2_DIR}/Module.symvers $FIRMWARE_DIR/headers/usr/src/linux-headers-$FW_UNAME/
 }
 
 
 function make_nexmon() {
     ## Compiling nexmon firmware patches for Raspberry Pi 3
-    cp -r ${MOD_DIR}/lib/modules/*-v7_*/* ${KERN_MOD_DIR}/
+    cp -r ${MOD_DIR}/lib/modules/*-v7*/* ${KERN_MOD_DIR}/
     cd ${NEXMON_DIR}
     source setup_env.sh
     cd patches/bcm43438/7_45_41_26/nexmon
     make
-    cd -
+    cd $KERNEL_BUILDER_DIR
 }
 
 function create_debs() {
@@ -365,7 +371,8 @@ function create_tar() {
     chmod +x re4son-kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
     tar cJf re4son-kernel_${NEW_VERSION}.tar.xz re4son-kernel_${NEW_VERSION}
     mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
-    chown re4son:re4son $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz
+    sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz >> $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
+    chown re4son:re4son $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz*
     echo -e "THE re4son-kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
 }
 
