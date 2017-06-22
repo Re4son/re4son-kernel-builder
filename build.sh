@@ -23,7 +23,8 @@ GIT_REPO="Re4son/re4son-raspberrypi-linux"
 ##GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170405 release
 ##GIT_BRANCH="rpi-4.9.y-re4son"
 ##GIT_BRANCH="rpi-4.9.y-re4son-4d"
-GIT_BRANCH="rpi-4.4.50-re4son-master"
+GIT_BRANCH="rpi-4.4.50-re4son"
+##GIT_BRANCH="rpi-4.4.50-re4son-master"
 
 ## defconfigs:
 V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
@@ -146,6 +147,7 @@ function clean() {
        echo $version > .version
    fi
    echo "**** Kernel source directories cleaned up ****"
+   exit 0
 }
 
 function clone_source() {
@@ -268,7 +270,7 @@ function make_v1() {
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
-    cp ${V1_DIR}/Module.symvers $FIRMWARE_DIR/headers/usr/src/linux-headers-$FW_UNAME/ 
+    cp ${V1_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME+/
 }
 
 function make_v2() {
@@ -309,7 +311,7 @@ function make_v2() {
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
-    cp -f ${V2_DIR}/Module.symvers $FIRMWARE_DIR/headers/usr/src/linux-headers-$FW_UNAME/
+    cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
 }
 
 

@@ -72,22 +72,31 @@ function install_bluetooth {
     if [ "armel" == "$ARCH" ]; then
         dpkg -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
     else
-        dpkg -i ./repo/bluez_5.23-2+rpi2_armhf.deb
+        dpkg -i ./repo/bluez_5.39-1+rpi3+re4son_armhf.deb
     fi
     dpkg -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
     apt-mark hold bluez-firmware bluez pi-bluetooth
 
+    if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
+      cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
+    fi
+    ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
+    if [ ! -f  /bin/hciconfig ]; then
+      ln -s /usr/bin/hciconfig /bin/hciconfig
+    fi
+    ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
+    SYSTEMD_VER=$(systemd --version|grep systemd|sed 's/systemd //')
+    if (( $SYSTEMD_VER >= 232 )); then
+        if [ -f /lib/systemd/system/systemd-udevd.service ]; then
+            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /lib/systemd/system/systemd-udevd.service
+        elif [ -f /etc/systemd/system/systemd-udevd.service ]; then
+            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
+        fi
+    fi
     if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
-        if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
-          cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
-        fi
-        ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
-        if [ ! -f  /bin/hciconfig ]; then
-          ln -s /usr/bin/hciconfig /bin/hciconfig
-        fi
     fi
     echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****"
 }

@@ -1,21 +1,21 @@
 # Installation
 
-Copy the custom kernel tar.gz archive to your Raspberry Pi, and use
+Copy the custom kernel tar.xz archive to your Raspberry Pi, and use
 the `tar` command to extract the archive. In the example, the archive
-we will be using is called `re4son_pi-tft_kali-kernel_1.20150207-1.tar.gz`. Replace
+we will be using is called `re4son-kernel_4.9.28-20170618.tar.xz`. Replace
 the name of the example archive with the name of the pitft kernel
 tar.gz archive.
 
 ```
-$ tar xf re4son_kali-pi-tft_kernel_1.20160513-1.tar.gz
+$ tar -xJf re4son-kernel_4.9.28-20170618.tar.xz
 ```
 
 You can now `cd` into the extracted folder. The extracted
 folder will have the same name as the archive, minus the
-.tar.gz suffix.
+.tar.xz suffix.
 
 ```
-$ cd re4son_kali-pi-tft_kernel_1.20160513-1
+$ cd re4son-kernel_4.9.28-20170618
 ```
 
 Now you are ready to run the install script. **Warning!** *Installing
@@ -55,7 +55,7 @@ The following types are supported:
 Example command for setting up an Adafruit PiTFT 3.5" on a typical Kali Linux system:
 
 ```
-./re4son-pi-tft-setup -t 35r -u /root
+./re4son-pi-tft-setup -t 35r -d /root
 ```
 
 Press 'Y' when prompted to reboot.
