@@ -13,11 +13,12 @@ re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-2016
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.4.50-20170601.tar.xz
+re4son-kernel_4.4.50-20170622.tar.xz
 ================================================
 RPi V1: Kernel 4.4.50-Re4son+ #8
 RPi V2: Kernel 4.4.50-Re4son-v7+ #8
 - Bugfix Module.symvers
+- Update bluez_5.23-2+rpi2_armhf to bluez_5.39-1+rpi3+re4son_armhf
 
 re4son_kali-pi-tft_kernel_4.9.30-20170614.tar.xz
 ================================================

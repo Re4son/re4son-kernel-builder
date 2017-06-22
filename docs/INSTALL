@@ -26,12 +26,24 @@ your SD card before continuing.*
 $ sudo ./install.sh
 ```
 
+When prompted to install the bluetooth driver, you should:
+
+ - press "N" if you are installing the kernel in Raspbian
+ - press "Y" if you are installing the kernel in Kali Linux or any other OS without native Bluetooth support
+
+
 If you see an error message, the kernel install failed. If everything goes
 well, you will see this message: **Kernel install complete!**. You will
 need to reboot for the changes to take effect but you can continue with the 
-setup of your screen and reboot later.
+setup of your screen or installation of the kernel headers and reboot later.
 
-Just press "N" when prompted to reboot and continue with the setup of your TFT screen.
+If you have a TFT screen to set up or if you want to install the kernel headers, you can just press "N" when prompted to reboot.
+
+The kernel headers are not installed by default, you can install them by running:
+
+```
+$ sudo ./install-headers.sh
+```
 
 You can now run the Re4son Universal TFT Setup Tool to configure the system for your TFT screen.
 The command syntax is:
@@ -46,11 +58,23 @@ The following types are supported:
 '28c'      (Adafruit 2.8" PID 1983)
 '35r'      (Adafruit 3.5")
 '22'       (Adafruit 2.2")
+'4dpi'     (4D Systems 2.4",3.2" and 3.5")
 'elec22'   (Elecfreak 2.2")
+'hy28b'    (Hotmcu HY28B 2.8")
 'jb35'     (JBTek 3.5")
+'kum35'    (Kuman 3.5")
+'pi70'     (Raspberry Pi 7")
 'sain32'   (Sainsmart 3.2")
+'sain35'   (Sainsmart 3.5")
 'wave32'   (Waveshare 3.2")
 'wave35'   (Waveshare 3.5")
+'wave35o'  (Waveshare 3.5" Overclocked)
+'wave35c'  (Waveshare 3.5" Clones, such as:
+                           Elecrow 3.5"
+                           KeDei 3.5"
+	                   Osoyoo 3.5")
+'wave40'   (Waveshare 4")
+'wave50'   (Waveshare 5" HDMI)
 
 Example command for setting up an Adafruit PiTFT 3.5" on a typical Kali Linux system:
 
