@@ -13,7 +13,7 @@ fi
 
 SOURCE="/dev/mmcblk0"
 IMG_FILE=$1-`date +%y%m%d`.img.xz
-SHA_FILE=$IMG_FILE.sha1
+SHA_FILE=$IMG_FILE.sha256
 
 ## Get the total size of both partitions rather than the total size of the card
 ## This allows to create 8gB images using 16GB cards
