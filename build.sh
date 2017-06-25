@@ -13,18 +13,31 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.4.50"
-V1_VERSION="8"
-V2_VERSION="8"
+V1_VERSION="11"
+V2_VERSION="11"
 
-## Source repo
-GIT_REPO="Re4son/re4son-raspberrypi-linux"
+## Repos
+###################################################
+##             4.4.28                            ##
 ##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
+###################################################
+##             4.4.24                            ##
 ##GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
-##GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170405 release
-##GIT_BRANCH="rpi-4.9.y-re4son"
-##GIT_BRANCH="rpi-4.9.y-re4son-4d"
+###################################################
+##             4.4.50-Re4son                     ##
+GIT_REPO="Re4son/re4son-raspberrypi-linux"
 GIT_BRANCH="rpi-4.4.50-re4son"
+FW_REPO="Re4son/RPi-Distro-firmware"
+FW_BRANCH="4.4.50"
+###################################################
+##      4.4.50-Re4son-Master                     ##
 ##GIT_BRANCH="rpi-4.4.50-re4son-master"
+###################################################
+##             4.4.50                            ##
+##GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170405 release
+
+
+##GIT_BRANCH="rpi-4.4.y-re4son"
 
 ## defconfigs:
 V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
@@ -44,6 +57,7 @@ MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
+#FIRMWARE_DIR="/opt/kernel-builder_firmware"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
 KERN_MOD_DIR="/opt/kernel-builder_mod"  ## Target directory for pi2/3 modules that can be used for compiling drivers
@@ -186,7 +200,7 @@ function setup_repos(){
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-        git clone --depth 1 https://github.com/Re4son/RPi-Distro-firmware $FIRMWARE_DIR
+        git clone --depth 1 https://github.com/${FW_REPO} $FIRMWARE_DIR
     fi
 }
 
@@ -203,7 +217,7 @@ function pull_firmware() {
     # make sure firmware dir is up to date
     printf "\n**** UPDATING FIRMWARE REPOSITORY ****\n"
     cd $FIRMWARE_DIR
-    git checkout debian
+    git checkout $FW_BRANCH
     git pull
     cd -
 }
@@ -421,8 +435,8 @@ breakpoint "020-Repos set up"
 ## Lets only update the repos when I'm sure they don't break anything.
 ##pull_tools
 ##breakpoint "030-Tools repo updated"
-##pull_firmware
-##breakpoint "040-Firmware repo updated"
+pull_firmware
+breakpoint "040-Firmware repo updated"
 
 setup_pkg_dir
 debug_info
