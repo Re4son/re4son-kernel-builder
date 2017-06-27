@@ -243,6 +243,13 @@ function remove_bluetooth {
     echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****"
 }
 
+function install_headers() {
+
+    printf "\n**** Installing Re4son-Kernel headers ****\n"
+    exitonerr dpkg --force-architecture -i raspberrypi-kernel-headers_*
+    printf "\n**** Installation completed ****\n"
+    return 0
+}
 
 ############
 ##        ##
