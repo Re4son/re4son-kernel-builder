@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROG_NAME="$0"
+PROG_NAME="$(basename $0)"
 ARGS="$@"
 VERSION="4.4-1.1.0"
 
@@ -10,7 +10,7 @@ function print_version() {
 }
 
 function print_help() {
-    printf "\n\tUsage: $0 [option]\n"
+    printf "\n\tUsage: ${PROG_NAME} [option]\n"
     printf "\t\t\t   (No option)\tInstall Re4son-Kernel and ask to install Re4son Bluetooth support\n"
     printf "\t\t\t\t-h\tPrint this help\n"
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
