@@ -204,7 +204,7 @@ function remove_bluetooth {
 
 
     PKG_STATUS=$(dpkg-query -W bluez|grep "re4son")
-    echo "Checking for libreadline6:" $PKG_STATUS
+    echo "Checking for Re4son bluez" $PKG_STATUS
     if [ "" == "$PKG_STATUS" ]; then
         echo "Fixing unmet dependencies. Installing libreadline6."
         if [ "armel" == "$ARCH" ]; then
