@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.0"
+VERSION="4.4-1.1.1"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -71,8 +71,7 @@ function check_update() {
     cp $TEMP_FILE $PROG_NAME
     chmod +x $PROG_NAME
     rm -f $TEMP_FILE
-    printf "\tReplaced old version:"
-    printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n"
+    printf "\tReplaced old version:\tRe4son-Kernel Installer: ${PROG_NAME} ${VERSION}\n"
     printf "\tWith new version:\t"
     source "$PROG_NAME" -v
     exit 0
