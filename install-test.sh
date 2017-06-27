@@ -5,7 +5,7 @@ ARGS="$@"
 VERSION="4.4-1.1.0"
 
 function print_version() {
-    printf "\n\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
+    printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
     exit 0
 }
 
@@ -73,6 +73,7 @@ function check_update() {
     rm -f $TEMP_FILE
     printf "\tReplaced old version:"
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n"
+    printf "\tWith new version:\t"
     source "$PROG_NAME" -v
     exit 0
 }
