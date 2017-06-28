@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.6"
+VERSION="4.4-1.1.7"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -36,7 +36,7 @@ function ask() {
         fi
 
         # Ask the question
-        read -p "    ++++ $1 [$prompt] " REPLY
+        read -p "$1 [$prompt] " REPLY
 
         # Default?
         if [ -z "$REPLY" ]; then
