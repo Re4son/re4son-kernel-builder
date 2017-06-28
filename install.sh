@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.16"
+VERSION="4.4-1.1.17"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -268,9 +268,9 @@ function remove_bluetooth {
 
 function install_headers() {
 
-    printf "\n**** Installing Re4son-Kernel headers ****\n"
+    printf "\n\t**** Installing Re4son-Kernel headers ****\n"
     exitonerr dpkg --force-architecture -i raspberrypi-kernel-headers_*
-    printf "\n**** Installation completed ****\n"
+    printf "\t**** Installation completed ****\n\n"
     return 0
 }
 
