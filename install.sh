@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.12"
+VERSION="4.4-1.1.13"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -177,10 +177,10 @@ function install_firmware {
 function install_kernel(){
     printf "\n\t**** Installing custom Re4son kernel with kali wifi injection patch and TFT support ****\n"
     if grep -q boot /proc/mounts; then
-        printf "\t**** /boot is mounted ****\n"
+        printf "\n\t**** /boot is mounted ****\n"
     else
-        printf "\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
-        printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n"
+        printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
+        printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
         if ask "Continue?"; then
             printf "\t*** Proceeding... ****n"
         else
