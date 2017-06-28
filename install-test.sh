@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.3"
+VERSION="4.4-1.1.4"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -142,7 +142,7 @@ function install_bluetooth {
             sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
         fi
     fi
-    if ask "    Enable bluetooth services?"; then
+    if ask "\t**** Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
@@ -253,7 +253,7 @@ function install_headers() {
 ##  MAIN  ##
 
 if [[ $EUID -ne 0 ]]; then
-   echo "install.sh must be run as root. try: sudo install.sh"
+   printf "\n\t${PROG_NAME} must be run as root. try: sudo install.sh\n\n"
    exit 1
 fi
 
@@ -292,14 +292,14 @@ do
     esac
 done
 
-if ask "Install Re4son-Kernel?" "Y"; then
+if ask "\t++++ Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
+if ask "\t++++ Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
         install_firmware
         install_bluetooth
 fi
-read -p "Reboot to apply changes? (y/n): " -n 1 -r
+read -p "\t++++ Reboot to apply changes? (y/n): " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   reboot
 fi
