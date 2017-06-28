@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.4"
+VERSION="4.4-1.1.5"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -36,7 +36,7 @@ function ask() {
         fi
 
         # Ask the question
-        read -p "$1 [$prompt] " REPLY
+        read -p "    ++++ $1 [$prompt] " REPLY
 
         # Default?
         if [ -z "$REPLY" ]; then
@@ -142,7 +142,7 @@ function install_bluetooth {
             sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
         fi
     fi
-    if ask "\t**** Enable bluetooth services?"; then
+    if ask "Enable bluetooth services?"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
@@ -292,14 +292,14 @@ do
     esac
 done
 
-if ask "\t++++ Install Re4son-Kernel?" "Y"; then
+if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "\t++++ Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
+if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
         install_firmware
         install_bluetooth
 fi
-read -p "\t++++ Reboot to apply changes? (y/n): " -n 1 -r
+read -p "Reboot to apply changes? (y/n): " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   reboot
 fi
