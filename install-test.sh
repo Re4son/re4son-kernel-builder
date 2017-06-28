@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.5"
+VERSION="4.4-1.1.6"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -292,15 +292,15 @@ do
     esac
 done
 
+printf "\n"
 if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
-        install_firmware
-        install_bluetooth
+if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?"; then
+    install_firmware
+    install_bluetooth
 fi
-read -p "Reboot to apply changes? (y/n): " -n 1 -r
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if ask "Reboot to apply changes?"; then
   reboot
 fi
 printf "\n"
