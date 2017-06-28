@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.14"
+VERSION="4.4-1.1.15"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -211,12 +211,11 @@ function install_kernel(){
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
     mkdir -p /etc/kbd
     touch /etc/kbd/config
-    printf "\t**** Unmet dependencies in Kali Linux fixed ****\n"
+    printf "\t**** Unmet dependencies in Kali Linux fixed ****\n\n"
     printf "\t**** Installation completed ****\n"
     printf "\t**** Documentation and help can be found in Sticky Finger's Kali-Pi forums at ****\n"
-    printf "\t**** https://whitedome.com.au/forums ****\n"
-    printf "\t**** next you can run the universal setup tool to activate your TFT screen via ****\n"
-    printf "\t**** ./re4son-pi-tft-setup -t [pitfttype] -d [home directory]****\n\n"
+    printf "\t**** https://whitedome.com.au/forums ****\n\n"
+
     return 0
 }
 
