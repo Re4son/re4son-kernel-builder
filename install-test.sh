@@ -93,6 +93,29 @@ function install_bluetooth {
             dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
         fi
     fi
+    
+    ## Check for existing installations
+    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' bluez|grep "install ok installed")
+    printf "Checking for existing bluez installation: ${PKG_STATUS}\n"
+    if [ "install ok installed" == "$PKG_STATUS" ]; then
+        PKG_SOURCE=$(dpkg-query -W bluez|grep "re4son")
+        if [ "" == "$PKG_STATUS" ]; then
+            printf "Found incompatible bluez package. Removing it...\n"
+            apt remove -y bluez
+            printf "Incompatible bluz package removed.\n"
+        fi
+
+    fi
+    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' pi-bluetooth|grep "install ok installed")
+    printf "Checking for existing bluez installation: ${PKG_STATUS}\n"
+    if [ "install ok installed" == "$PKG_STATUS" ]; then
+        PKG_SOURCE=$(dpkg-query -W bluez|grep "re4son")
+        if [ "" == "$PKG_STATUS" ]; then
+            printf "Found incompatible pi-bluetooth package. Removing it...\n"
+            apt remove -y pi-bluetooth
+            printf "Incompatible pi-bluetooth package removed.\n"
+        fi
+    fi
 
 
     if [ "armel" == "$ARCH" ]; then
