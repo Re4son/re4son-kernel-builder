@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.2"
+VERSION="4.4-1.1.3"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -150,7 +150,6 @@ function install_firmware {
 }
 
 function install_kernel(){
-    return 0
     printf "\n\t**** Installing custom Re4son kernel with kali wifi injection patch and TFT support ****\n"
 
     ## Install device-tree-compiler
@@ -187,60 +186,35 @@ function install_kernel(){
 function remove_bluetooth {
 
 
-    if [ ! ask "Remove Re4son-Kernel Bluetooth support?" ]; then
+    if [ ! ask "\tRemove Re4son-Kernel Bluetooth support?" ]; then
         exit 1
     fi
 
-    echo "**** Stopping bluetooth Services ****"
+    printf "\n\t**** Stopping bluetooth Services ****\n"
     exit 0
 
 
     systemctl stop bluetooth
     systemctl stop hciuart
 
-    echo "**** Removing bluetooth packages for Raspberry Pi 3 & Zero W ****"
-
+    printf "\t**** Removing bluetooth packages for Raspberry Pi 3 & Zero W ****\t"
+    
     ARCH=`dpkg --print-architecture`
-
-
+    apt-mark unhold bluez-firmware bluez pi-bluetooth
+    apt remove -y libreadline6
+    
     PKG_STATUS=$(dpkg-query -W bluez|grep "re4son")
-    echo "Checking for Re4son bluez" $PKG_STATUS
+    printf "\tChecking for Re4son\'s bluez ${PKG_STATUS}\n"
     if [ "" == "$PKG_STATUS" ]; then
-        echo "Fixing unmet dependencies. Installing libreadline6."
-        if [ "armel" == "$ARCH" ]; then
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armel.deb
-        else
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
-        fi
+        dpkg --force-all -r bluez
+    fi
+    PKG_STATUS=$(dpkg-query -W pi-bluetooth|grep "re4son")
+    printf "\tChecking for Re4son\'s pi-bluetooth ${PKG_STATUS}\n"
+    if [ "" == "$PKG_STATUS" ]; then
+        dpkg --force-all -r pi-bluetooth
     fi
 
-
-
-    if [ "armel" == "$ARCH" ]; then
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
-    else
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi3+re4son_armhf.deb
-    fi
-    dpkg --force-all -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
-    apt-mark hold bluez-firmware bluez pi-bluetooth
-
-    if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
-      cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
-    fi
-    ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
-    if [ ! -f  /bin/hciconfig ]; then
-      ln -s /usr/bin/hciconfig /bin/hciconfig
-    fi
-    ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
-    SYSTEMD_VER=$(systemd --version|grep systemd|sed 's/systemd //')
-    if (( $SYSTEMD_VER >= 232 )); then
-        if [ -f /lib/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /lib/systemd/system/systemd-udevd.service
-        elif [ -f /etc/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
-        fi
-    fi
-    echo "**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****"
+    printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****\n\n"
 }
 
 function install_headers() {
