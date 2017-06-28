@@ -292,8 +292,9 @@ do
     esac
 done
 
-
-install_kernel
+if ask "Install Re4son-Kernel?" "Y"; then
+    install_kernel
+fi
 if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "N"; then
         install_firmware
         install_bluetooth
