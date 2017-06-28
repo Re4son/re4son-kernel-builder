@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.15"
+VERSION="4.4-1.1.16"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -181,7 +181,7 @@ function install_kernel(){
     else
         printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
         printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
-        if ask "Continue?"; then
+        if ask "Continue?" "N"; then
             printf "\n\t*** Proceeding... ****\n\n"
         else
             printf "\n\t#### Aborting... ####\n\n"
