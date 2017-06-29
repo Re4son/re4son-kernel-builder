@@ -19,7 +19,6 @@ SHA_FILE=$IMG_FILE.sha1
 ## This allows to create 8gB images using 16GB cards
 #size=`fdisk -l $SOURCE | grep "Disk $SOURCE" | sed -e 's/[^ ]* [^ ]* [^ ]* [^ ]* \([0-9]*\).*/\1/g'`
 last_sector=`fdisk -l $SOURCE | grep "/dev/mmcblk0p2" | sed -e 's/[^ ]* *[^ ]* *\([0-9]*\).*/\1/g'`
-echo $last_sector
 sectors=$((last_sector + 1))
 size=$((sectors / 2 / 1024))
 
