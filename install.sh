@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.4-1.1.17"
+VERSION="4.4-1.1.18"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -13,6 +13,7 @@ function print_help() {
     printf "\n\tUsage: ${PROG_NAME} [option]\n"
     printf "\t\t\t   (No option)\tInstall Re4son-Kernel and ask to install Re4son Bluetooth support\n"
     printf "\t\t\t\t-h\tPrint this help\n"
+    printf "\t\t\t\t-v\tPrint version of this installer\n"
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi3 & RPi Zero W\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
