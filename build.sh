@@ -13,8 +13,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.4.50"
-V1_VERSION="11"
-V2_VERSION="11"
+V1_VERSION="12"
+V2_VERSION="12"
 
 ## Repos
 ###################################################

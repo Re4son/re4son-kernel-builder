@@ -6,12 +6,18 @@ re4son_kali-pi_kernel_testing = re4son_kali-pi_kernel_4.9.30_current
 
 
 re4son_kali-pi_kernel_4.9.30_current = re4son_kali-pi-kernel_4.9.30-20170614
-re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170628
+re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170702
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.4.50-20170702.tar.xz
+================================================
+RPi V1: Kernel 4.4.50-Re4son+ #12
+RPi V2: Kernel 4.4.50-Re4son-v7+ #12
+- Change CPU_FREQ_DEFAULT to ondemand
 
 re4son-kernel_4.4.50-20170629.tar.xz
 ================================================
@@ -284,6 +290,11 @@ Kernel history:
 
 RPi V1:
 ********
+4.4.50-Re4son+ #12 - 02-July-2017:
+----------------------------------
+- based on 4.4.50-Re4son+ #11
+- change CPU_FREQ_DEFAULT to ondemand
+
 4.4.50-Re4son+ #11 - 25-June-2017:
 ----------------------------------
 - based on 4.4.50-Re4son-Kali-PiTFT+ #6
@@ -414,6 +425,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.4.50-Re4son-v7+ #12 - 02-July-2017:
+----------------------------------
+- based on 4.4.50-Re4son-v7+ #11
+- change CPU_FREQ_DEFAULT to ondemand
+
 4.4.50-Re4son-v7+ #11 - 25-June-2017:
 ----------------------------------
 - based on 4.4.50-v7_Re4son-Kali-PiTFT+ #6
