@@ -12,25 +12,50 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.4.50"
-V1_VERSION="9"
-V2_VERSION="9"
+VERSION="4.9.24"
+V1_VERSION="1"
+V2_VERSION="1"
 
-## Source repo
-GIT_REPO="Re4son/re4son-raspberrypi-linux"
+## Repos
+###################################################
+##             4.4.28                            ##
 ##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
+###################################################
+##             4.4.24                            ##
 ##GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
-GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170405 release
-##GIT_BRANCH="rpi-4.9.y-re4son"
-##GIT_BRANCH="rpi-4.9.y-re4son-4d"
-##GIT_BRANCH="rpi-4.9.y-re4son-master"
-##GIT_BRANCH="rpi-4.9.y"
+###################################################
+##             4.4.24-Re4son                     ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.9.24-re4son"	 	 	 ## 4.9.24 Commit used for firmware 1.20170427 release
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.4.24"
+###################################################
+##             4.4.24-Re4son-Master              ##
+GIT_REPO="Re4son/re4son-raspberrypi-linux"
+GIT_BRANCH="rpi-4.9.24-re4son-master"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
+FW_REPO="Re4son/RPi-Distro-firmware"
+FW_BRANCH="4.4.24"
+###################################################
+##             4.4.50-Re4son                     ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.4.50-re4son"
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.4.50"
+###################################################
+##      4.4.50-Re4son-Master                     ##
+##GIT_BRANCH="rpi-4.4.50-re4son-master"
+###################################################
+##             4.4.50                            ##
+##GIT_BRANCH="e223d71ef728c559aa865d0c5a4cedbdf8789cfd"  ## 4.4.50 Commit used for firmware 1.20170405 release
+
+
+##GIT_BRANCH="rpi-4.4.y-re4son"
 
 ## defconfigs:
-##V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-##V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+##V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+##V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
 V1_CONFIG=""
 v2_CONFIG=""
@@ -44,12 +69,17 @@ MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
+#FIRMWARE_DIR="/opt/kernel-builder_firmware"
 V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
 V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
 KERN_MOD_DIR="/opt/kernel-builder_mod"  ## Target directory for pi2/3 modules that can be used for compiling drivers
 NEXMON_DIR="/opt/re4son-nexmon"
 
 NUM_CPUS=`nproc`
+FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
+FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
+
+
 
 ##                                            ##
 ################################################
@@ -90,8 +120,6 @@ function debug_info() {
         printf "NEW_VERSION:\t$NEW_VERSION\n"
         printf "\nFIRMWARE INFO:\n\n"
         FW_GIT_HASH=`cat ${FIRMWARE_DIR}/extra/git_hash`
-        FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
-        FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
         printf "FW_GIT_HASH:\t$FW_GIT_HASH\n"
         printf "FW_UNAME:\t${FW_UNAME}+\n"
         printf "FW_UNAME7:\t${FW_UNAME7}+\n"
@@ -145,6 +173,7 @@ function clean() {
        echo $version > .version
    fi
    echo "**** Kernel source directories cleaned up ****"
+   exit 0
 }
 
 function clone_source() {
@@ -183,7 +212,7 @@ function setup_repos(){
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-        git clone --depth 1 https://github.com/RPi-Distro/firmware $FIRMWARE_DIR
+        git clone --depth 1 https://github.com/${FW_REPO} $FIRMWARE_DIR
     fi
 }
 
@@ -200,7 +229,7 @@ function pull_firmware() {
     # make sure firmware dir is up to date
     printf "\n**** UPDATING FIRMWARE REPOSITORY ****\n"
     cd $FIRMWARE_DIR
-    git checkout debian
+    git checkout $FW_BRANCH
     git pull
     cd -
 }
@@ -266,6 +295,8 @@ function make_v1() {
     rm -f ${MOD_DIR}/lib/modules/*/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp ${V1_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME+/
 }
 
 function make_v2() {
@@ -305,17 +336,19 @@ function make_v2() {
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
 }
 
 
 function make_nexmon() {
     ## Compiling nexmon firmware patches for Raspberry Pi 3
-    cp -r ${MOD_DIR}/lib/modules/*-v7_*/* ${KERN_MOD_DIR}/
+    cp -r ${MOD_DIR}/lib/modules/*-v7*/* ${KERN_MOD_DIR}/
     cd ${NEXMON_DIR}
     source setup_env.sh
     cd patches/bcm43438/7_45_41_26/nexmon
     make
-    cd -
+    cd $KERNEL_BUILDER_DIR
 }
 
 function create_debs() {
@@ -352,7 +385,6 @@ function create_tar() {
     cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
-    cp $KERNEL_BUILDER_DIR/install-headers.sh re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
     cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/docs/* re4son-kernel_${NEW_VERSION}/docs
@@ -366,7 +398,8 @@ function create_tar() {
     chmod +x re4son-kernel_${NEW_VERSION}/tools/adafruit-pitft-touch-cal
     tar cJf re4son-kernel_${NEW_VERSION}.tar.xz re4son-kernel_${NEW_VERSION}
     mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
-
+    sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz >> $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
+    chown re4son:re4son $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz*
     echo -e "THE re4son-kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
 }
 
@@ -413,8 +446,8 @@ breakpoint "020-Repos set up"
 ## Lets only update the repos when I'm sure they don't break anything.
 ##pull_tools
 ##breakpoint "030-Tools repo updated"
-##pull_firmware
-##breakpoint "040-Firmware repo updated"
+pull_firmware
+breakpoint "040-Firmware repo updated"
 
 setup_pkg_dir
 debug_info
@@ -431,8 +464,8 @@ create_debs
 debug_info
 breakpoint "080-Debian packages created"
 
-##make_nexmon
-##breakpoint "090-Nexmon drivers compiled"
+make_nexmon
+breakpoint "090-Nexmon drivers compiled"
 
 create_tar
 debug_info
