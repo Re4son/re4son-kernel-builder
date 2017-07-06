@@ -13,8 +13,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.24"
-V1_VERSION="1"
-V2_VERSION="1"
+V1_VERSION="2"
+V2_VERSION="2"
 
 ## Repos
 ###################################################
@@ -30,11 +30,11 @@ V2_VERSION="1"
 ##FW_REPO="Re4son/RPi-Distro-firmware"
 ##FW_BRANCH="4.4.24"
 ###################################################
-##             4.4.24-Re4son-Master              ##
+##             4.4.24-Re4son                     ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.9.24-re4son-master"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
+GIT_BRANCH="rpi-4.9.24-re4son"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.4.24"
+FW_BRANCH="4.9.24"
 ###################################################
 ##             4.4.50-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -281,8 +281,8 @@ function make_v1() {
         fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-    echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/v1_saved_config ****"
-    cp .config $KERNEL_BUILDER_DIR/v1_saved_config
+    echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
+    cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
     echo "**** COMPILING v1 KERNEL ****"
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
     ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
@@ -319,8 +319,8 @@ function make_v2() {
         fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-    echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/v2_saved_config ****"
-    cp .config $KERNEL_BUILDER_DIR/v2_saved_config
+    echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
+    cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
     echo "**** COMPILING v2 KERNEL ****"
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
     ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
