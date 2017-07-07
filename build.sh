@@ -13,8 +13,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.24"
-V1_VERSION="2"
-V2_VERSION="2"
+V1_VERSION="3"
+V2_VERSION="3"
 
 ## Repos
 ###################################################
@@ -388,6 +388,7 @@ function create_tar() {
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
     cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/docs/* re4son-kernel_${NEW_VERSION}/docs
+    cp $KERNEL_BUILDER_DIR/configs/* re4son-kernel_${NEW_VERSION}/docs
     cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/re4son-pi-tft-setup re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/Re4son-Pi-TFT-Setup/adafruit-pitft-touch-cal re4son-kernel_${NEW_VERSION}/tools
     cp $KERNEL_BUILDER_DIR/tools/* re4son-kernel_${NEW_VERSION}/tools

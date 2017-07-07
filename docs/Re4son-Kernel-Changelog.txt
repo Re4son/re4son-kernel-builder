@@ -5,13 +5,19 @@ re4son-kernel_current = re4son-kernel_4.4.50_current
 re4son-kernel_testing = re4son-kernel_4.9.24_current
 
 
-re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170706
+re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170707
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170702
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.24-20170707.tar.xz
+================================================
+RPi V1: Kernel 4.9.24-Re4son+ #3
+RPi V2: Kernel 4.9.24-Re4son-v7+ #3
+- Add TP-Link TL-WN722N v2 patch
 
 re4son-kernel_4.9.24-20170706.tar.xz
 ================================================
@@ -295,6 +301,16 @@ Kernel history:
 
 RPi V1:
 ********
+4.9.24-Re4son+ #3 - 07-July-2017:
+----------------------------------
+- based on 4.9.24-Re4son+ #2
+- add TP-Link TL-WN722N v2 patch
+
+4.9.24-Re4son+ #3 - 07-July-2017:
+----------------------------------
+- based on 4.9.24-Re4son+ #2
+- add TP-Link TL-WN722N v2 patch
+
 4.9.24-Re4son+ #2 - 06-July-2017:
 ----------------------------------
 - based on 4.4.50-Re4son+ #12
@@ -435,6 +451,11 @@ RPi V1:
 
 RPi V2:
 ********
+4.9.24-Re4son-v7+ #3 - 07-July-2017:
+----------------------------------
+- based on 4.9.24-Re4son-v7+ #2
+- add TP-Link TL-WN722N v2 patch
+
 4.9.24-Re4son-v7+ #2 - 06-July-2017:
 ----------------------------------
 - based on 4.4.50-Re4son-v7+ #12
