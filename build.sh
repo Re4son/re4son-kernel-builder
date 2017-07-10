@@ -13,8 +13,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.24"
-V1_VERSION="3"
-V2_VERSION="3"
+V1_VERSION="9"
+V2_VERSION="9"
 
 ## Repos
 ###################################################
@@ -34,7 +34,7 @@ V2_VERSION="3"
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 GIT_BRANCH="rpi-4.9.24-re4son"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.9.24"
+FW_BRANCH="debian-re4son"
 ###################################################
 ##             4.4.50-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -244,7 +244,7 @@ function setup_pkg_dir() {
     cp -r $FIRMWARE_DIR/* $PKG_DIR
 
     # Remove the pre-compiled modules - we'll compile them ourselves
-    rm -r $PKG_DIR/modules/*
+##    rm -r $PKG_DIR/modules/*
 }
 
 function get_4d_obj() {
