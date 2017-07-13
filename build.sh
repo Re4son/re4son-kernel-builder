@@ -13,8 +13,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.24"
-V1_VERSION="9"
-V2_VERSION="9"
+V1_VERSION="20"
+V2_VERSION="20"
 
 ## Repos
 ###################################################
@@ -205,10 +205,10 @@ function setup_repos(){
         clone_source
     fi
 
-    if [ ! -d $TOOLS_DIR ]; then
-        echo "**** CLONING TOOL REPO ****"
-        git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
-    fi
+#    if [ ! -d $TOOLS_DIR ]; then
+#        echo "**** CLONING TOOL REPO ****"
+#        git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
+#    fi
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
@@ -340,6 +340,85 @@ function make_v2() {
     cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
 }
 
+function make_native_v1() {
+    # RasPi v1 build
+    printf "\n**** COMPILING V1 KERNEL (ARMEL) NATIVELY****\n"
+    cd $V1_DIR
+
+    git fetch
+    git checkout ${GIT_BRANCH}
+    git pull
+    git submodule update --init
+
+    ## get_4d_obj
+
+
+    if [ ! -f .config ]; then
+        if [ "$V1_CONFIG" == "" ]; then
+            cp ${V1_DEFAULT_CONFIG} .config
+        else
+            cp ${V1_CONFIG} .config
+        fi
+    fi
+    make menuconfig
+    echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
+    cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
+    echo "**** COMPILING v1 KERNEL ****"
+    make -j${NUM_CPUS} -k zImage modules dtbs
+    INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
+    ## mkknlimg is no longer in tools
+    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
+    ${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ## Remove symbolic links to non-existent headers and sources
+    rm -f ${MOD_DIR}/lib/modules/*/build
+    rm -f ${MOD_DIR}/lib/modules/*/source
+    ## Copy our modules across
+    cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp ${V1_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME+/
+}
+
+function make_native_v2() {
+    # RasPi v2 build
+    printf "\n**** COMPILING V2 KERNEL (ARMHF) NATIVELY ****\n"
+    cd $V2_DIR
+    git fetch
+    git checkout ${GIT_BRANCH}
+    git pull
+    git submodule update --init
+
+    ##get_4d_obj
+
+    if [ ! -f .config ]; then
+        if [ "$V2_CONFIG" == "" ]; then
+          cp ${V2_DEFAULT_CONFIG} .config
+        else
+          cp ${V2_CONFIG} .config
+        fi
+    fi
+    make menuconfig
+    echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
+    cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
+    echo "**** COMPILING v2 KERNEL ****"
+    make -j${NUM_CPUS} -k zImage modules dtbs
+    INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
+    cp arch/arm/boot/dts/*.dtb $PKG_DIR/boot/
+    cp arch/arm/boot/dts/overlays/*.dtb* $PKG_DIR/boot/overlays/
+    cp arch/arm/boot/dts/overlays/README $PKG_DIR/boot/overlays/
+    ## mkknlimg is no longer in tools
+    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
+    ${V2_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ## Remove symbolic links to non-existent headers and sources
+    rm -f ${MOD_DIR}/lib/modules/*-v7+/build
+    rm -f ${MOD_DIR}/lib/modules/*-v7+/source
+    ## Copy our modules across
+    cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy our Module.symvers across
+    cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
+}
+
 
 function make_nexmon() {
     ## Compiling nexmon firmware patches for Raspberry Pi 3
@@ -454,10 +533,12 @@ setup_pkg_dir
 debug_info
 breakpoint "050-Pkg dir set up"
 
-make_v1
+##make_v1
+make_native_v1
 breakpoint "060-Kernel v1 compiled"
 
-make_v2
+##make_v2
+make_native_v2
 debug_info
 breakpoint "070-Kernel v2 compiled"
 
@@ -465,7 +546,7 @@ create_debs
 debug_info
 breakpoint "080-Debian packages created"
 
-make_nexmon
+##make_nexmon
 breakpoint "090-Nexmon drivers compiled"
 
 create_tar
