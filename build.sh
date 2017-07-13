@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+################################################
+##++++++++++++++++++++++++++++++++++++++++++++##
+##++   RPi Kernel Compilation Script        ++##
+##++                                        ++##
+##++   Runs in either of these modes        ++##
+##++   depending on the host it is          ++##
+##++   executed on:                         ++##
+##++                                        ++##
+##++   Host        |       Mode             ++##
+##++   ------------|---------------------   ++##
+##++   kali-pi     |  Native armhf & pack   ++##
+##++   kali-pi-0   |  Native armel          ++##
+##++   all others  |  Cross compiling       ++##
+
+
 
 ################################################
 ################################################
@@ -60,6 +75,24 @@ V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
 V1_CONFIG=""
 v2_CONFIG=""
 
+###############################################################
+## Determine if we are cross compiling or                    ##
+## compiling natively, and if so, which component            ##
+## COMP_MODE = cross   crosscompiling v1 & v2 and packaging  ##
+## COMP_MODE = nat_v1  native armel compilation & firmware   ##
+## COMP_MODE = nat_v2  native armhf compilation, firmware &  ##
+##                                               packaging   ##
+##                                                           ##
+
+COMP_HOST=`hostname`
+
+if [ $COMP_HOST == "kali-pi-dev-0" ]; then
+    COMP_MODE="nat_v1"
+elif [ $COMP_HOST == "kali-pi-dev" ]; then
+    COMP_MODE="nat_v2"
+else
+    COMP_MODE="cross"
+fi
 
 
 # Directories
@@ -244,7 +277,7 @@ function setup_pkg_dir() {
     cp -r $FIRMWARE_DIR/* $PKG_DIR
 
     # Remove the pre-compiled modules - we'll compile them ourselves
-##    rm -r $PKG_DIR/modules/*
+    rm -r $PKG_DIR/modules/*
 }
 
 function get_4d_obj() {
@@ -483,6 +516,12 @@ function create_tar() {
     echo -e "THE re4son-kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
 }
 
+function create_nat_v1_tar() {
+    cd $PKG_TMP
+    mkdir re4son-kernel_${NEW_VERSION}_v1
+}
+
+
 ##                                            ##
 ################################################
 ################################################
@@ -520,37 +559,54 @@ done
 
 printf "\n**** USING ${NUM_CPUS} AVAILABLE CORES ****\n"
 
-setup_repos
-breakpoint "020-Repos set up"
+if [ $COMP_MODE == "cross" ]; then
 
-## Lets only update the repos when I'm sure they don't break anything.
-##pull_tools
-##breakpoint "030-Tools repo updated"
-pull_firmware
-breakpoint "040-Firmware repo updated"
+    setup_repos
+    breakpoint "020-Repos set up"
 
-setup_pkg_dir
-debug_info
-breakpoint "050-Pkg dir set up"
+    ## Lets only update the repos when I'm sure they don't break anything.
+    ##pull_tools
+    ##breakpoint "030-Tools repo updated"
+    pull_firmware
+    breakpoint "040-Firmware repo updated"
 
-##make_v1
-make_native_v1
-breakpoint "060-Kernel v1 compiled"
+    setup_pkg_dir
+    debug_info
+    breakpoint "050-Pkg dir set up"
 
-##make_v2
-make_native_v2
-debug_info
-breakpoint "070-Kernel v2 compiled"
+    make_v1
+    breakpoint "060-Kernel v1 compiled"
 
-create_debs
-debug_info
-breakpoint "080-Debian packages created"
+    make_v2
+    debug_info
+    breakpoint "070-Kernel v2 compiled"
 
-##make_nexmon
-breakpoint "090-Nexmon drivers compiled"
+    create_debs
+    debug_info
+    breakpoint "080-Debian packages created"
 
-create_tar
-debug_info
+    make_nexmon
+    breakpoint "090-Nexmon drivers compiled"
+
+    create_tar
+    debug_info
+
+elif [ $COMP_MODE == "nat_v1" ]; then
+    printf "\n\t$COMP_MODE\n"
+    setup_pkg_dir
+    debug_info
+    breakpoint "050-Pkg dir set up"
+    make_native_v1
+    breakpoint "060-Kernel v1 compiled"
+    
+
+elif [ $COMP_MODE == "nat_v2" ]; then
+    printf "\n\t$COMP_MODE\n"
+##    make_native_v2
+
+fi
+
+
 
 ##                                            ##
 ################################################
