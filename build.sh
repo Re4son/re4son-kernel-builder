@@ -495,14 +495,18 @@ function copy_files (){
 
 function pkg_headers () {
     printf "\n**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
-    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $HEAD_SRC_DIR/headers/* .
+    cd $HEAD_SRC_DIR
+    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz headers
     printf  "\n@@@@ The re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    cd -
 }
 
 function pkg_kernel() {
     printf "\n**** Creating $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
-    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $PKG_TMP/* .
+    cd $PKG_TMP
+    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz *
     printf  "\n@@@@ The re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    cd -
 }
 
 
@@ -616,7 +620,7 @@ while getopts "hb:cnpexr:6:7:" opt; do
   p)  MAKE_PKG=true
       ;;
   e)  MAKE_HEADERS=true
-      if [ ! NAT_ARCH ]; then
+      if [ ! $NAT_ARCH ]; then
           NAT_ARCH=`dpkg --print-architecture`
       fi
       ;;
