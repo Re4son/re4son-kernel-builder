@@ -76,6 +76,7 @@ KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
+PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
 TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 #FIRMWARE_DIR="/opt/kernel-builder_firmware"
@@ -111,6 +112,7 @@ function breakpoint() {
     # Set a breakpoint
     if [ $DEBUG == "1" ]; then
         read -n1 -r -p "========> Breakpoint #$1: Press any key to continue..."
+        printf "\n"
     fi
 }
 
@@ -257,7 +259,6 @@ function pull_firmware() {
 function setup_pkg_dir() {
     # Set up the debian package folder
     printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
-    PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
     mkdir $PKG_DIR
     cp -r $FIRMWARE_DIR/* $PKG_DIR
 
@@ -268,9 +269,15 @@ function setup_pkg_dir() {
 function setup_native_v6_pkg_dir() {
     # Set up the debian package folder
     printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
-    PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
-    mkdir -p $PKG_DIR/boot
+    mkdir -p $PKG_DIR/boot/overlays/
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
+}
+
+function setup_native_v7_pkg_dir() {
+    # Set up the debian package folder
+    printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
+    mkdir -p $PKG_DIR/boot/overlays/
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
 }
 
 function get_4d_obj() {
@@ -485,13 +492,13 @@ function copy_files (){
 
 function pkg_headers () {
     printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
-    tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz $HEAD_SRC_DIR/headers/*
+    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $HEAD_SRC_DIR/headers/* .
     printf  "\nThe re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
 }
 
 function pkg_kernel() {
     printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
-    tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz $PKG_TMP/*
+    XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $PKG_TMP/* .
     printf  "\nThe re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
 }
 
@@ -668,12 +675,11 @@ elif [ $NATIVE ]; then
         pkg_kernel
     elif [ $NAT_ARCH == "armhf" ]; then
         printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
-        printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
-        setup_native_v6_pkg_dir
+        setup_native_v7_pkg_dir
         debug_info
         breakpoint "150-Pkg dir set up"
-        make_native_v6
-        breakpoint "160-Kernel v6 compiled"
+        make_native_v7
+        breakpoint "160-Kernel v7 compiled"
         pkg_kernel
     else
         printf"\n\t#### ERROR: Architecture $ARCH not supported. ####\n"
@@ -686,8 +692,8 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V6_DEFAULT_CONFIG)
-        if [ -f ${KERNEL_BUILDER_DIR}/Module.symvers ]; then
-            cp ${KERNEL_BUILDER_DIR}/Module.symvers ${HEAD_SRC_DIR}/Module.symvers
+        if [ -f ${KERNEL_BUILDER_DIR}/extra/Module.symvers ]; then
+            cp ${KERNEL_BUILDER_DIR}/extra/Module.symvers ${HEAD_SRC_DIR}/Module.symvers
         fi
         debug_info
         breakpoint "210-headers built"
@@ -699,8 +705,8 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V7_DEFAULT_CONFIG)
-        if [ -f ${KERNEL_BUILDER_DIR}/Module7.symvers ]; then
-            cp ${KERNEL_BUILDER_DIR}/Module7.symvers ${HEAD_SRC_DIR}/Module.symvers
+        if [ -f ${KERNEL_BUILDER_DIR}/extra/Module7.symvers ]; then
+            cp ${KERNEL_BUILDER_DIR}/extra/Module7.symvers ${HEAD_SRC_DIR}/Module.symvers
         fi
         debug_info
         breakpoint "210-headers built"
