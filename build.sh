@@ -83,10 +83,11 @@ FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 V6_DIR="${REPO_ROOT}${GIT_REPO}/v6"
 V7_DIR="${REPO_ROOT}${GIT_REPO}/v7"
 HEAD_SRC_DIR="${REPO_ROOT}${GIT_REPO}/head_src_dir"
-
+PKG_IN="/opt/kernel-builder_pkg_in/"
 KERN_MOD_DIR_V6="/opt/kernel-builder_mod_v6"  ## Target directory for pi/pi0 modules that can be used for compiling drivers
 KERN_MOD_DIR_V7="/opt/kernel-builder_mod_v7"  ## Target directory for pi2/pi3 modules that can be used for compiling drivers
 NEXMON_DIR="/opt/re4son-nexmon"
+
 
 NUM_CPUS=`nproc`
 
@@ -121,6 +122,8 @@ function debug_info() {
         printf "\nDEBUG INFO:\n\n"
         printf "NAT_ARCH:\t$NAT_ARCH\n"
         printf "MAKE_HEADERS:\t$MAKE_HEADERS\n"
+        printf "MAKE_PKG:\t$MAKE_PKG\n"
+        printf "MAKE_NEXMON:\t$MAKE_NEXMON\n"
         printf "UNAME_STRING:\t$UNAME_STRING\n"
         printf "UNAME_STRING7:\t$UNAME_STRING7\n"
         printf "REPO_ROOT:\t$REPO_ROOT\n"
@@ -491,15 +494,15 @@ function copy_files (){
 }
 
 function pkg_headers () {
-    printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
+    printf "\n**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $HEAD_SRC_DIR/headers/* .
-    printf  "\nThe re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
+    printf  "\n@@@@ The re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
 }
 
 function pkg_kernel() {
-    printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
+    printf "\n**** Creating $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz -C $PKG_TMP/* .
-    printf  "\nThe re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
+    printf  "\n@@@@ The re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
 }
 
 
@@ -520,6 +523,13 @@ function make_native_nexmon () {
     cd patches/bcm43438/7_45_41_26/nexmon
     make
     cd $KERNEL_BUILDER_DIR
+}
+
+function import_archives() {
+    rm -rf $PKG_DIR/headers
+    cd $PKG_IN
+    for i in *.tar.xz; do printf "\n**** Extracting $i to ${PKG_DIR} ****\n"; tar -xJf $i -C ${PKG_DIR}/; done
+    cd -
 }
 
 function create_debs() {
@@ -572,7 +582,7 @@ function create_tar() {
     mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
     sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz >> $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
     chown re4son:re4son $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz*
-    printf  "\nThe re4son-kernel_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
+    printf  "\n@@@@ The re4son-kernel_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
 }
 
 
@@ -603,7 +613,7 @@ while getopts "hb:cnpexr:6:7:" opt; do
   n)  NATIVE=true
       NAT_ARCH=`dpkg --print-architecture`
       ;;
-  p)  PKG=true
+  p)  MAKE_PKG=true
       ;;
   e)  MAKE_HEADERS=true
       if [ ! NAT_ARCH ]; then
@@ -630,7 +640,7 @@ done
 printf "\n\t**** USING ${NUM_CPUS} AVAILABLE CORES ****\n"
 
 
-if [ ! $NAT_ARCH ] ; then
+if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]; then
 
     setup_repos
     breakpoint "020-Repos set up"
@@ -638,6 +648,7 @@ if [ ! $NAT_ARCH ] ; then
     ## Lets only update the repos when I'm sure they don't break anything.
     ##pull_tools
     ##breakpoint "030-Tools repo updated"
+
     pull_firmware
     breakpoint "040-Firmware repo updated"
 
@@ -662,7 +673,7 @@ if [ ! $NAT_ARCH ] ; then
     create_tar
     debug_info
 
-   exit 0
+    exit 0
 
 elif [ $NATIVE ]; then
     if [ $NAT_ARCH == "armel" ]; then
@@ -687,7 +698,7 @@ elif [ $NATIVE ]; then
 fi
 
 if [ $MAKE_HEADERS ]; then
-    printf "\n\t**** Buiding headers for: $NAT_ARCH ****\n"
+    printf "\n\t**** Building headers for: $NAT_ARCH ****\n"
     if [ $NAT_ARCH == "armel" ]; then
         debug_info
         breakpoint "200-Ready to build headers"
@@ -715,9 +726,31 @@ if [ $MAKE_HEADERS ]; then
         breakpoint "220-headers copied"
         pkg_headers
     fi
-    exit 0
 fi
 
+if [ $MAKE_PKG ]; then
+    debug_info
+    breakpoint "300-Ready to package"
+
+    pull_firmware
+
+    setup_pkg_dir
+    debug_info
+    breakpoint "310-Pkg dir set up"
+
+    ls -l ${PKG_IN}
+    breakpoint "320-Ready to import archives"
+
+    import_archives
+    breakpoint "330-Archives imported"
+
+    create_debs
+    debug_info
+    breakpoint "340-Debian packages created"
+
+    create_tar
+    debug_info
+fi
 
 exit 0
 ##                                            ##
