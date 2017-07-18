@@ -3,16 +3,6 @@
 ##++++++++++++++++++++++++++++++++++++++++++++##
 ##++   RPi Kernel Compilation Script        ++##
 ##++                                        ++##
-##++   Runs in either of these modes        ++##
-##++   depending on the host it is          ++##
-##++   executed on:                         ++##
-##++                                        ++##
-##++   Host        |       Mode             ++##
-##++   ------------|---------------------   ++##
-##++   kali-pi     |  Native armhf & pack   ++##
-##++   kali-pi-0   |  Native armel          ++##
-##++   all others  |  Cross compiling       ++##
-
 
 
 ################################################
@@ -24,12 +14,13 @@
 
 ## Debug - set to "1" to enable debugging
 ##         (mainly breakpoints)
-DEBUG="0"
+DEBUG="1"
 
 ## Version strings:
 VERSION="4.9.24"
-V1_VERSION="20"
-V2_VERSION="20"
+V6_VERSION="20"
+V7_VERSION="20"
+
 
 ## Repos
 ###################################################
@@ -67,33 +58,18 @@ FW_BRANCH="debian-re4son"
 ##GIT_BRANCH="rpi-4.4.y-re4son"
 
 ## defconfigs:
-V1_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-V2_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
-##V1_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
-##V2_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
+V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
+V7_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+##V6_DEFAULT_CONFIG="arch/arm/configs/bcmrpi_defconfig"
+##V7_DEFAULT_CONFIG="arch/arm/configs/bcm2709_defconfig"
 
-V1_CONFIG=""
-v2_CONFIG=""
+V6_CONFIG=""
+v7_CONFIG=""
 
-###############################################################
-## Determine if we are cross compiling or                    ##
-## compiling natively, and if so, which component            ##
-## COMP_MODE = cross   crosscompiling v1 & v2 and packaging  ##
-## COMP_MODE = nat_v1  native armel compilation & firmware   ##
-## COMP_MODE = nat_v2  native armhf compilation, firmware &  ##
-##                                               packaging   ##
-##                                                           ##
-
-COMP_HOST=`hostname`
-
-if [ $COMP_HOST == "kali-pi-dev-0" ]; then
-    COMP_MODE="nat_v1"
-elif [ $COMP_HOST == "kali-pi-dev" ]; then
-    COMP_MODE="nat_v2"
-else
-    COMP_MODE="cross"
-fi
-
+UNAME_STRING="${VERSION}-Re4son+"
+UNAME_STRING7="${VERSION}-Re4son-v7+"
+CURRENT_DATE=`date +%Y%m%d`
+NEW_VERSION="${VERSION}-${CURRENT_DATE}"
 
 # Directories
 KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
@@ -103,14 +79,15 @@ PKG_TMP=`mktemp -d`
 TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 #FIRMWARE_DIR="/opt/kernel-builder_firmware"
-V1_DIR="${REPO_ROOT}${GIT_REPO}/v1"
-V2_DIR="${REPO_ROOT}${GIT_REPO}/v2"
-KERN_MOD_DIR="/opt/kernel-builder_mod"  ## Target directory for pi2/3 modules that can be used for compiling drivers
+V6_DIR="${REPO_ROOT}${GIT_REPO}/v6"
+V7_DIR="${REPO_ROOT}${GIT_REPO}/v7"
+HEAD_SRC_DIR="${REPO_ROOT}${GIT_REPO}/head_src_dir"
+
+KERN_MOD_DIR_V6="/opt/kernel-builder_mod_v6"  ## Target directory for pi/pi0 modules that can be used for compiling drivers
+KERN_MOD_DIR_V7="/opt/kernel-builder_mod_v7"  ## Target directory for pi2/pi3 modules that can be used for compiling drivers
 NEXMON_DIR="/opt/re4son-nexmon"
 
 NUM_CPUS=`nproc`
-FW_UNAME=`cat ${FIRMWARE_DIR}/extra/uname_string | cut -f 3 -d ' ' | tr -d +`
-FW_UNAME7=`cat ${FIRMWARE_DIR}/extra/uname_string7 | cut -f 3 -d ' ' | tr -d +`
 
 
 
@@ -139,10 +116,15 @@ function breakpoint() {
 
 function debug_info() {
     if [ $DEBUG == "1" ]; then
-        printf "DEBUG INFO:\n\n"
+        printf "\nDEBUG INFO:\n\n"
+        printf "NAT_ARCH:\t$NAT_ARCH\n"
+        printf "MAKE_HEADERS:\t$MAKE_HEADERS\n"
+        printf "UNAME_STRING:\t$UNAME_STRING\n"
+        printf "UNAME_STRING7:\t$UNAME_STRING7\n"
         printf "REPO_ROOT:\t$REPO_ROOT\n"
-        printf "V1_DIR:\t\t$V1_DIR\n"
-        printf "V2_DIR:\t\t$V2_DIR\n"
+        printf "V6_DIR:\t\t$V6_DIR\n"
+        printf "V7_DIR:\t\t$V7_DIR\n"
+        printf "HEAD_SRC_DIR:\t$HEAD_SRC_DIR\n"
         printf "GIT_BRANCH:\t$GIT_BRANCH\n"
         printf "PKG_TMP:\t$PKG_TMP\n"
         printf "PKG_DIR:\t$PKG_DIR\n"
@@ -152,10 +134,10 @@ function debug_info() {
         printf "NEXMON_DIR:\t$NEXMON_DIR\n"
         printf "NEW_VERSION:\t$NEW_VERSION\n"
         printf "\nFIRMWARE INFO:\n\n"
-        FW_GIT_HASH=`cat ${FIRMWARE_DIR}/extra/git_hash`
+        if [ -f ${FIRMWARE_DIR}/extra/git_hash ]; then
+            FW_GIT_HASH=`cat ${FIRMWARE_DIR}/extra/git_hash`
+        fi
         printf "FW_GIT_HASH:\t$FW_GIT_HASH\n"
-        printf "FW_UNAME:\t${FW_UNAME}+\n"
-        printf "FW_UNAME7:\t${FW_UNAME7}+\n"
     fi
 }
 
@@ -166,43 +148,46 @@ usage: re4sonbuild [options]
  OPTIONS:
     -h        Show this message
     -c        Clean source directories (i.e. make mrproper - run this before compiling new kernels)
+    -e        Build headers for architecture reasonbuild is currently running on(only for native compilation)
+    -n        Build kernel natively for architecture reasonbuild is currently running on
     -r        The remote github repo to clone in user/repo format
               Default: $GIT_REPO
+    -p        Create packages only (no compilation - expects tar.xz input files in package directory)
     -b        The git branch to use
               Default: Default git branch of repo
-    -1        The config file to use when compiling for Raspi v1
-              Default: $V1_DEFAULT_CONFIG
-    -2        The config file to use when compiling for Raspi v2
-              Default: $V2_DEFAULT_CONFIG
+    -6        The config file to use when compiling for Raspi v6
+              Default: $V6_DEFAULT_CONFIG
+    -7        The config file to use when compiling for Raspi v7
+              Default: $V7_DEFAULT_CONFIG
 
 EOF
 }
 
 function clean() {
    echo "**** Cleaning up kernel source ****"
-   cd $V1_DIR
+   cd $V6_DIR
    git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V1_DIR} ****"
+   echo "**** Cleaning ${V6_DIR} ****"
    make mrproper
    ## Overwrite with remote repo - use if mrproper goes too far
    git reset --hard HEAD
    git pull
-   if [ "$V1_VERSION" != "" ]; then
-       echo "**** Setting version to ${V1_VERSION} ****"
-       ((version = $V1_VERSION -1))
+   if [ "$V6_VERSION" != "" ]; then
+       echo "**** Setting version to ${V6_VERSION} ****"
+       ((version = $V6_VERSION -1))
        echo $version > .version
    fi
 
-   cd $V2_DIR
+   cd $V7_DIR
    git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V2_DIR} ****"
+   echo "**** Cleaning ${V7_DIR} ****"
    make mrproper
    ## Overwrite with remote repo - use if mrproper goes too far
    git reset --hard HEAD
    git pull
-   if [ "$V2_VERSION" != "" ]; then
-       echo "**** Setting version to ${V2_VERSION} ****"
-       ((version = $V2_VERSION -1))
+   if [ "$V7_VERSION" != "" ]; then
+       echo "**** Setting version to ${V7_VERSION} ****"
+       ((version = $V7_VERSION -1))
        echo $version > .version
    fi
    echo "**** Kernel source directories cleaned up ****"
@@ -210,11 +195,13 @@ function clean() {
 }
 
 function clone_source() {
-  echo "**** CLONING to ${REPO_ROOT}${GIT_REPO} ****"
-  echo "REPO: ${GIT_REPO}"
-  echo "BRANCH: ${GIT_BRANCH}"
-  git clone --recursive https://github.com/${GIT_REPO} $V1_DIR
-  cp -r $V1_DIR $V2_DIR
+    echo "**** CLONING to ${REPO_ROOT}${GIT_REPO} ****"
+    echo "REPO: ${GIT_REPO}"
+    echo "BRANCH: ${GIT_BRANCH}"
+    git clone --recursive https://github.com/${GIT_REPO} $V6_DIR
+    cp -r $V6_DIR $V7_DIR
+    echo "**** COPYING HEADER SOURCE DIRECTORY ****"
+    cp -r $V6_DIR $HEAD_SRC__DIR
 }
 
 function setup_repos(){
@@ -233,8 +220,8 @@ function setup_repos(){
         fi
     fi
 
-    if [ ! -d $V1_DIR ]; then
-        mkdir -p $V1_DIR
+    if [ ! -d $V6_DIR ]; then
+        mkdir -p $V6_DIR
         clone_source
     fi
 
@@ -270,14 +257,20 @@ function pull_firmware() {
 function setup_pkg_dir() {
     # Set up the debian package folder
     printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
-    CURRENT_DATE=`date +%Y%m%d`
-    NEW_VERSION="${VERSION}-${CURRENT_DATE}"
     PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
     mkdir $PKG_DIR
     cp -r $FIRMWARE_DIR/* $PKG_DIR
 
     # Remove the pre-compiled modules - we'll compile them ourselves
     rm -r $PKG_DIR/modules/*
+}
+
+function setup_native_v6_pkg_dir() {
+    # Set up the debian package folder
+    printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
+    PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
+    mkdir -p $PKG_DIR/boot
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
 }
 
 function get_4d_obj() {
@@ -292,10 +285,10 @@ function get_4d_obj() {
 
 }
 
-function make_v1() {
-    # RasPi v1 build
-    printf "\n**** COMPILING V1 KERNEL (ARMEL) ****\n"
-    cd $V1_DIR
+function make_v6() {
+    # RasPi v6 build
+    printf "\n**** COMPILING V6 KERNEL (ARMEL) ****\n"
+    cd $V6_DIR
 
     git fetch
     git checkout ${GIT_BRANCH}
@@ -307,35 +300,35 @@ function make_v1() {
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
     if [ ! -f .config ]; then
-        if [ "$V1_CONFIG" == "" ]; then
-            cp ${V1_DEFAULT_CONFIG} .config
+        if [ "$V6_CONFIG" == "" ]; then
+            cp ${V6_DEFAULT_CONFIG} .config
         else
-            cp ${V1_CONFIG} .config
+            cp ${V6_CONFIG} .config
         fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-    echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
     cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
-    echo "**** COMPILING v1 KERNEL ****"
+    echo "**** COMPILING v6 KERNEL ****"
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
     ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ${V6_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*/build
     rm -f ${MOD_DIR}/lib/modules/*/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
-    cp ${V1_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME+/
+    cp ${V6_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
 }
 
-function make_v2() {
-    # RasPi v2 build
-    printf "\n**** COMPILING V2 KERNEL (ARMHF) ****\n"
-    cd $V2_DIR
+function make_v7() {
+    # RasPi v7 build
+    printf "\n**** COMPILING V7 KERNEL (ARMHF) ****\n"
+    cd $V7_DIR
     git fetch
     git checkout ${GIT_BRANCH}
     git pull
@@ -345,16 +338,16 @@ function make_v2() {
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     if [ ! -f .config ]; then
-        if [ "$V2_CONFIG" == "" ]; then
-          cp ${V2_DEFAULT_CONFIG} .config
+        if [ "$V7_CONFIG" == "" ]; then
+          cp ${V7_DEFAULT_CONFIG} .config
         else
-          cp ${V2_CONFIG} .config
+          cp ${V7_CONFIG} .config
         fi
     fi
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make menuconfig
-    echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
     cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
-    echo "**** COMPILING v2 KERNEL ****"
+    echo "**** COMPILING v7 KERNEL ****"
     ARCH=arm CROSS_COMPILE=${CCPREFIX} make -j${NUM_CPUS} -k zImage modules dtbs
     ARCH=arm CROSS_COMPILE=${CCPREFIX} INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
     cp arch/arm/boot/dts/*.dtb $PKG_DIR/boot/
@@ -363,20 +356,20 @@ function make_v2() {
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ${V2_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ${V7_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
-    cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
+    cp -f ${V7_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
 }
 
-function make_native_v1() {
-    # RasPi v1 build
-    printf "\n**** COMPILING V1 KERNEL (ARMEL) NATIVELY****\n"
-    cd $V1_DIR
+function make_native_v6() {
+    # RasPi v6 build
+    printf "\n**** COMPILING V6 KERNEL (ARMEL) NATIVELY****\n"
+    cd $V6_DIR
 
     git fetch
     git checkout ${GIT_BRANCH}
@@ -387,35 +380,39 @@ function make_native_v1() {
 
 
     if [ ! -f .config ]; then
-        if [ "$V1_CONFIG" == "" ]; then
-            cp ${V1_DEFAULT_CONFIG} .config
+        if [ "$V6_CONFIG" == "" ]; then
+            cp ${V6_DEFAULT_CONFIG} .config
         else
-            cp ${V1_CONFIG} .config
+            cp ${V6_CONFIG} .config
         fi
     fi
     make menuconfig
-    echo "**** SAVING A COPY OF YOUR v1 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
     cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
-    echo "**** COMPILING v1 KERNEL ****"
+    echo "**** COMPILING v6 KERNEL ****"
     make -j${NUM_CPUS} -k zImage modules dtbs
     INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ${V1_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ## It is now found in tsetup_native_v6_pkg_dir()he scripts directory of the Linux tree, where they are covered by the kernel licence
+    ${V6_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*/build
     rm -f ${MOD_DIR}/lib/modules/*/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy away the module dir so we cak use it for compiling drivers if we want
+    cp -r ${MOD_DIR}/lib/modules/*/* ${KERN_MOD_DIR}/
     ## Copy our Module.symvers across
-    cp ${V1_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME+/
+    cp -f ${V6_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
+    cp -f ${V6_DIR}/Module.symvers $KERNEL_BUILDER_DIR/extra/
+    cp -f ${V6_DIR}/System.map $KERNEL_BUILDER_DIR/extra/
 }
 
-function make_native_v2() {
-    # RasPi v2 build
-    printf "\n**** COMPILING V2 KERNEL (ARMHF) NATIVELY ****\n"
-    cd $V2_DIR
+function make_native_v7() {
+    # RasPi v7 build
+    printf "\n**** COMPILING V7 KERNEL (ARMHF) NATIVELY ****\n"
+    cd $V7_DIR
     git fetch
     git checkout ${GIT_BRANCH}
     git pull
@@ -424,16 +421,16 @@ function make_native_v2() {
     ##get_4d_obj
 
     if [ ! -f .config ]; then
-        if [ "$V2_CONFIG" == "" ]; then
-          cp ${V2_DEFAULT_CONFIG} .config
+        if [ "$V7_CONFIG" == "" ]; then
+          cp ${V7_DEFAULT_CONFIG} .config
         else
-          cp ${V2_CONFIG} .config
+          cp ${V7_CONFIG} .config
         fi
     fi
     make menuconfig
-    echo "**** SAVING A COPY OF YOUR v2 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
     cp -f .config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
-    echo "**** COMPILING v2 KERNEL ****"
+    echo "**** COMPILING v7 KERNEL ****"
     make -j${NUM_CPUS} -k zImage modules dtbs
     INSTALL_MOD_PATH=${MOD_DIR} make -j${NUM_CPUS} modules_install
     cp arch/arm/boot/dts/*.dtb $PKG_DIR/boot/
@@ -442,20 +439,75 @@ function make_native_v2() {
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ${V2_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ${V7_DIR}/scripts/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
+    ## Copy away the module dir so we cak use it for compiling drivers if we want
+    cp -r ${MOD_DIR}/lib/modules/*/* ${KERN_MOD_DIR}/
     ## Copy our Module.symvers across
-    cp -f ${V2_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$FW_UNAME7+/
+    cp -f ${V7_DIR}/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
+    cp -f ${V7_DIR}/Module.symvers $KERNEL_BUILDER_DIR/extra/Module7.symvers
+    cp -f ${V7_DIR}/System.map $KERNEL_BUILDER_DIR/extra/System7.map
+}
+
+function make_headers (){
+    config=$1
+    cd $HEAD_SRC_DIR
+    git pull
+    printf "**** Updating files... ****\n"
+    echo "+" > .scmversion
+    make distclean $config modules_prepare
+    cd -
+}
+
+function copy_files (){
+    ver=$1
+    destdir=headers/usr/src/linux-headers-$ver
+    cd $HEAD_SRC_DIR
+    mkdir -p "$destdir"
+    mkdir -p headers/lib/modules/$ver
+    rsync -aHAX \
+	--files-from=<(cd $HEAD_SRC_DIR; find -name Makefile\* -o -name Kconfig\* -o -name \*.pl) $HEAD_SRC_DIR/ $destdir/
+    rsync -aHAX \
+	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm/include include scripts -type f) $HEAD_SRC_DIR/ $destdir/
+    rsync -aHAX \
+	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm -name module.lds -o -name Kbuild.platforms -o -name Platform) $HEAD_SRC_DIR/ $destdir/
+    rsync -aHAX \
+	--files-from=<(cd $HEAD_SRC_DIR; find `find arch/arm -name include -o -name scripts -type d` -type f) $HEAD_SRC_DIR/ $destdir/
+    rsync -aHAX \
+	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm/include Module.symvers .config include scripts -type f) $HEAD_SRC_DIR/ $destdir/
+    ln -sf "/usr/src/linux-headers-$ver" "headers/lib/modules/$ver/build"
+    cd -
+}
+
+function pkg_headers () {
+    printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
+    tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz $HEAD_SRC_DIR/headers/*
+    printf  "\nThe re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
+}
+
+function pkg_kernel() {
+    printf "\**** Creating $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
+    tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz $PKG_TMP/*
+    printf  "\nThe re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
 }
 
 
-function make_nexmon() {
+function make_nexmon () {
     ## Compiling nexmon firmware patches for Raspberry Pi 3
     cp -r ${MOD_DIR}/lib/modules/*-v7*/* ${KERN_MOD_DIR}/
+    cd ${NEXMON_DIR}
+    source setup_env.sh
+    cd patches/bcm43438/7_45_41_26/nexmon
+    make
+    cd $KERNEL_BUILDER_DIR
+}
+
+function make_native_nexmon () {
+    ## Compiling nexmon firmware patches
     cd ${NEXMON_DIR}
     source setup_env.sh
     cd patches/bcm43438/7_45_41_26/nexmon
@@ -513,13 +565,9 @@ function create_tar() {
     mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
     sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz >> $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
     chown re4son:re4son $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz*
-    echo -e "THE re4son-kernel_${NEW_VERSION}.tar.xz ARCHIVE SHOULD NOW BE\nAVAILABLE IN THE KERNEL-BUILDER FOLDER\n\n"
+    printf  "\nThe re4son-kernel_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR}\n\n"
 }
 
-function create_nat_v1_tar() {
-    cd $PKG_TMP
-    mkdir re4son-kernel_${NEW_VERSION}_v1
-}
 
 
 ##                                            ##
@@ -535,7 +583,7 @@ check_root
 debug_info
 breakpoint "010-Root privileges checked"
 
-while getopts "hb:cr:1:2:" opt; do
+while getopts "hb:cnpexr:6:7:" opt; do
   case "$opt" in
   h)  usage
       exit 0
@@ -545,11 +593,26 @@ while getopts "hb:cr:1:2:" opt; do
   c)  clean
       exit 0
       ;;
+  n)  NATIVE=true
+      NAT_ARCH=`dpkg --print-architecture`
+      ;;
+  p)  PKG=true
+      ;;
+  e)  MAKE_HEADERS=true
+      if [ ! NAT_ARCH ]; then
+          NAT_ARCH=`dpkg --print-architecture`
+      fi
+      ;;
+  x)  MAKE_NEXMON=true
+      if [ ! NAT_ARCH ]; then
+          NAT_ARCH=`dpkg --print-architecture`
+      fi
+      ;;
   r)  GIT_REPO="$OPTARG"
       ;;
-  1)  V1_CONFIG="$OPTARG"
+  6)  V6_CONFIG="$OPTARG"
       ;;
-  2)  V2_CONFIG="$OPTARG"
+  7)  V7_CONFIG="$OPTARG"
       ;;
   \?) usage
       exit 1
@@ -557,9 +620,10 @@ while getopts "hb:cr:1:2:" opt; do
   esac
 done
 
-printf "\n**** USING ${NUM_CPUS} AVAILABLE CORES ****\n"
+printf "\n\t**** USING ${NUM_CPUS} AVAILABLE CORES ****\n"
 
-if [ $COMP_MODE == "cross" ]; then
+
+if [ ! $NAT_ARCH ] ; then
 
     setup_repos
     breakpoint "020-Repos set up"
@@ -574,12 +638,12 @@ if [ $COMP_MODE == "cross" ]; then
     debug_info
     breakpoint "050-Pkg dir set up"
 
-    make_v1
-    breakpoint "060-Kernel v1 compiled"
+    make_v6
+    breakpoint "060-Kernel v6 compiled"
 
-    make_v2
+    make_v7
     debug_info
-    breakpoint "070-Kernel v2 compiled"
+    breakpoint "070-Kernel v7 compiled"
 
     create_debs
     debug_info
@@ -591,23 +655,65 @@ if [ $COMP_MODE == "cross" ]; then
     create_tar
     debug_info
 
-elif [ $COMP_MODE == "nat_v1" ]; then
-    printf "\n\t$COMP_MODE\n"
-    setup_pkg_dir
-    debug_info
-    breakpoint "050-Pkg dir set up"
-    make_native_v1
-    breakpoint "060-Kernel v1 compiled"
-    
+   exit 0
 
-elif [ $COMP_MODE == "nat_v2" ]; then
-    printf "\n\t$COMP_MODE\n"
-##    make_native_v2
+elif [ $NATIVE ]; then
+    if [ $NAT_ARCH == "armel" ]; then
+        printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
+        setup_native_v6_pkg_dir
+        debug_info
+        breakpoint "150-Pkg dir set up"
+        make_native_v6
+        breakpoint "160-Kernel v6 compiled"
+        pkg_kernel
+    elif [ $NAT_ARCH == "armhf" ]; then
+        printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
+        printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
+        setup_native_v6_pkg_dir
+        debug_info
+        breakpoint "150-Pkg dir set up"
+        make_native_v6
+        breakpoint "160-Kernel v6 compiled"
+        pkg_kernel
+    else
+        printf"\n\t#### ERROR: Architecture $ARCH not supported. ####\n"
+    fi
+fi
 
+if [ $MAKE_HEADERS ]; then
+    printf "\n\t**** Buiding headers for: $NAT_ARCH ****\n"
+    if [ $NAT_ARCH == "armel" ]; then
+        debug_info
+        breakpoint "200-Ready to build headers"
+        make_headers $(basename $V6_DEFAULT_CONFIG)
+        if [ -f ${KERNEL_BUILDER_DIR}/Module.symvers ]; then
+            cp ${KERNEL_BUILDER_DIR}/Module.symvers ${HEAD_SRC_DIR}/Module.symvers
+        fi
+        debug_info
+        breakpoint "210-headers built"
+        copy_files $UNAME_STRING
+        debug_info
+        breakpoint "220-headers copied"
+        pkg_headers
+    elif [ $NAT_ARCH == "armhf" ]; then
+        debug_info
+        breakpoint "200-Ready to build headers"
+        make_headers $(basename $V7_DEFAULT_CONFIG)
+        if [ -f ${KERNEL_BUILDER_DIR}/Module7.symvers ]; then
+            cp ${KERNEL_BUILDER_DIR}/Module7.symvers ${HEAD_SRC_DIR}/Module.symvers
+        fi
+        debug_info
+        breakpoint "210-headers built"
+        copy_files $UNAME_STRING7
+        debug_info
+        breakpoint "220-headers copied"
+        pkg_headers
+    fi
+    exit 0
 fi
 
 
-
+exit 0
 ##                                            ##
 ################################################
 ################################################
