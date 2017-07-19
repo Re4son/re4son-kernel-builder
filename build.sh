@@ -66,6 +66,9 @@ V7_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
 V6_CONFIG=""
 v7_CONFIG=""
 
+export DEBFULLNAME=Re4son
+export DEBEMAIL=re4son@whitedome.com.au
+
 UNAME_STRING="${VERSION}-Re4son+"
 UNAME_STRING7="${VERSION}-Re4son-v7+"
 CURRENT_DATE=`date +%Y%m%d`
@@ -466,6 +469,9 @@ function make_native_v7() {
 function make_headers (){
     config=$1
     cd $HEAD_SRC_DIR
+    if [ -d headers ]; then
+        rm -rf headers
+    fi
     git pull
     printf "**** Updating files... ****\n"
     echo "+" > .scmversion
