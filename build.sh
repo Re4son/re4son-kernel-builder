@@ -171,33 +171,36 @@ usage: re4sonbuild [options]
 EOF
 }
 
-function clean() {
-   echo "**** Cleaning up kernel source ****"
-   cd $V6_DIR
-   git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V6_DIR} ****"
-   make mrproper
-   ## Overwrite with remote repo - use if mrproper goes too far
-   git reset --hard HEAD
-   git pull
-   if [ "$V6_VERSION" != "" ]; then
-       echo "**** Setting version to ${V6_VERSION} ****"
-       ((version = $V6_VERSION -1))
-       echo $version > .version
-   fi
-
-   cd $V7_DIR
-   git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V7_DIR} ****"
-   make mrproper
-   ## Overwrite with remote repo - use if mrproper goes too far
-   git reset --hard HEAD
-   git pull
-   if [ "$V7_VERSION" != "" ]; then
-       echo "**** Setting version to ${V7_VERSION} ****"
-       ((version = $V7_VERSION -1))
-       echo $version > .version
-   fi
+ffunction clean() {
+    echo "**** Cleaning up kernel source ****"
+    if [ -d $V6_DIR ]; then
+        cd $V6_DIR
+        git checkout ${GIT_BRANCH}
+        echo "**** Cleaning ${V6_DIR} ****"
+        make mrproper
+        ## Overwrite with remote repo - use if mrproper goes too far
+        git reset --hard HEAD
+        git pull
+        if [ "$V6_VERSION" != "" ]; then
+            echo "**** Setting version to ${V6_VERSION} ****"
+            ((version = $V6_VERSION -1))
+            echo $version > .version
+        fi
+    fi
+    if [ -d $V7_DIR ]; then
+        cd $V7_DIR
+        git checkout ${GIT_BRANCH}
+        echo "**** Cleaning ${V7_DIR} ****"
+        make mrproper
+        ## Overwrite with remote repo - use if mrproper goes too far
+        git reset --hard HEAD
+        git pull
+        if [ "$V7_VERSION" != "" ]; then
+            echo "**** Setting version to ${V7_VERSION} ****"
+            ((version = $V7_VERSION -1))
+            echo $version > .version
+        fi
+    fi
    echo "**** Kernel source directories cleaned up ****"
    exit 0
 }
