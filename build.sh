@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.9.24"
+VERSION="4.5.50"
 V6_VERSION="20"
 V7_VERSION="20"
 
@@ -27,26 +27,26 @@ V7_VERSION="20"
 ##             4.4.28                            ##
 ##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
 ###################################################
-##             4.4.24                            ##
+##             4.9.24                            ##
 ##GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
 ###################################################
-##             4.4.24-Re4son                     ##
+##             4.9.24-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
 ##GIT_BRANCH="rpi-4.9.24-re4son"	 	 	 ## 4.9.24 Commit used for firmware 1.20170427 release
 ##FW_REPO="Re4son/RPi-Distro-firmware"
 ##FW_BRANCH="4.4.24"
 ###################################################
-##             4.4.24-Re4son                     ##
-GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.9.24-re4son"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
-FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="debian-re4son"
+##             4.9.24-Re4son                     ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.9.24-re4son"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="debian-re4son"
 ###################################################
 ##             4.4.50-Re4son                     ##
-##GIT_REPO="Re4son/re4son-raspberrypi-linux"
-##GIT_BRANCH="rpi-4.4.50-re4son"
-##FW_REPO="Re4son/RPi-Distro-firmware"
-##FW_BRANCH="4.4.50"
+GIT_REPO="Re4son/re4son-raspberrypi-linux"
+GIT_BRANCH="rpi-4.4.50-re4son"
+FW_REPO="Re4son/RPi-Distro-firmware"
+FW_BRANCH="4.4.50"
 ###################################################
 ##      4.4.50-Re4son-Master                     ##
 ##GIT_BRANCH="rpi-4.4.50-re4son-master"
@@ -172,32 +172,35 @@ EOF
 }
 
 function clean() {
-   echo "**** Cleaning up kernel source ****"
-   cd $V6_DIR
-   git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V6_DIR} ****"
-   make mrproper
-   ## Overwrite with remote repo - use if mrproper goes too far
-   git reset --hard HEAD
-   git pull
-   if [ "$V6_VERSION" != "" ]; then
-       echo "**** Setting version to ${V6_VERSION} ****"
-       ((version = $V6_VERSION -1))
-       echo $version > .version
-   fi
-
-   cd $V7_DIR
-   git checkout ${GIT_BRANCH}
-   echo "**** Cleaning ${V7_DIR} ****"
-   make mrproper
-   ## Overwrite with remote repo - use if mrproper goes too far
-   git reset --hard HEAD
-   git pull
-   if [ "$V7_VERSION" != "" ]; then
-       echo "**** Setting version to ${V7_VERSION} ****"
-       ((version = $V7_VERSION -1))
-       echo $version > .version
-   fi
+    echo "**** Cleaning up kernel source ****"
+    if [ -d $V6_DIR ]; then
+        cd $V6_DIR
+        git checkout ${GIT_BRANCH}
+        echo "**** Cleaning ${V6_DIR} ****"
+        make mrproper
+        ## Overwrite with remote repo - use if mrproper goes too far
+        git reset --hard HEAD
+        git pull
+        if [ "$V6_VERSION" != "" ]; then
+            echo "**** Setting version to ${V6_VERSION} ****"
+            ((version = $V6_VERSION -1))
+            echo $version > .version
+        fi
+    fi
+    if [ -d $V7_DIR ]; then
+        cd $V7_DIR
+        git checkout ${GIT_BRANCH}
+        echo "**** Cleaning ${V7_DIR} ****"
+        make mrproper
+        ## Overwrite with remote repo - use if mrproper goes too far
+        git reset --hard HEAD
+        git pull
+        if [ "$V7_VERSION" != "" ]; then
+            echo "**** Setting version to ${V7_VERSION} ****"
+            ((version = $V7_VERSION -1))
+            echo $version > .version
+        fi
+    fi
    echo "**** Kernel source directories cleaned up ****"
    exit 0
 }
@@ -308,7 +311,7 @@ function make_v6() {
     git pull
     git submodule update --init
 
-    ## get_4d_obj
+    get_4d_obj
 
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
@@ -347,7 +350,7 @@ function make_v7() {
     git pull
     git submodule update --init
 
-    ##get_4d_obj
+    get_4d_obj
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     if [ ! -f .config ]; then
@@ -389,7 +392,7 @@ function make_native_v6() {
     git pull
     git submodule update --init
 
-    ## get_4d_obj
+    get_4d_obj
 
 
     if [ ! -f .config ]; then
@@ -431,7 +434,7 @@ function make_native_v7() {
     git pull
     git submodule update --init
 
-    ##get_4d_obj
+    get_4d_obj
 
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
@@ -572,9 +575,9 @@ function create_tar() {
     mkdir re4son-kernel_${NEW_VERSION}/nexmon
     cp *.deb re4son-kernel_${NEW_VERSION}
     ## rm -f re4son-kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
-    cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son-kernel_${NEW_VERSION}/nexmon
-    cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
-    cp $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
+    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son-kernel_${NEW_VERSION}/nexmon
+    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
+    cp -r $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
     cp $KERNEL_BUILDER_DIR/docs/INSTALL re4son-kernel_${NEW_VERSION}
