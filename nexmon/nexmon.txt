@@ -1,6 +1,6 @@
 To install drivers:
 -------------------
-
+## cd into correct architecture directory ARMHF or ARMEL 
 cp ./brcmfmac.ko /root/
 cp ./brcmfmac43430-sdio.bin /lib/firmware/brcm/
 cp ./nexutil /usr/bin/

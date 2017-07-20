@@ -171,7 +171,7 @@ usage: re4sonbuild [options]
 EOF
 }
 
-ffunction clean() {
+function clean() {
     echo "**** Cleaning up kernel source ****"
     if [ -d $V6_DIR ]; then
         cd $V6_DIR
