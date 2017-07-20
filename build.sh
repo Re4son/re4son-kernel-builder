@@ -14,7 +14,7 @@
 
 ## Debug - set to "1" to enable debugging
 ##         (mainly breakpoints)
-DEBUG="1"
+DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.24"
