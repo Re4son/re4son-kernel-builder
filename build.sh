@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.5.50"
+VERSION="4.4.50"
 V6_VERSION="20"
 V7_VERSION="20"
 
