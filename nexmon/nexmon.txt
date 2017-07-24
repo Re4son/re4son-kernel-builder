@@ -1,6 +1,7 @@
 To install drivers:
 -------------------
-## cd into correct architecture directory armhf(RPi3) or armel(RPi0W)
+## cd into correct architecture directory armhf(RasPi3) or armel(RasPi0W) 
+cp /lib/firmware/brcm/brcmfmac43430-sdio.bin /root/.brcmfmac43430-sdio.orig.bin
 cp ./brcmfmac.ko /root/
 cp ./brcmfmac43430-sdio.bin /lib/firmware/brcm/
 cp ./nexutil /usr/bin/
@@ -8,6 +9,7 @@ cp ./nexutil /usr/bin/
 
 Tu use:
 ---------
+rmmod brcmfmac
 insmod /root/brcmfmac.ko
 nexutil -m2
 
@@ -17,5 +19,6 @@ tcpdump -i wlan0 -s0
 To remove:
 -----------
 rmmod brcmfmac
-cp /root/brcmfmac43430-sdio.orig.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
+cp /root/.brcmfmac43430-sdio.orig.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
 modprobe brcmfmac
+
