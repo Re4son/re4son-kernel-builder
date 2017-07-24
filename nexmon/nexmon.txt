@@ -7,7 +7,7 @@ cp ./brcmfmac43430-sdio.bin /lib/firmware/brcm/
 cp ./nexutil /usr/bin/
 
 
-Tu use:
+To use:
 ---------
 rmmod brcmfmac
 insmod /root/brcmfmac.ko

@@ -5,15 +5,21 @@ re4son-kernel_current = re4son-kernel_4.4.50_current
 re4son-kernel_testing = re4son-kernel_4.9.24_current
 
 
-re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170721
-re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170722
+re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170724
+re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170724
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.4.50-20170722.tar.xz
+re4son-kernel_4.9.24-20170724.tar.xz
+================================================
+RPi V6: Kernel 4.9.24-Re4son+ #20
+RPi V7: Kernel 4.9.24-Re4son-v7+ #20
+- Includes nexmon drivers for armel & armhf natively build
+
+re4son-kernel_4.4.50-20170724.tar.xz
 ================================================
 RPi V6: Kernel 4.4.50-Re4son+ #20
 RPi V7: Kernel 4.4.50-Re4son-v7+ #20
