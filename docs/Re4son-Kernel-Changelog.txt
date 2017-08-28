@@ -5,18 +5,51 @@ re4son-kernel_current = re4son-kernel_4.4.50_current
 re4son-kernel_testing = re4son-kernel_4.9.24_current
 
 
-re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170708
-re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170702
+re4son-kernel_4.9.24_current = re4son-kernel_4.9.24-20170729
+re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170729
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.9.24-20170708.tar.xz
+re4son-kernel_4.9.24-20170729.tar.xz
 ================================================
-RPi V1: Kernel 4.9.24-Re4son+ #4
-RPi V2: Kernel 4.9.24-Re4son-v7+ #4
+RPi V6: Kernel 4.9.24-Re4son+ #20
+RPi V7: Kernel 4.9.24-Re4son-v7+ #20
+- Includes re4son-pi-tft-setup ver. 4.9-1.15.6
+
+re4son-kernel_4.4.50-20170724.tar.xz
+================================================
+RPi V6: Kernel 4.4.50-Re4son+ #20
+RPi V7: Kernel 4.4.50-Re4son-v7+ #20
+- Includes re4son-pi-tft-setup ver. 4.4-1.15.6
+
+re4son-kernel_4.9.24-20170724.tar.xz
+================================================
+RPi V6: Kernel 4.9.24-Re4son+ #20
+RPi V7: Kernel 4.9.24-Re4son-v7+ #20
+- Includes nexmon drivers for armel & armhf natively build
+
+re4son-kernel_4.4.50-20170724.tar.xz
+================================================
+RPi V6: Kernel 4.4.50-Re4son+ #20
+RPi V7: Kernel 4.4.50-Re4son-v7+ #20
+- First 4.4.50 kernel natively build
+- Includes nexmon drivers for armel & armhf natively build
+
+re4son-kernel_4.9.24-20170721.tar.xz
+================================================
+RPi V6: Kernel 4.9.24-Re4son+ #20
+RPi V7: Kernel 4.9.24-Re4son-v7+ #20
+- Includes re4son-pi-tft-setup 4.9-1.15.2
+
+re4son-kernel_4.9.24-20170720.tar.xz
+================================================
+RPi V6: Kernel 4.9.24-Re4son+ #20
+RPi V7: Kernel 4.9.24-Re4son-v7+ #20
+- First kernel natively build
+- Includes armhf nexmon drivers and nexutil natively build
 
 re4son-kernel_4.9.24-20170707.tar.xz
 ================================================
@@ -304,8 +337,18 @@ RPi V2: Kernel 4.1.14-v7_Re4son-Kali-PiTFT+ #1
 
 Kernel history:
 
-RPi V1:
+RPi V6:
 ********
+4.4.50-Re4son+ #20 - 21-July-2017:
+----------------------------------
+- based on 4.4.50-Re4son+ #12
+- natively build
+
+4.9.24-Re4son+ #20 - 20-July-2017:
+----------------------------------
+- based on 4.9.24-Re4son+ #4
+- natively build
+
 4.9.24-Re4son+ #4 - 08-July-2017:
 ----------------------------------
 - based on 4.9.24-Re4son+ #3
@@ -459,8 +502,18 @@ RPi V1:
 
 
 
-RPi V2:
+RPi V7:
 ********
+4.4.50-Re4son-v7+ #20 - 21-July-2017:
+--------------------------------------
+- based on 4.4.50-Re4son-v7+ #12
+- natively build
+
+4.9.24-Re4son-v7+ #20 - 12-July-2017:
+----------------------------------
+- based on 4.9.24-Re4son-v7+ #4
+- natively build
+
 4.9.24-Re4son-v7+ #4 - 08-July-2017:
 ----------------------------------
 - based on 4.9.24-Re4son-v7+ #3
