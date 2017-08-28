@@ -34,13 +34,13 @@ V7_VERSION="21"
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 GIT_BRANCH="rpi-4.9.41-re4son"	 	 	         ## 4.9.24 Commit used for firmware 1.20170811 release
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.4.41"
+FW_BRANCH="4.9.41"
 ###################################################
 ##             4.9.24-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
 ##GIT_BRANCH="rpi-4.9.24-re4son"  		 	 ## 4.9.24 Commit used for firmware 1.20170427 release
 ##FW_REPO="Re4son/RPi-Distro-firmware"
-##FW_BRANCH="debian-re4son"
+##FW_BRANCH="4.9.41"
 ###################################################
 ##             4.4.50-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
