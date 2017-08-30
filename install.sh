@@ -89,9 +89,9 @@ function install_bluetooth {
     if [ "" == "$PKG_STATUS" ]; then
         printf "Fixing unmet dependencies. Installing libreadline6.\n"
         if [ "armel" == "$ARCH" ]; then
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armel.deb
+            dpkg -i ./repo/bluetooth/libreadline6_6.3-8+b3_armel.deb
         else
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
+            dpkg -i ./repo/bluetooth/libreadline6_6.3-8+b3_armhf.deb
         fi
     fi
 
@@ -118,23 +118,29 @@ function install_bluetooth {
         fi
     fi
 
-    apt install bluez-firmware
+    ## Online installation
+#     apt install bluez-firmware
 
+    ## Offline installation
+     dpkg -i ./repo/externals/bluez-firmware_*
     if [ "armel" == "$ARCH" ]; then
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
+        dpkg --force-all -i ./repo/bluetooth/bluez_5.39-1+rpi1+re4son_armel.deb
     else
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi3+re4son_armhf.deb
+        dpkg --force-all -i ./repo/bluetooth/bluez_5.39-1+rpi3+re4son_armhf.deb
     fi
-    dpkg --force-all -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
+    
+    dpkg --force-all -i ./repo/bluetooth/pi-bluetooth_0.1.4+re4son_all.deb
     apt-mark hold bluez-firmware bluez pi-bluetooth
 
     if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
       cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
     fi
+
     ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
     if [ ! -f  /bin/hciconfig ]; then
       ln -s /usr/bin/hciconfig /bin/hciconfig
     fi
+    
     ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
     SYSTEMD_VER=$(systemd --version|grep systemd|sed 's/systemd //')
     if (( $SYSTEMD_VER >= 232 )); then
@@ -161,7 +167,7 @@ function install_firmware {
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
     fi
     if [ ! -f  /etc/udev/rules.d/99-com.rules ]; then
-      cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
+        cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
     fi
 
     #Raspberry Pi Zero W
@@ -196,18 +202,30 @@ function install_kernel(){
     printf "\t**** Checking for device-tree-compiler: ${PKG_STATUS} ****\n"
     if [ "" == "$PKG_STATUS" ]; then
         printf "\tNo device-tree-compiler. Installing it now.\n"
-        apt update
-        apt install device-tree-compiler
+
+        ## Online installations
+#         apt update
+#         apt install device-tree-compiler
+        
+        ## Offline installation addition
+        ARCH=`dpkg --print-architecture`
+        if [ "armel" == "$ARCH" ]; then
+            dpkg -i ./repo/externals/device-tree-compiler_1.4.2-1_armel.deb
+        else
+            dpkg -i ./repo/externals/device-tree-compiler_1.4.2-1_armhf.deb
+        fi
+
+        
     fi
     ## Reserved
     ## cp src dest
     printf "\n\t**** Device tree overlays installed ****\n"
-    exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
-    exitonerr dpkg --force-architecture -i libraspberrypi0_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
+    exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel ./repo/core/raspberrypi-bootloader_*
+    exitonerr dpkg --force-architecture -i ./repo/core/raspberrypi-kernel_*
+    exitonerr dpkg --force-architecture -i ./repo/core/libraspberrypi0_*
+    exitonerr dpkg --force-architecture -i ./repo/core/libraspberrypi-dev_*
+    exitonerr dpkg --force-architecture -i ./repo/core/libraspberrypi-doc_*
+    exitonerr dpkg --force-architecture -i ./repo/core/libraspberrypi-bin_*
 
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
     mkdir -p /etc/kbd
@@ -270,7 +288,14 @@ function remove_bluetooth {
 function install_headers() {
 
     printf "\n\t**** Installing Re4son-Kernel headers ****\n"
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel-headers_*
+    exitonerr dpkg --force-architecture -i ./repo/core/raspberrypi-kernel-headers_*
+    printf "\t**** Installation completed ****\n\n"
+    return 0
+}
+
+function install_nexmon() {
+    printf "\n\t**** Installing Re4son-Kernel Nexmon Wifi Wrapper ****\n"
+    dpkg -i ./repo/wifi/nexmon_*
     printf "\t**** Installation completed ****\n\n"
     return 0
 }
@@ -284,7 +309,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbru' -- $*)
+args=$(getopt -uo 'hevbrun' -- $*)
 
 set -- $args
 
@@ -316,6 +341,10 @@ do
             remove_bluetooth
             exit 0
             ;;
+        -n)
+            install_nexmon
+            exit 0
+            ;;
         -u)
             check_update
             exit 0
@@ -330,6 +359,7 @@ fi
 if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?"; then
     install_firmware
     install_bluetooth
+    install_nexmon
 fi
 if ask "Reboot to apply changes?"; then
     reboot
