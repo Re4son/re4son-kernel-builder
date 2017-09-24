@@ -574,9 +574,6 @@ function create_tar() {
     mkdir re4son-kernel_${NEW_VERSION}/repo
     mkdir re4son-kernel_${NEW_VERSION}/nexmon
     cp *.deb re4son-kernel_${NEW_VERSION}
-    ## rm -f re4son-kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
-    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son-kernel_${NEW_VERSION}/nexmon
-    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
     cp -r $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
