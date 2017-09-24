@@ -560,7 +560,7 @@ function create_debs() {
     sh ./gen_bootloader_postinst_preinst.sh
 
     cd $PKG_DIR
-    dch -v ${NEW_VERSION} --package raspberrypi-firmware 'Adds Re4son-Kernel'
+    dch -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
     debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
 }
 
@@ -574,9 +574,6 @@ function create_tar() {
     mkdir re4son-kernel_${NEW_VERSION}/repo
     mkdir re4son-kernel_${NEW_VERSION}/nexmon
     cp *.deb re4son-kernel_${NEW_VERSION}
-    ## rm -f re4son-kernel_${NEW_VERSION}/raspberrypi-kernel-headers*
-    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac43430-sdio.bin re4son-kernel_${NEW_VERSION}/nexmon
-    ## cp ${NEXMON_DIR}/patches/bcm43438/7_45_41_26/nexmon/brcmfmac/brcmfmac.ko re4son-kernel_${NEW_VERSION}/nexmon
     cp -r $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
