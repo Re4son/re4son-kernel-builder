@@ -560,7 +560,7 @@ function create_debs() {
     sh ./gen_bootloader_postinst_preinst.sh
 
     cd $PKG_DIR
-    dch -v ${NEW_VERSION} --package raspberrypi-firmware 'Adds Re4son-Kernel'
+    dch -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
     debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
 }
 
