@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.1.18"
+VERSION="4.4-1.2.1"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -17,6 +17,8 @@ function print_help() {
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi3 & RPi Zero W\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
+    printf "\t\t\t\t-x\tOnly install Nexmon drivers\n"
+    printf "\t\t\t\t-o\tOnly remove Nexmon drivers\n"
     printf "\t\t\t\t-u\tUpdate Re4son-Kernel Installer\n\n"
     exit 1
 }
@@ -145,7 +147,7 @@ function install_bluetooth {
         fi
     fi
     printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****\n\n"
-    if ask "Enable Bluetooth services?"; then
+    if ask "Enable Bluetooth services?" "Y"; then
         systemctl unmask bluetooth.service
         systemctl enable bluetooth
         systemctl enable hciuart
@@ -275,6 +277,71 @@ function install_headers() {
     return 0
 }
 
+function install_nexmon() {
+
+    printf "\n\t**** Installing Nexmon drivers ****\n"
+    ARCH=`dpkg --print-architecture`
+    # Backup original brcmfmac.ko
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
+        if [ ! -d ./nexmon/${ARCH}/org ]; then
+            exitonerr mkdir -p ./nexmon/${ARCH}/org
+        fi
+        exitonerr cp /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko ./nexmon/${ARCH}/org/
+    fi
+    # Backup original brcmfmac43430-sdio.bin
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
+        if [ ! -d ./nexmon/${ARCH}/org ]; then
+            exitonerr mkdir -p ./nexmon/${ARCH}/org
+        fi
+        exitonerr cp /lib/firmware/brcm/brcmfmac43430-sdio.bin ./nexmon/${ARCH}/org/
+    fi
+    # Install drivers
+        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    # Load drivers
+        exitonerr rmmod brcmfmac
+        exitonerr modprobe brcmfmac
+    # Install nexutil
+        exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    printf "\t**** Installation completed ****\n\n"
+    return 0
+}
+
+function remove_nexmon() {
+
+    ARCH=`dpkg --print-architecture`
+    printf "\n\t**** Removing Nexmon drivers ****\n"
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
+        printf "\n\t!!!! No driver backup found !!!!\n"
+        if ask "Install the original Broadcom drivers?" "Y"; then
+            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+        else
+            printf "\n\t!!!! Installation aborted !!!!\n"
+        fi
+    else
+        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+    fi
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
+        printf "\n\t!!!! No firmware backup found !!!!\n"
+        if ask "Install the original Broadcom firmware?" "Y"; then
+            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+        else
+            printf "\n\t!!!! Installation aborted !!!!\n"
+        fi
+    else
+        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    fi
+    # Load drivers
+    exitonerr rmmod brcmfmac
+    exitonerr modprobe brcmfmac
+    # remove nexutil
+    if [ ! -f ./usr/bin/nexutil ]; then
+        exitonerr rm -f /usr/bin/nexutil
+    fi
+    printf "\t**** Nexmon drivers removed ****\n\n"
+    return 0
+}
+
 ############
 ##        ##
 ##  MAIN  ##
@@ -284,7 +351,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbru' -- $*)
+args=$(getopt -uo 'hevbrxou' -- $*)
 
 set -- $args
 
@@ -307,13 +374,21 @@ do
         -b)
             install_firmware
             install_bluetooth
-            if ask "Reboot to apply changes?"; then
+            if ask "Reboot to apply changes?" "Y"; then
                 reboot
             fi
             exit 0
             ;;
         -r)
             remove_bluetooth
+            exit 0
+            ;;
+        -x)
+            install_nexmon
+            exit 0
+            ;;
+        -o)
+            remove_nexmon
             exit 0
             ;;
         -u)
@@ -327,11 +402,14 @@ printf "\n"
 if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?"; then
+if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
     install_bluetooth
 fi
-if ask "Reboot to apply changes?"; then
+if ask "Install nexmon drivers to allow wifi injection using RasPi built-in adapters?" "Y"; then
+    install_nexmon
+fi
+if ask "Reboot to apply changes?" "Y"; then
     reboot
 fi
 printf "\n"
