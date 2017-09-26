@@ -13,7 +13,7 @@ re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-2016
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.9.41-20170925.tar.xz
+re4son-kernel_4.9.41-20170926.tar.xz
 ================================================
 RPi V6: Kernel 4.9.41-Re4son+ #21
 RPi V7: Kernel 4.9.41-Re4son-v7+ #21
