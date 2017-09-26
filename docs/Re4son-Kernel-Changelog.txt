@@ -5,7 +5,7 @@ re4son-kernel_old = re4son-kernel_4.4.50_current
 re4son-kernel_current = re4son-kernel_4.9.41_current
 
 
-re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20170925
+re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20170926
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170926
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
