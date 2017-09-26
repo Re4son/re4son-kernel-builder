@@ -1,24 +1,28 @@
 To install drivers:
 -------------------
-## cd into correct architecture directory armhf(RasPi3) or armel(RasPi0W) 
-cp /lib/firmware/brcm/brcmfmac43430-sdio.bin /root/.brcmfmac43430-sdio.orig.bin
-cp ./brcmfmac.ko /root/
-cp ./brcmfmac43430-sdio.bin /lib/firmware/brcm/
-cp ./nexutil /usr/bin/
+Nexmon drivers and firmware can be installed using the re4son kernel installer.
+The drivers are installed for the running kernel.
+Please reboot after installing a new kernel, before installing these drivers.
 
 
-To use:
----------
-rmmod brcmfmac
-insmod /root/brcmfmac.ko
+To install the drivers:
+-----------------------
+cd into the re4son-kernel install directory and run
+
+./install.sh -x
+
+
+To remove the drivers:
+----------------------
+cd into the re4son-kernel install directory and run
+
+./install.sh -o
+
+
+Example use:
+------------
 nexutil -m2
 
 tcpdump -i wlan0 -s0
 
-
-To remove:
------------
-rmmod brcmfmac
-cp /root/.brcmfmac43430-sdio.orig.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
-modprobe brcmfmac
-
+nexutil -m0

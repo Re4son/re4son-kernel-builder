@@ -286,7 +286,7 @@ function install_nexmon() {
         if [ ! -d ./nexmon/${ARCH}/org ]; then
             exitonerr mkdir -p ./nexmon/${ARCH}/org
         fi
-        exitonerr cp /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko ./nexmon/${ARCH}/org/
+        exitonerr cp /lib/modules/$(uname -r)/kernel/drivers/net/wireless/brcm80211/brcmfmac/brcmfmac.ko ./nexmon/${ARCH}/org/
     fi
     # Backup original brcmfmac43430-sdio.bin
     if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
@@ -296,7 +296,7 @@ function install_nexmon() {
         exitonerr cp /lib/firmware/brcm/brcmfmac43430-sdio.bin ./nexmon/${ARCH}/org/
     fi
     # Install drivers
-        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/brcm80211/brcmfmac/
         exitonerr cp -f ./nexmon/${ARCH}/brcmfmac43430-sdio.bin /lib/firmware/brcm/
     # Load drivers
         exitonerr rmmod brcmfmac
@@ -314,12 +314,12 @@ function remove_nexmon() {
     if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
         printf "\n\t!!!! No driver backup found !!!!\n"
         if ask "Install the original Broadcom drivers?" "Y"; then
-            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/brcm80211/brcmfmac/
         else
             printf "\n\t!!!! Installation aborted !!!!\n"
         fi
     else
-        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/brcm80211/brcmfmac/
     fi
     if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
         printf "\n\t!!!! No firmware backup found !!!!\n"
@@ -405,9 +405,6 @@ fi
 if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
     install_bluetooth
-fi
-if ask "Install nexmon drivers to allow wifi injection using RasPi built-in adapters?" "Y"; then
-    install_nexmon
 fi
 if ask "Reboot to apply changes?" "Y"; then
     reboot
