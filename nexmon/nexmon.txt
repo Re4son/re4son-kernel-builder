@@ -7,14 +7,14 @@ To install the drivers separately:
 ----------------------------------
 cd into the re4son-kernel install directory and run
 
-./install -x
+./install.sh -x
 
 
 To remove the drivers:
 ----------------------
 cd into the re4son-kernel install directory and run
 
-./install -o
+./install.sh -o
 
 
 Example use:
