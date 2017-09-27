@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.2.1"
+VERSION="4.9-1.2.2"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -120,7 +120,7 @@ function install_bluetooth {
         fi
     fi
 
-    apt install bluez-firmware
+    dpkg --force-all -i ./repo/bluez-firmware_1.2-3_all.deb
 
     if [ "armel" == "$ARCH" ]; then
         dpkg --force-all -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
