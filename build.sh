@@ -18,8 +18,8 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="4.9.41"
-V6_VERSION="21"
-V7_VERSION="21"
+V6_VERSION="23"
+V7_VERSION="23"
 
 
 ## Repos
@@ -32,7 +32,8 @@ V7_VERSION="21"
 ###################################################
 ##             4.9.41-Re4son                     ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.9.41-re4son"	 	 	         ## 4.9.24 Commit used for firmware 1.20170811 release
+##GIT_BRANCH="rpi-4.9.41-re4son"	 	 	         ## 4.9.24 Commit used for firmware 1.20170811 release
+GIT_BRANCH="rpi-4.9.41-re4son-4dhats"	 	 	         ## 4.9.24 Commit used for firmware 1.20170811 release
 FW_REPO="Re4son/RPi-Distro-firmware"
 FW_BRANCH="4.9.41"
 ###################################################
@@ -311,7 +312,7 @@ function make_v6() {
     git pull
     git submodule update --init
 
-    ## get_4d_obj
+    get_4d_obj
 
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
@@ -350,7 +351,7 @@ function make_v7() {
     git pull
     git submodule update --init
 
-    ##get_4d_obj
+    get_4d_obj
 
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     if [ ! -f .config ]; then
@@ -392,7 +393,7 @@ function make_native_v6() {
     git pull
     git submodule update --init
 
-    ## get_4d_obj
+    get_4d_obj
 
 
     if [ ! -f .config ]; then
@@ -434,7 +435,7 @@ function make_native_v7() {
     git pull
     git submodule update --init
 
-    ##get_4d_obj
+    get_4d_obj
 
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
@@ -677,8 +678,8 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     debug_info
     breakpoint "080-Debian packages created"
 
-    make_nexmon
-    breakpoint "090-Nexmon drivers compiled"
+#    make_nexmon
+#    breakpoint "090-Nexmon drivers compiled"
 
     create_tar
     debug_info

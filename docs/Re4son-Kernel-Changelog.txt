@@ -5,13 +5,20 @@ re4son-kernel_old = re4son-kernel_4.4.50_current
 re4son-kernel_current = re4son-kernel_4.9.41_current
 
 
-re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20170927
+re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171017
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.41-20171017.tar.xz
+================================================
+RPi V6: Kernel 4.9.41-Re4son+ #23
+RPi V7: Kernel 4.9.41-Re4son-v7+ #23
+- Includes install.sh 4.9-1.2.2
+- ath9k_htc debug enabled
 
 re4son-kernel_4.9.41-20170927.tar.xz
 ================================================
@@ -373,6 +380,11 @@ Kernel history:
 
 RPi V6:
 ********
+4.9.41-Re4son+ #23 - 17-October-2017:
+----------------------------------
+- based on 4.9.24-Re4son+ #21
+- ath9k_htc debug enabled
+
 4.9.41-Re4son+ #21 - 28-August-2017:
 ----------------------------------
 - based on 4.9.24-Re4son+ #20
@@ -543,6 +555,11 @@ RPi V6:
 
 RPi V7:
 ********
+4.9.41-Re4son-v7+ #23 - 17-October-2017:
+----------------------------------------
+- based on 4.9.24-Re4son-v7+ #21
+- ath9k_htc debug enabled
+
 4.9.41-Re4son-v7+ #21 - 28-August-2017:
 ----------------------------------------
 - based on 4.9.24-Re4son-v7+ #20
