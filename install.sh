@@ -406,6 +406,9 @@ if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?
     install_firmware
     install_bluetooth
 fi
+if ask "Install kernel headers?" "Y"; then
+    install_headers
+fi
 if ask "Reboot to apply changes?" "Y"; then
     reboot
 fi
