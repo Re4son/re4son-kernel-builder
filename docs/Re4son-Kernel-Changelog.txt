@@ -5,13 +5,19 @@ re4son-kernel_old = re4son-kernel_4.4.50_current
 re4son-kernel_current = re4son-kernel_4.9.41_current
 
 
-re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171019
+re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
 re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-20170219
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.41-20171031.tar.xz
+================================================
+RPi V6: Kernel 4.9.41-Re4son+ #24
+RPi V7: Kernel 4.9.41-Re4son-v7+ #24
+- Includes new nexmon drivers with -m6 and -m7 support
 
 re4son-kernel_4.9.41-20171029.tar.xz
 ================================================
