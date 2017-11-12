@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.2.2"
+VERSION="4.9-1.3.0"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -405,6 +405,9 @@ fi
 if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
     install_bluetooth
+fi
+if ask "Install kernel headers?" "Y"; then
+    install_headers
 fi
 if ask "Reboot to apply changes?" "Y"; then
     reboot
