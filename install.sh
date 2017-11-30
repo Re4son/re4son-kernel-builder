@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.3.0"
+VERSION="4.9-1.4.0"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -342,6 +342,33 @@ function remove_nexmon() {
     return 0
 }
 
+function remove_nexmon_silent() {
+
+    ARCH=`dpkg --print-architecture`
+    printf "\n\t**** Removing Nexmon drivers ****\n"
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
+        printf "\n\t!!!! No driver backup found !!!!\n"
+        exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+    else
+        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
+    fi
+    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
+        printf "\n\t!!!! No firmware backup found !!!!\n"
+        exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    else
+        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    fi
+    # Load drivers
+    exitonerr rmmod brcmfmac
+    exitonerr modprobe brcmfmac
+    # remove nexutil
+    if [ ! -f ./usr/bin/nexutil ]; then
+        exitonerr rm -f /usr/bin/nexutil
+    fi
+    printf "\t**** Nexmon drivers removed ****\n\n"
+    return 0
+}
+
 ############
 ##        ##
 ##  MAIN  ##
@@ -351,7 +378,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbrxou' -- $*)
+args=$(getopt -uo 'hevbrxopu' -- $*)
 
 set -- $args
 
@@ -389,6 +416,10 @@ do
             ;;
         -o)
             remove_nexmon
+            exit 0
+            ;;
+        -o)
+            remove_nexmon_silent
             exit 0
             ;;
         -u)
