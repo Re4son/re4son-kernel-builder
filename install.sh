@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.4.0"
+VERSION="4.9-1.4.1"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -418,7 +418,7 @@ do
             remove_nexmon
             exit 0
             ;;
-        -o)
+        -p)
             remove_nexmon_silent
             exit 0
             ;;
