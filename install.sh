@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.4.1"
+VERSION="4.9-1.4.2"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -83,76 +83,10 @@ function check_update() {
 
 function install_bluetooth {
     printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
-    ARCH=`dpkg --print-architecture`
-
-    ## Install dependencies
-    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' libreadline6|grep "ok installed")
-    printf "\t**** Checking for libreadline6: ${PKG_STATUS} ****\n"
-    if [ "" == "$PKG_STATUS" ]; then
-        printf "Fixing unmet dependencies. Installing libreadline6.\n"
-        if [ "armel" == "$ARCH" ]; then
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armel.deb
-        else
-            dpkg -i ./repo/libreadline6_6.3-8+b3_armhf.deb
-        fi
-    fi
-
-    ## Check for existing installations
-    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' bluez|grep "ok installed")
-    printf "\t**** Checking for existing bluez installation: ${PKG_STATUS} ****\n"
-    if [ "" != "$PKG_STATUS" ]; then
-        PKG_SOURCE=$(dpkg-query -W bluez|grep "re4son")
-        if [ "" == "$PKG_SOURCE" ]; then
-            printf "\t**** Found incompatible bluez package. Removing it... ****\n"
-            apt remove -y bluez
-            printf "\t**** Incompatible bluez package removed. ****\n"
-        fi
-
-    fi
-    PKG_STATUS=$(dpkg-query -W --showformat='${Status}\n' pi-bluetooth|grep "ok installed")
-    printf "\t**** Checking for existing pi-bluetooth installation: ${PKG_STATUS} ****\n"
-    if [ "" != "$PKG_STATUS" ]; then
-        PKG_SOURCE=$(dpkg-query -W pi-bluetooth|grep "re4son")
-        if [ "" == "$PKG_SOURCE" ]; then
-            printf "\t**** Found incompatible pi-bluetooth package. Removing it... ****\n"
-            apt remove -y pi-bluetooth
-            printf "\t**** Incompatible pi-bluetooth package removed. ****\n"
-        fi
-    fi
-
-    dpkg --force-all -i ./repo/bluez-firmware_1.2-3_all.deb
-
-    if [ "armel" == "$ARCH" ]; then
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi1+re4son_armel.deb
-    else
-        dpkg --force-all -i ./repo/bluez_5.39-1+rpi3+re4son_armhf.deb
-    fi
-    dpkg --force-all -i ./repo/pi-bluetooth_0.1.4+re4son_all.deb
-    apt-mark hold bluez-firmware bluez pi-bluetooth
-
-    if [ ! -f  /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules ]; then
-      cp firmware/50-bluetooth-hci-auto-poweron.rules /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
-    fi
-    ## Above rule runs /bin/hciconfig but its found in /usr/bin under kali, lets create a link
-    if [ ! -f  /bin/hciconfig ]; then
-      ln -s /usr/bin/hciconfig /bin/hciconfig
-    fi
-    ## systemd version 232 breaks execution of above bluetooth rule, let's fix that
-    SYSTEMD_VER=$(systemd --version|grep systemd|sed 's/systemd //')
-    if (( $SYSTEMD_VER >= 232 )); then
-        if [ -f /lib/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /lib/systemd/system/systemd-udevd.service
-        elif [ -f /etc/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/^RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6.*/RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6 AF_BLUETOOTH/' /etc/systemd/system/systemd-udevd.service
-        fi
-    fi
-    printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W installed ****\n\n"
-    if ask "Enable Bluetooth services?" "Y"; then
-        systemctl unmask bluetooth.service
-        systemctl enable bluetooth
-        systemctl enable hciuart
-        printf "\t**** Bluetooth services enabled\n\n"
-    fi
+    apt update
+    apt install -y ./repo/pi-bluetooth+re4son*.deb
+    systemctl enable hciuart && systemctl enable bluetooth
+    printf "\t**** Bluetooth services installed\n\n"
     return 0
 }
 
@@ -231,34 +165,7 @@ function remove_bluetooth {
         systemctl stop hciuart
 
         printf "\t**** Removing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
-
-        ARCH=`dpkg --print-architecture`
-        apt-mark unhold bluez-firmware bluez pi-bluetooth
-
-        PKG_STATUS=$(dpkg-query -W pi-bluetooth|grep "re4son")
-        printf "\t**** Checking for Re4son\'s pi-bluetooth: ${PKG_STATUS} ****\n"
-        if [ "" != "$PKG_STATUS" ]; then
-            dpkg --force-all -P pi-bluetooth
-        fi
-
-        PKG_STATUS=$(dpkg-query -W bluez|grep "re4son")
-        printf "\t**** Checking for Re4son\'s bluez: ${PKG_STATUS}\n"
-        if [ "" != "$PKG_STATUS" ]; then
-            dpkg --force-all -P bluez
-        fi
-
-        dpkg --force-all -P libreadline6
-
-        rm -f /lib/udev/rules.d/50-bluetooth-hci-auto-poweron.rules
-        if [ -L  /bin/hciconfig ]; then
-            rm -f /bin/hciconfig
-        fi
-        if [ -f /lib/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/AF_INET6 AF_BLUETOOTH/AF_INET6/' /lib/systemd/system/systemd-udevd.service
-        elif [ -f /etc/systemd/system/systemd-udevd.service ]; then
-            sed -i 's/AF_INET6 AF_BLUETOOTH/AF_INET6/' /etc/systemd/system/systemd-udevd.service
-        fi
-
+        apt purge -y pi-bluetooth+re4son bluez bluez-firmware
         printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****\n\n"
 
         if ask "Reboot to apply changes?"; then
