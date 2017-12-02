@@ -2,9 +2,10 @@ Package History:
 
 re4son_kali-pi-tft_kernel_old = re4son_kali-pi-tft_kernel_4.1.21_current
 re4son-kernel_old = re4son-kernel_4.4.50_current
-re4son-kernel_current = re4son-kernel_4.9.41_current
+re4son-kernel_current = re4son-kernel_4.9.59_current
 
 
+re4son-kernel_4.9.59_current = re4son-kernel_4.9.59-20171202
 re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
@@ -12,6 +13,25 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.59-20171202.tar.xz
+================================================
+RPi V6: Kernel 4.9.59-Re4son+ #1
+RPi V7: Kernel 4.9.59-Re4son-v7+ #1
+- Upgraded install.sh to 4.9-1.4.2
+
+re4son-kernel_4.9.59-20171123.tar.xz
+================================================
+RPi V6: Kernel 4.9.59-Re4son+ #1
+RPi V7: Kernel 4.9.59-Re4son-v7+ #1
+- Replaced all bluetooth packages with pi-bluetooth+re4son
+
+re4son-kernel_4.9.59-20171122.tar.xz
+================================================
+RPi V6: Kernel 4.9.59-Re4son+ #1
+RPi V7: Kernel 4.9.59-Re4son-v7+ #1
+- Includes new nexmon drivers as of commit:
+  be2114e9a5859c686ba9dcbf557cdfed41aa17b9
 
 re4son-kernel_4.9.41-20171031.tar.xz
 ================================================
@@ -393,14 +413,18 @@ Kernel history:
 
 RPi V6:
 ********
+4.9.59-Re4son-v7+ #1 - 22-November-2017:
+----------------------------------
+- based on 4.9.41-Re4son-v7+ #24
+
 4.9.41-Re4son+ #24 - 29-October-2017:
 ----------------------------------
-- based on 4.9.24-Re4son+ #23
+- based on 4.9.41-Re4son+ #23
 - Add carl9170 patch
 
 4.9.41-Re4son+ #23 - 17-October-2017:
 ----------------------------------
-- based on 4.9.24-Re4son+ #21
+- based on 4.9.41-Re4son+ #21
 - ath9k_htc debug enabled
 
 4.9.41-Re4son+ #21 - 28-August-2017:
@@ -573,14 +597,18 @@ RPi V6:
 
 RPi V7:
 ********
+4.9.59-Re4son-v7+ #1 - 22-November-2017:
+----------------------------------
+- based on 4.9.41-Re4son-v7+ #24
+
 4.9.41-Re4son-v7+ #24 - 29-October-2017:
 ----------------------------------
-- based on 4.9.24-Re4son-v7+ #23
+- based on 4.9.41-Re4son-v7+ #23
 - Add carl9170 patch
 
 4.9.41-Re4son-v7+ #23 - 17-October-2017:
 ----------------------------------------
-- based on 4.9.24-Re4son-v7+ #21
+- based on 4.9.41-Re4son-v7+ #21
 - ath9k_htc debug enabled
 
 4.9.41-Re4son-v7+ #21 - 28-August-2017:
