@@ -5,7 +5,7 @@ re4son-kernel_old = re4son-kernel_4.4.50_current
 re4son-kernel_current = re4son-kernel_4.9.59_current
 
 
-re4son-kernel_4.9.59_current = re4son-kernel_4.9.59-20180128
+re4son-kernel_4.9.59_current = re4son-kernel_4.9.59-20180131
 re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
@@ -13,6 +13,15 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.59-20180131.tar.xz
+================================================
+RPi V6: Kernel 4.9.59-Re4son+ #3
+RPi V7: Kernel 4.9.59-Re4son-v7+ #3
+- Add drivers for:
+  - RTL8812AU (monitor and injection support)
+  - RTL8814AU (monitor and injection support)
+  - RTL8188EU (monitor support)
 
 re4son-kernel_4.9.59-20180128.tar.xz
 ================================================
@@ -423,9 +432,17 @@ Kernel history:
 
 RPi V6:
 ********
-4.9.59-Re4son-v7+ #1 - 22-November-2017:
+4.9.59-Re4son+ #3 - 31-January-2018:
+---------------------------------------
+- based on 4.9.59-Re4son+ #1
+- Add drivers for:
+  - RTL8812AU (monitor and injection support)
+  - RTL8814AU (monitor and injection support)
+  - RTL8188EU (monitor support)
+
+4.9.59-Re4son+ #1 - 22-November-2017:
 ----------------------------------
-- based on 4.9.41-Re4son-v7+ #24
+- based on 4.9.41-Re4son+ #24
 
 4.9.41-Re4son+ #24 - 29-October-2017:
 ----------------------------------
@@ -607,6 +624,14 @@ RPi V6:
 
 RPi V7:
 ********
+4.9.59-Re4son-v7+ #3 - 31-January-2018:
+---------------------------------------
+- based on 4.9.59-Re4son-v7+ #1
+- Add drivers for:
+  - RTL8812AU (monitor and injection support)
+  - RTL8814AU (monitor and injection support)
+  - RTL8188EU (monitor support)
+
 4.9.59-Re4son-v7+ #1 - 22-November-2017:
 ----------------------------------
 - based on 4.9.41-Re4son-v7+ #24
