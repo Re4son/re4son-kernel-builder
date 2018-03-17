@@ -17,12 +17,18 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.9.59"
-V6_VERSION="3"
-V7_VERSION="3"
+VERSION="4.9.80"
+V6_VERSION="2"
+V7_VERSION="2"
 
 
 ## Repos
+###################################################
+##             4.9.80-Re4son                     ##
+GIT_REPO="Re4son/re4son-raspberrypi-linux"
+GIT_BRANCH="rpi-4.9.80-re4son"	 	 	         ## 4.9.80 Commit used for firmware Re4son-4.80 release
+FW_REPO="Re4son/RPi-Distro-firmware"
+FW_BRANCH="4.9.80"
 ###################################################
 ##             4.4.28                            ##
 ##GIT_BRANCH="1423ac8bfbfb2a9d092b604c676e7a58a5fa3367"  ## 4.9.28 Commit used for firmware 1.20170515 release
@@ -31,10 +37,10 @@ V7_VERSION="3"
 ##GIT_BRANCH="ef3b440e0e4d9ca70060483aa33d5b1201ceceb8"  ## 4.9.24 Commit used for firmware 1.20170427 release
 ###################################################
 ##             4.9.59-Re4son                     ##
-GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.9.59-re4son"	 	 	         ## 4.9.59 Commit used for firmware 1.20171029 release
-FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.9.59"
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.9.59-re4son"	 	 	         ## 4.9.59 Commit used for firmware 1.20171029 release
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.9.59"
 ###################################################
 ##             4.9.41-Re4son                     ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"

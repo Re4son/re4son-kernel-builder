@@ -15,7 +15,7 @@ function print_help() {
     printf "\t\t\t\t-h\tPrint this help\n"
     printf "\t\t\t\t-v\tPrint version of this installer\n"
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
-    printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi3 & RPi Zero W\n"
+    printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi 3 B(+) & RPi Zero W\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
     printf "\t\t\t\t-x\tOnly install Nexmon drivers\n"
     printf "\t\t\t\t-o\tOnly remove Nexmon drivers\n"
@@ -91,7 +91,7 @@ function install_bluetooth {
 }
 
 function install_firmware {
-    printf "\n\t**** Installing firmware for RasPi bluetooth chip ****\n"
+    printf "\n\t**** Installing firmware for RasPi wifi & bluetooth chips ****\n"
     #Raspberry Pi 3 & Zero W
     if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
@@ -100,13 +100,14 @@ function install_firmware {
       cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
     fi
 
-    #Raspberry Pi Zero W
-    if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
-        cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
-    fi
-    if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
-        cp firmware/brcmfmac43430-sdio.txt /lib/firmware/brcm/brcmfmac43430-sdio.txt
-    fi
+    #Raspberry Pi 3 B+ & Zero W wifi and bluetooth firmware
+    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
+    ##    cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
+    ##fi
+    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
+    ##    cp firmware/brcmfmac43430-sdio.txt /lib/firmware/brcm/brcmfmac43430-sdio.txt
+    ##fi
+    cp -f firmware/brcmfmac* /lib/firmware/brcm/
     printf "\t**** Firmware installed                           ****\n"
     return 0
 }
