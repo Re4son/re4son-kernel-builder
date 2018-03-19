@@ -82,7 +82,7 @@ function check_update() {
 }
 
 function install_bluetooth {
-    printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
+	printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 B(+) & Zero W ****\n"
     apt update
     apt install -y ./repo/pi-bluetooth+re4son*.deb
     systemctl enable hciuart && systemctl enable bluetooth
@@ -91,7 +91,7 @@ function install_bluetooth {
 }
 
 function install_firmware {
-    printf "\n\t**** Installing firmware for RasPi wifi & bluetooth chips ****\n"
+	printf "\n\t**** Installing firmware for Raspberry Pi 3 B(+) & Zero W wifi & bluetooth chips ****\n"
     #Raspberry Pi 3 & Zero W
     if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
@@ -101,12 +101,6 @@ function install_firmware {
     fi
 
     #Raspberry Pi 3 B+ & Zero W wifi and bluetooth firmware
-    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
-    ##    cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
-    ##fi
-    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
-    ##    cp firmware/brcmfmac43430-sdio.txt /lib/firmware/brcm/brcmfmac43430-sdio.txt
-    ##fi
     cp -f firmware/brcmfmac* /lib/firmware/brcm/
     printf "\t**** Firmware installed                           ****\n"
     return 0
@@ -117,13 +111,21 @@ function install_kernel(){
     if grep -q boot /proc/mounts; then
         printf "\n\t**** /boot is mounted ****\n"
     else
-        printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
-        printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
-        if ask "Continue?" "N"; then
-            printf "\n\t*** Proceeding... ****\n\n"
+        if ask "Cannot find /boot. Maybe it is not mounted. Shall I try mounting it?"; then
+            printf "\n\t**** Mounting /boot ****\n"
+	    mount /dev/mmcblk0p1 /boot
+        fi
+        if grep -q boot /proc/mounts; then
+            printf "\n\t**** /boot is mounted ****\n"
         else
-            printf "\n\t#### Aborting... ####\n\n"
-            exit 1
+            printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
+            printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
+            if ask "Continue?" "N"; then
+                printf "\n\t*** Proceeding... ****\n\n"
+            else
+                printf "\n\t#### Aborting... ####\n\n"
+                exit 1
+	    fi
         fi
     fi
 
@@ -341,7 +343,7 @@ printf "\n"
 if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
+if ask "Install support for Raspberry Pi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
     install_bluetooth
 fi
