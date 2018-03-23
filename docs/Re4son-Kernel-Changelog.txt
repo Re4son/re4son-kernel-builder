@@ -3,8 +3,10 @@ Package History:
 re4son_kali-pi-tft_kernel_old = re4son_kali-pi-tft_kernel_4.1.21_current
 re4son-kernel_old = re4son-kernel_4.4.50_current
 re4son-kernel_current = re4son-kernel_4.9.59_current
+re4son-kernel_next = re4son-kernel_4.14.27_current
 
 
+re4son-kernel_4.14.27_current = re4son-kernel_4.14.27-20180320
 re4son-kernel_4.9.59_current = re4son-kernel_4.9.59-20180131
 re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
@@ -13,6 +15,14 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.14.27-20180320.tar.xz
+================================================
+RPi V6: Kernel 4.14.27-Re4son+ #3
+RPi V7: Kernel 4.14.27-Re4son-v7+ #3
+- Bump to 4.14.27
+- Support for Raspberry Pi 3 B+
+- No support for 4D Systems displays
 
 re4son-kernel_4.9.59-20180131.tar.xz
 ================================================
@@ -432,6 +442,12 @@ Kernel history:
 
 RPi V6:
 ********
+4.14.27-Re4son+ #3 - 19-March-2018:
+-----------------------------------
+- Bump to 4.14.27
+- Support for Raspberry Pi 3 B+
+- No support for 4D Systems displays
+
 4.9.59-Re4son+ #3 - 31-January-2018:
 ---------------------------------------
 - based on 4.9.59-Re4son+ #1
@@ -624,6 +640,12 @@ RPi V6:
 
 RPi V7:
 ********
+4.14.27-Re4son-v7+ #3 - 19-March-2018:
+---------------------------------------
+- Bump to 4.14.27
+- Support for Raspberry Pi 3 B+
+- No support for 4D Systems displays
+
 4.9.59-Re4son-v7+ #3 - 31-January-2018:
 ---------------------------------------
 - based on 4.9.59-Re4son-v7+ #1
