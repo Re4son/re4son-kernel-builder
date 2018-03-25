@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.4.2"
+VERSION="4.9-1.5.1"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -17,8 +17,6 @@ function print_help() {
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi 3 B(+) & RPi Zero W\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
-    printf "\t\t\t\t-x\tOnly install Nexmon drivers\n"
-    printf "\t\t\t\t-o\tOnly remove Nexmon drivers\n"
     printf "\t\t\t\t-u\tUpdate Re4son-Kernel Installer\n\n"
     exit 1
 }
@@ -84,14 +82,14 @@ function check_update() {
 function install_bluetooth {
     printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
     apt update
-    apt install -y ./repo/pi-bluetooth+re4son*.deb
+    apt install -y ./repo/pi-bluetooth*.deb
     systemctl enable hciuart && systemctl enable bluetooth
     printf "\t**** Bluetooth services installed\n\n"
     return 0
 }
 
 function install_firmware {
-    printf "\n\t**** Installing firmware for RasPi wifi & bluetooth chips ****\n"
+	printf "\n\t**** Installing firmware for Raspberry Pi 3 B(+) & Zero W wifi & bluetooth chips ****\n"
     #Raspberry Pi 3 & Zero W
     if [ ! -f /lib/firmware/brcm/BCM43430A1.hcd ]; then
         cp firmware/BCM43430A1.hcd /lib/firmware/brcm/BCM43430A1.hcd
@@ -101,12 +99,6 @@ function install_firmware {
     fi
 
     #Raspberry Pi 3 B+ & Zero W wifi and bluetooth firmware
-    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.bin ]; then
-    ##    cp firmware/brcmfmac43430-sdio.bin /lib/firmware/brcm/brcmfmac43430-sdio.bin
-    ##fi
-    ##if [ ! -f /lib/firmware/brcm/brcmfmac43430-sdio.txt ]; then
-    ##    cp firmware/brcmfmac43430-sdio.txt /lib/firmware/brcm/brcmfmac43430-sdio.txt
-    ##fi
     cp -f firmware/brcmfmac* /lib/firmware/brcm/
     printf "\t**** Firmware installed                           ****\n"
     return 0
@@ -117,13 +109,21 @@ function install_kernel(){
     if grep -q boot /proc/mounts; then
         printf "\n\t**** /boot is mounted ****\n"
     else
-        printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
-        printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
-        if ask "Continue?" "N"; then
-            printf "\n\t*** Proceeding... ****\n\n"
+        if ask "Cannot find /boot. Maybe it is not mounted. Shall I try mounting it?" "Y"; then
+            printf "\n\t**** Mounting /boot ****\n"
+	    mount /dev/mmcblk0p1 /boot
+        fi
+        if grep -q boot /proc/mounts; then
+            printf "\n\t**** /boot is mounted ****\n"
         else
-            printf "\n\t#### Aborting... ####\n\n"
-            exit 1
+            printf "\n\t#### /boot must be mounted. If you think it's not, quit here and try: ####\n"
+            printf "\t#### sudo mount /dev/mmcblk0p1 /boot                                  ####\n\n"
+            if ask "Continue?" "N"; then
+                printf "\n\t*** Proceeding... ****\n\n"
+            else
+                printf "\n\t#### Aborting... ####\n\n"
+                exit 1
+	    fi
         fi
     fi
 
@@ -146,6 +146,16 @@ function install_kernel(){
     exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
     exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
 
+    ## Install nexmon firmware
+    ARCH=`dpkg --print-architecture`
+    printf "\n\t**** Install nexmon firmware & nexutil ****\n"
+    exitonerr cp -f ./nexmon/${ARCH}/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    # Install nexutil
+    exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    # Install tools
+    exitonerr cp -f ./nexmon/tools/* /usr/local/bin/
+    printf "\n\t**** Nexmon installed ****\n"
+    
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
     mkdir -p /etc/kbd
     touch /etc/kbd/config
@@ -166,7 +176,7 @@ function remove_bluetooth {
         systemctl stop hciuart
 
         printf "\t**** Removing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
-        apt purge -y pi-bluetooth+re4son bluez bluez-firmware
+        apt purge -y pi-bluetooth bluez bluez-firmware
         printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****\n\n"
 
         if ask "Reboot to apply changes?"; then
@@ -286,7 +296,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbrxopu' -- $*)
+args=$(getopt -uo 'hevbrpu' -- $*)
 
 set -- $args
 
