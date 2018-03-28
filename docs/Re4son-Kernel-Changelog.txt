@@ -7,7 +7,7 @@ re4son-kernel_next = re4son-kernel_4.14.27_current
 
 
 re4son-kernel_4.14.27_current = re4son-kernel_4.14.27-20180320
-re4son-kernel_4.9.80_current = re4son-kernel_4.9.80-20180326
+re4son-kernel_4.9.80_current = re4son-kernel_4.9.80-20180327
 re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
@@ -15,6 +15,11 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.9.80-20180327.tar.xz
+================================================
+RPi V6: Kernel 4.9.80-Re4son+ #3
+RPi V7: Kernel 4.9.80-Re4son-v7+ #4
 
 re4son-kernel_4.9.80-20180326.tar.xz
 ================================================
@@ -655,6 +660,11 @@ RPi V6:
 
 RPi V7:
 ********
+4.9.80-Re4son-7+ #4 - 27-March-2018:
+---------------------------------------
+- based on 4.9.80-Re4son-7+ #3
+- upgrade brcmfmac.ko to 43455 version  
+
 4.9.80-Re4son-7+ #3 - 23-March-2018:
 ---------------------------------------
 - based on 4.9.80-Re4son-7+ #2

@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.5.1"
+VERSION="4.9-1.5.2"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -98,9 +98,6 @@ function install_firmware {
       cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
     fi
 
-    #Raspberry Pi 3 B+ & Zero W wifi and bluetooth firmware
-    cp -f firmware/brcmfmac* /lib/firmware/brcm/
-    printf "\t**** Firmware installed                           ****\n"
     return 0
 }
 
@@ -138,7 +135,7 @@ function install_kernel(){
     fi
     ## Reserved
     ## cp src dest
-    printf "\n\t**** Device tree overlays installed ****\n"
+    printf "\n\t**** Device tree overlays installed                      ****\n"
     exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
     exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
     exitonerr dpkg --force-architecture -i libraspberrypi0_*
@@ -148,13 +145,15 @@ function install_kernel(){
 
     ## Install nexmon firmware
     ARCH=`dpkg --print-architecture`
-    printf "\n\t**** Install nexmon firmware & nexutil ****\n"
-    exitonerr cp -f ./nexmon/${ARCH}/brcmfmac43430-sdio.bin /lib/firmware/brcm/
+    printf "\t**** Installing firmware                          ****\n"
+    cp -f firmware/brcmfmac* /lib/firmware/brcm/
+    printf "\t**** Firmware installed                           ****\n"
+    printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
     exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
     # Install tools
     exitonerr cp -f ./nexmon/tools/* /usr/local/bin/
-    printf "\n\t**** Nexmon installed ****\n"
+    printf "\n\t**** Nexutil installed ****\n"
     
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
     mkdir -p /etc/kbd
