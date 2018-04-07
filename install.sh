@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.9-1.4.2"
+VERSION="4.14-1.5.2"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -17,8 +17,6 @@ function print_help() {
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi 3 B(+) & RPi Zero W\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
-    printf "\t\t\t\t-x\tOnly install Nexmon drivers\n"
-    printf "\t\t\t\t-o\tOnly remove Nexmon drivers\n"
     printf "\t\t\t\t-u\tUpdate Re4son-Kernel Installer\n\n"
     exit 1
 }
@@ -82,9 +80,9 @@ function check_update() {
 }
 
 function install_bluetooth {
-	printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 B(+) & Zero W ****\n"
+    printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
     apt update
-    apt install -y ./repo/pi-bluetooth+re4son*.deb
+    apt install -y ./repo/pi-bluetooth*.deb
     systemctl enable hciuart && systemctl enable bluetooth
     printf "\t**** Bluetooth services installed\n\n"
     return 0
@@ -100,9 +98,6 @@ function install_firmware {
       cp firmware/99-com.rules /etc/udev/rules.d/99-com.rules
     fi
 
-    #Raspberry Pi 3 B+ & Zero W wifi and bluetooth firmware
-    cp -f firmware/brcmfmac* /lib/firmware/brcm/
-    printf "\t**** Firmware installed                           ****\n"
     return 0
 }
 
@@ -111,7 +106,7 @@ function install_kernel(){
     if grep -q boot /proc/mounts; then
         printf "\n\t**** /boot is mounted ****\n"
     else
-        if ask "Cannot find /boot. Maybe it is not mounted. Shall I try mounting it?"; then
+        if ask "Cannot find /boot. Maybe it is not mounted. Shall I try mounting it?" "Y"; then
             printf "\n\t**** Mounting /boot ****\n"
 	    mount /dev/mmcblk0p1 /boot
         fi
@@ -140,7 +135,7 @@ function install_kernel(){
     fi
     ## Reserved
     ## cp src dest
-    printf "\n\t**** Device tree overlays installed ****\n"
+    printf "\n\t**** Device tree overlays installed                      ****\n"
     exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
     exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
     exitonerr dpkg --force-architecture -i libraspberrypi0_*
@@ -148,6 +143,18 @@ function install_kernel(){
     exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
     exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
 
+    ## Install nexmon firmware
+    ARCH=`dpkg --print-architecture`
+    printf "\t**** Installing firmware                          ****\n"
+    cp -f firmware/brcmfmac* /lib/firmware/brcm/
+    printf "\t**** Firmware installed                           ****\n"
+    printf "\n\t**** Installing nexutil ****\n"
+    # Install nexutil
+    exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    # Install tools
+    exitonerr cp -f ./nexmon/tools/* /usr/local/bin/
+    printf "\n\t**** Nexutil installed ****\n"
+    
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
     mkdir -p /etc/kbd
     touch /etc/kbd/config
@@ -168,7 +175,7 @@ function remove_bluetooth {
         systemctl stop hciuart
 
         printf "\t**** Removing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
-        apt purge -y pi-bluetooth+re4son bluez bluez-firmware
+        apt purge -y pi-bluetooth bluez bluez-firmware
         printf "\t**** Bluetooth packages for Raspberry Pi 3 & Zero W removed ****\n\n"
 
         if ask "Reboot to apply changes?"; then
@@ -288,7 +295,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbrxopu' -- $*)
+args=$(getopt -uo 'hevbrpu' -- $*)
 
 set -- $args
 
@@ -343,7 +350,7 @@ printf "\n"
 if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
 fi
-if ask "Install support for Raspberry Pi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
+if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
     install_bluetooth
 fi
