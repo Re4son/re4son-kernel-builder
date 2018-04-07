@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "++ Shutting mon0 down"
+ifconfig mon0 down && iw dev mon0 del
+echo "++ mon0 should no longer exist:"
+ip link show dev mon0
