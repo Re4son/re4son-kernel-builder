@@ -6,8 +6,8 @@ re4son-kernel_current = re4son-kernel_4.9.80_current
 re4son-kernel_next = re4son-kernel_4.14.27_current
 
 
-re4son-kernel_4.14.30_current = re4son-kernel_4.14.30-20180410
-re4son-kernel_4.9.80_current = re4son-kernel_4.9.80-20180404
+re4son-kernel_4.14.30_current = re4son-kernel_4.14.30-20180616
+re4son-kernel_4.9.80_current = re4son-kernel_4.9.80-20180616
 re4son-kernel_4.9.41_current = re4son-kernel_4.9.41-20171031
 re4son-kernel_4.4.50_current = re4son-kernel_4.4.50-20170927
 re4son_kali-pi-tft_kernel_4.4.49_current = re4son_kali-pi-tft_kernel_4.4.49-20170219
@@ -15,6 +15,18 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.14.30-20180616.tar.xz
+================================================
+RPi V6: Kernel 4.14.30-Re4son+ #1
+RPi V7: Kernel 4.14.30-Re4son-v7+ #1
+- re4son-pi-tft-setup v. 4.9-1.20.0 
+
+re4son-kernel_4.9.80-20180616.tar.xz
+================================================
+RPi V6: Kernel 4.9.80-Re4son+ #3
+RPi V7: Kernel 4.9.80-Re4son-v7+ #5
+- re4son-pi-tft-setup v. 4.9-1.20.0 
 
 re4son-kernel_4.14.30-20180410.tar.xz
 ================================================
