@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.14-1.5.2"
+VERSION="4.14-1.6.0"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -11,11 +11,12 @@ function print_version() {
 
 function print_help() {
     printf "\n\tUsage: ${PROG_NAME} [option]\n"
-    printf "\t\t\t   (No option)\tInstall Re4son-Kernel and ask to install Re4son Bluetooth support\n"
+    printf "\t\t\t   (No option)\tInstall Re4son-Kernel and ask to install tools & Re4son Bluetooth support\n"
     printf "\t\t\t\t-h\tPrint this help\n"
     printf "\t\t\t\t-v\tPrint version of this installer\n"
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi 3 B(+) & RPi Zero W\n"
+    printf "\t\t\t\t-t\tOnly install Kali-Pi tools\n"
     printf "\t\t\t\t-r\tOnly remove Re4son Bluetooth support\n"
     printf "\t\t\t\t-u\tUpdate Re4son-Kernel Installer\n\n"
     exit 1
@@ -151,8 +152,6 @@ function install_kernel(){
     printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
     exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
-    # Install tools
-    exitonerr cp -f ./nexmon/tools/* /usr/local/bin/
     printf "\n\t**** Nexutil installed ****\n"
     
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
@@ -194,97 +193,28 @@ function install_headers() {
     return 0
 }
 
-function install_nexmon() {
-
-    printf "\n\t**** Installing Nexmon drivers ****\n"
-    ARCH=`dpkg --print-architecture`
-    # Backup original brcmfmac.ko
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
-        if [ ! -d ./nexmon/${ARCH}/org ]; then
-            exitonerr mkdir -p ./nexmon/${ARCH}/org
-        fi
-        exitonerr cp /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko ./nexmon/${ARCH}/org/
+function install_tools() {
+    printf "\n\t**** Installing Kali-Pi tools ****\n"
+    if [ ! -f /usr/bin/kalipi-config ]; then
+        cp -f tools/kalipi-config /usr/bin 
+        chmod 755 /usr/bin/kalipi-config
     fi
-    # Backup original brcmfmac43430-sdio.bin
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
-        if [ ! -d ./nexmon/${ARCH}/org ]; then
-            exitonerr mkdir -p ./nexmon/${ARCH}/org
-        fi
-        exitonerr cp /lib/firmware/brcm/brcmfmac43430-sdio.bin ./nexmon/${ARCH}/org/
+    if [ ! -f /usr/bin/kalipi-tft-config ]; then
+        cp -f tools/kalipi-tft-config /usr/bin 
+        chmod 755 /usr/bin/kalipi-tft-config
     fi
-    # Install drivers
-        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
-        exitonerr cp -f ./nexmon/${ARCH}/brcmfmac43430-sdio.bin /lib/firmware/brcm/
-    # Load drivers
-        exitonerr rmmod brcmfmac
-        exitonerr modprobe brcmfmac
-    # Install nexutil
-        exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    if [ ! -f /usr/bin/mon0up ]; then
+        cp -f tools/mon0up /usr/bin 
+        chmod 755 /usr/bin/mon0up
+    fi
+    if [ ! -f /usr/bin/mon0down ]; then
+        cp -f tools/mon0down /usr/bin 
+        chmod 755 /usr/bin/mon0down
+    fi
     printf "\t**** Installation completed ****\n\n"
     return 0
 }
 
-function remove_nexmon() {
-
-    ARCH=`dpkg --print-architecture`
-    printf "\n\t**** Removing Nexmon drivers ****\n"
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
-        printf "\n\t!!!! No driver backup found !!!!\n"
-        if ask "Install the original Broadcom drivers?" "Y"; then
-            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
-        else
-            printf "\n\t!!!! Installation aborted !!!!\n"
-        fi
-    else
-        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
-    fi
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
-        printf "\n\t!!!! No firmware backup found !!!!\n"
-        if ask "Install the original Broadcom firmware?" "Y"; then
-            exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac43430-sdio.bin /lib/firmware/brcm/
-        else
-            printf "\n\t!!!! Installation aborted !!!!\n"
-        fi
-    else
-        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin /lib/firmware/brcm/
-    fi
-    # Load drivers
-    exitonerr rmmod brcmfmac
-    exitonerr modprobe brcmfmac
-    # remove nexutil
-    if [ ! -f ./usr/bin/nexutil ]; then
-        exitonerr rm -f /usr/bin/nexutil
-    fi
-    printf "\t**** Nexmon drivers removed ****\n\n"
-    return 0
-}
-
-function remove_nexmon_silent() {
-
-    ARCH=`dpkg --print-architecture`
-    printf "\n\t**** Removing Nexmon drivers ****\n"
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac.ko ]; then
-        printf "\n\t!!!! No driver backup found !!!!\n"
-        exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
-    else
-        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac.ko /lib/modules/$(uname -r)/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/
-    fi
-    if [ ! -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin ]; then
-        printf "\n\t!!!! No firmware backup found !!!!\n"
-        exitonerr cp -f ./nexmon/${ARCH}/oem/brcmfmac43430-sdio.bin /lib/firmware/brcm/
-    else
-        exitonerr cp -f ./nexmon/${ARCH}/org/brcmfmac43430-sdio.bin /lib/firmware/brcm/
-    fi
-    # Load drivers
-    exitonerr rmmod brcmfmac
-    exitonerr modprobe brcmfmac
-    # remove nexutil
-    if [ ! -f ./usr/bin/nexutil ]; then
-        exitonerr rm -f /usr/bin/nexutil
-    fi
-    printf "\t**** Nexmon drivers removed ****\n\n"
-    return 0
-}
 
 ############
 ##        ##
@@ -295,7 +225,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbrpu' -- $*)
+args=$(getopt -uo 'hevbrtpu' -- $*)
 
 set -- $args
 
@@ -327,16 +257,8 @@ do
             remove_bluetooth
             exit 0
             ;;
-        -x)
-            install_nexmon
-            exit 0
-            ;;
-        -o)
-            remove_nexmon
-            exit 0
-            ;;
-        -p)
-            remove_nexmon_silent
+        -t)
+            install_tools
             exit 0
             ;;
         -u)
@@ -357,6 +279,9 @@ fi
 if ask "Install kernel headers?" "Y"; then
     install_headers
 fi
+if ask "Install kali-pi tools (kalipi-config, kalipi-tft-config, mon0up, mon0down)?" "Y"; then
+    install_tools
+fi 
 if ask "Reboot to apply changes?" "Y"; then
     reboot
 fi
