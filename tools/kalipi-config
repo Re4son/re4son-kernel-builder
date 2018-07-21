@@ -12,7 +12,7 @@ BLACKLIST=/etc/modprobe.d/kalipi-blacklist.conf
 CONFIG=/boot/config.txt
 PROG_NAME="$0"
 ARGS="$@"
-VERSION="4.9-1.4.1"
+VERSION="4.14-1.7.0"
 
 info() {
     system="$1"
@@ -140,102 +140,88 @@ you have heavily customised your installation.\
 " 20 70 1
 }
 
-get_can_expand() {
-  ROOT_PART=$(mount | sed -n 's|^/dev/\(.*\) on / .*|\1|p')
+function do_kalipi_tft_config() {
+    BIN_PATH=$(which kalipi-tft-config)
+    if [ "" = "$BIN_PATH" ]; then
+    whiptail --msgbox "\
+Error:
+The tool "kalipi-tft-config" cannot be found on this system.
+It can be installed from this site:
+https://github.com/Re4son/RPi-Tweaks/tree/master/kalipi-tft-config
+" 20 70 1
+    else
+        exec $BIN_PATH
+    fi
+}
 
-  PART_NUM=${ROOT_PART#mmcblk0p}
-  if [ "$PART_NUM" = "$ROOT_PART" ]; then
-    echo 1
-    exit
+get_partvars () {
+    ROOT_PART_DEV=$(findmnt / -o source -n)
+    ROOT_PART_NAME=$(echo "$ROOT_PART_DEV" | cut -d "/" -f 3)
+    ROOT_DEV_NAME=$(echo /sys/block/*/"${ROOT_PART_NAME}" | cut -d "/" -f 4)
+    ROOT_DEV="/dev/${ROOT_DEV_NAME}"
+    ROOT_PART_NUM=$(cat "/sys/block/${ROOT_DEV_NAME}/${ROOT_PART_NAME}/partition")
+
+    BOOT_PART_DEV=$(findmnt /boot -o source -n)
+    BOOT_PART_NAME=$(echo "$BOOT_PART_DEV" | cut -d "/" -f 3)
+    BOOT_DEV_NAME=$(echo /sys/block/*/"${BOOT_PART_NAME}" | cut -d "/" -f 4)
+    BOOT_PART_NUM=$(cat "/sys/block/${BOOT_DEV_NAME}/${BOOT_PART_NAME}/partition")
+
+    OLD_DISKID=$(fdisk -l "$ROOT_DEV" | sed -n 's/Disk identifier: 0x\([^ ]*\)/\1/p')
+    ROOT_DEV_SIZE=$(cat "/sys/block/${ROOT_DEV_NAME}/size")
+
+    TARGET_END=$((ROOT_DEV_SIZE - 1))
+    PARTITION_TABLE=$(parted -m "$ROOT_DEV" unit s print | tr -d 's')
+
+    LAST_PART_NUM=$(echo "$PARTITION_TABLE" | tail -n 1 | cut -d ":" -f 1)
+    ROOT_PART_LINE=$(echo "$PARTITION_TABLE" | grep -e "^${ROOT_PART_NUM}:")
+    ROOT_PART_START=$(echo "$ROOT_PART_LINE" | cut -d ":" -f 2)
+    ROOT_PART_END=$(echo "$ROOT_PART_LINE" | cut -d ":" -f 3)
+}
+
+check_partvars () {
+  if [ "$BOOT_DEV_NAME" != "$ROOT_DEV_NAME" ]; then
+      FAIL_REASON="Boot and root partitions are on different devices"
+      return 1
   fi
 
-  if [ "$PART_NUM" -ne 2 ]; then
-    echo 1
-    exit
+  if [ "$ROOT_PART_NUM" -ne "$LAST_PART_NUM" ]; then
+    FAIL_REASON="Root partition should be last partition"
+    return 1
   fi
 
-  LAST_PART_NUM=$(parted /dev/mmcblk0 -ms unit s p | tail -n 1 | cut -f 1 -d:)
-  if [ $LAST_PART_NUM -ne $PART_NUM ]; then
-    echo 1
-    exit
+  if [ "$ROOT_PART_END" -gt "$TARGET_END" ]; then
+    FAIL_REASON="Root partition runs past the end of device"
+    return 1
   fi
-  echo 0
+
+  if [ ! -b "$ROOT_DEV" ] || [ ! -b "$ROOT_PART_DEV" ] || [ ! -b "$BOOT_PART_DEV" ] ; then
+    FAIL_REASON="Could not determine partitions"
+    return 1
+  fi
+}
+
+fix_partuuid() {
+  DISKID="$(fdisk -l "$ROOT_DEV" | sed -n 's/Disk identifier: 0x\([^ ]*\)/\1/p')"
+
+  sed -i "s/${OLD_DISKID}/${DISKID}/g" /etc/fstab
+  sed -i "s/${OLD_DISKID}/${DISKID}/" /boot/cmdline.txt
 }
 
 do_expand_rootfs() {
-  ROOT_PART=$(mount | sed -n 's|^/dev/\(.*\) on / .*|\1|p')
-
-  PART_NUM=${ROOT_PART#mmcblk0p}
-  if [ "$PART_NUM" = "$ROOT_PART" ]; then
-    whiptail --msgbox "$ROOT_PART is not an SD card. Don't know how to expand" 20 60 2
-    return 0
+  get_partvars
+  if ! check_partvars; then
+    whiptail --msgbox "Could not expand filesystem, please try manually.\n${FAIL_REASON}" 20 60
+    return 1
   fi
-
-  # NOTE: the NOOBS partition layout confuses parted. For now, let's only 
-  # agree to work with a sufficiently simple partition layout
-  if [ "$PART_NUM" -ne 2 ]; then
-    whiptail --msgbox "Your partition layout is not currently supported by this tool. You are probably using NOOBS, in which case your root filesystem is already expanded anyway." 20 60 2
-    return 0
+  if ! parted -m "$ROOT_DEV" u s resizepart "$ROOT_PART_NUM" "$TARGET_END"; then
+    whiptail --msgbox "Could not expand filesystem, please try manually.\nRoot partition resize failed" 20 60
+    return 1
   fi
-
-  LAST_PART_NUM=$(parted /dev/mmcblk0 -ms unit s p | tail -n 1 | cut -f 1 -d:)
-  if [ $LAST_PART_NUM -ne $PART_NUM ]; then
-    whiptail --msgbox "$ROOT_PART is not the last partition. Don't know how to expand" 20 60 2
-    return 0
-  fi
-
-  # Get the starting offset of the root partition
-  PART_START=$(parted /dev/mmcblk0 -ms unit s p | grep "^${PART_NUM}" | cut -f 2 -d: | sed 's/[^0-9]//g')
-  [ "$PART_START" ] || return 1
-  # Return value will likely be error for fdisk as it fails to reload the
-  # partition table because the root fs is mounted
-  fdisk /dev/mmcblk0 <<EOF
-p
-d
-$PART_NUM
-n
-p
-$PART_NUM
-$PART_START
-
-p
-w
-EOF
-  ASK_TO_REBOOT=1
-
-  # now set up an init.d script
-cat <<EOF > /etc/init.d/resize2fs_once &&
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:          resize2fs_once
-# Required-Start:
-# Required-Stop:
-# Default-Start: 3
-# Default-Stop:
-# Short-Description: Resize the root filesystem to fill partition
-# Description:
-### END INIT INFO
-
-. /lib/lsb/init-functions
-
-case "\$1" in
-  start)
-    log_daemon_msg "Starting resize2fs_once" &&
-    resize2fs /dev/$ROOT_PART &&
-    update-rc.d resize2fs_once remove &&
-    rm /etc/init.d/resize2fs_once &&
-    log_end_msg \$?
-    ;;
-  *)
-    echo "Usage: \$0 start" >&2
-    exit 3
-    ;;
-esac
-EOF
-  chmod +x /etc/init.d/resize2fs_once &&
-  update-rc.d resize2fs_once defaults &&
+  partprobe "$ROOT_DEV"
+  resize2fs $ROOT_PART_DEV
+  fix_partuuid
   if [ "$INTERACTIVE" = True ]; then
-    whiptail --msgbox "Root partition has been resized.\nThe filesystem will be enlarged upon the next reboot" 20 60 2
+    whiptail --msgbox "Root partition has been resized successfully." 20 60 2
   fi
 }
 
@@ -1846,7 +1832,7 @@ if [ "" != "$missingpkgs" ]; then
 fi
 # And we want /boot to be mounted
 if ! grep -q boot /proc/mounts; then
-    mount /dev/mmcblk0p1 /boot
+    mount /boot
 fi
 if ! grep -q boot /proc/mounts; then
     printf "\n/boot must be mounted. Try 'mount /boot'\n\n"
@@ -1987,26 +1973,28 @@ if [ "$INTERACTIVE" = True ]; then
   while true; do
     if is_pi ; then
       FUN=$(whiptail --title "Kali-Pi Software Configuration Tool (kalipi-config)" --backtitle "$(cat /proc/device-tree/model| tr -d '\0')" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
-        "1 Change User Password" "Change password for any user" \
-        "2 Network Options" "Configure network settings" \
-        "3 Boot Options" "Configure options for start-up" \
-        "4 Localisation Options" "Set up language and regional settings to match your location" \
-        "5 Interfacing Options" "Configure connections to peripherals" \
-        "6 Overclock" "Configure overclocking for your Pi" \
-        "7 Advanced Options" "Configure advanced settings" \
-        "8 Update" "Update this tool to the latest version" \
-        "9 About kalipi-config" "Information about this configuration tool" \
+        "01 Change User Password" "Change password for any user" \
+        "02 Network Options" "Configure network settings" \
+        "03 Boot Options" "Configure options for start-up" \
+        "04 Localisation Options" "Set up language and regional settings to match your location" \
+        "05 Interfacing Options" "Configure connections to peripherals" \
+        "06 Overclock" "Configure overclocking for your Pi" \
+        "07 Advanced Options" "Configure advanced settings" \
+        "08 Kali-Pi TFT Config" "Run the kalipi-tft-config tool to set up a tft screen" \
+        "09 Update" "Update this tool to the latest version" \
+        "10 About kalipi-config" "Information about this configuration tool" \
         3>&1 1>&2 2>&3)
     else
       FUN=$(whiptail --title "Kali-Pi Software Configuration Tool (kalipi-config)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
-        "1 Change User Password" "Change password for the current user" \
-        "2 Network Options" "Configure network settings" \
-        "3 Boot Options" "Configure options for start-up" \
-        "4 Localisation Options" "Set up language and regional settings to match your location" \
-        "5 SSH" "Enable/Disable remote command line access to your PC using SSH" \
-        "6 Pixel Doubling" "Enable/Disable 2x2 pixel mapping" \
-        "8 Update" "Update this tool to the latest version" \
-        "9 About kalipi-config" "Information about this configuration tool" \
+        "01 Change User Password" "Change password for the current user" \
+        "02 Network Options" "Configure network settings" \
+        "03 Boot Options" "Configure options for start-up" \
+        "04 Localisation Options" "Set up language and regional settings to match your location" \
+        "05 SSH" "Enable/Disable remote command line access to your PC using SSH" \
+        "06 Pixel Doubling" "Enable/Disable 2x2 pixel mapping" \
+        "08 Kali-Pi TFT Config" "Run the kalipi-tft-config tool to set up a tft screen" \
+        "09 Update" "Update this tool to the latest version" \
+        "10 About kalipi-config" "Information about this configuration tool" \
         3>&1 1>&2 2>&3)
     fi
     RET=$?
@@ -2015,27 +2003,29 @@ if [ "$INTERACTIVE" = True ]; then
     elif [ $RET -eq 0 ]; then
       if is_pi ; then
         case "$FUN" in
-          1\ *) do_change_pass ;;
-          2\ *) do_network_menu ;;
-          3\ *) do_boot_menu ;;
-          4\ *) do_internationalisation_menu ;;
-          5\ *) do_interface_menu ;;
-          6\ *) do_overclock ;;
-          7\ *) do_advanced_menu ;;
-          8\ *) do_update;;
-          9\ *) do_about ;;
+          01\ *) do_change_pass ;;
+          02\ *) do_network_menu ;;
+          03\ *) do_boot_menu ;;
+          04\ *) do_internationalisation_menu ;;
+          05\ *) do_interface_menu ;;
+          06\ *) do_overclock ;;
+          07\ *) do_advanced_menu ;;
+          08\ *) do_kalipi_tft_config;;
+          09\ *) do_update;;
+          10\ *) do_about ;;
           *) whiptail --msgbox "Program error: unrecognized option" 20 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
       else
         case "$FUN" in
-          1\ *) do_change_pass ;;
-          2\ *) do_network_menu ;;
-          3\ *) do_boot_menu ;;
-          4\ *) do_internationalisation_menu ;;
-          5\ *) do_ssh ;;
-          6\ *) do_pixdub ;;
-          8\ *) do_update ;;
-          9\ *) do_about ;;
+          01\ *) do_change_pass ;;
+          02\ *) do_network_menu ;;
+          03\ *) do_boot_menu ;;
+          04\ *) do_internationalisation_menu ;;
+          05\ *) do_ssh ;;
+          06\ *) do_pixdub ;;
+          08\ *) do_kalipi_tft_config;;
+          09\ *) do_update ;;
+          10\ *) do_about ;;
           *) whiptail --msgbox "Program error: unrecognized option" 20 60 1 ;;
         esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
       fi

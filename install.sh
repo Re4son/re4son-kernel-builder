@@ -271,11 +271,11 @@ done
 printf "\n"
 if ask "Install Re4son-Kernel?" "Y"; then
     install_kernel
-fi
-if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
     install_firmware
-    install_bluetooth
 fi
+##if ask "Install support for RasPi 3 & Zero W built-in wifi & bluetooth adapters?" "Y"; then
+##    install_bluetooth
+##fi
 if ask "Install kernel headers?" "Y"; then
     install_headers
 fi
