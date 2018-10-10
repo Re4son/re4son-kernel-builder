@@ -147,9 +147,6 @@ function install_kernel(){
 
     ## Install nexmon firmware
     ARCH=`dpkg --print-architecture`
-    ##printf "\t**** Installing firmware                          ****\n"
-    ##cp -f firmware/brcmfmac* /lib/firmware/brcm/
-    ##printf "\t**** Firmware installed                           ****\n"
     printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
     exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
@@ -203,14 +200,6 @@ function install_tools() {
     if [ ! -f /usr/bin/kalipi-tft-config ]; then
         cp -f tools/kalipi-tft-config /usr/bin 
         chmod 755 /usr/bin/kalipi-tft-config
-    fi
-    if [ ! -f /usr/bin/mon0up ]; then
-        cp -f tools/mon0up /usr/bin 
-        chmod 755 /usr/bin/mon0up
-    fi
-    if [ ! -f /usr/bin/mon0down ]; then
-        cp -f tools/mon0down /usr/bin 
-        chmod 755 /usr/bin/mon0down
     fi
     printf "\t**** Installation completed ****\n\n"
     return 0
@@ -280,7 +269,7 @@ fi
 if ask "Install kernel headers?" "Y"; then
     install_headers
 fi
-if ask "Install kali-pi tools (kalipi-config, kalipi-tft-config, mon0up, mon0down)?" "Y"; then
+if ask "Install kali-pi tools (kalipi-config, kalipi-tft-config)?" "Y"; then
     install_tools
 fi 
 if ask "Reboot to apply changes?" "Y"; then
