@@ -13,6 +13,7 @@ function print_help() {
     printf "\n\tUsage: ${PROG_NAME} [option]\n"
     printf "\t\t\t   (No option)\tInstall Re4son-Kernel and ask to install tools & Re4son Bluetooth support\n"
     printf "\t\t\t\t-h\tPrint this help\n"
+    printf "\t\t\t\t-a\tInstall everything without asking\n"
     printf "\t\t\t\t-v\tPrint version of this installer\n"
     printf "\t\t\t\t-e\tOnly install Re4son-Kernel headers\n"
     printf "\t\t\t\t-b\tOnly install Re4son Bluetooth support for RPi 3 B(+) & RPi Zero W\n"
@@ -215,7 +216,7 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-args=$(getopt -uo 'hevbrtpu' -- $*)
+args=$(getopt -uo 'ahevbrtpu' -- $*)
 
 set -- $args
 
@@ -231,6 +232,13 @@ do
             print_version
             exit 0
             ;;
+	-a)
+	    install_kernel
+	    install_firmware
+            install_headers
+	    install_tools
+	    exit 0
+	    ;;
         -e)
             install_headers
             exit 0
