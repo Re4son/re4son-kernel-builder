@@ -144,7 +144,7 @@ function install_kernel(){
     exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
     exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
     exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
-    exitonerr dpkg --force-architecture -i raspberrypi-re4son-firmware_*
+    ##exitonerr dpkg --force-architecture -i raspberrypi-re4son-firmware_*
 
     ## Install nexmon firmware
     ARCH=`dpkg --print-architecture`
