@@ -84,7 +84,7 @@ function check_update() {
 function install_bluetooth {
     printf "\n\t**** Installing bluetooth packages for Raspberry Pi 3 & Zero W ****\n"
     apt update
-    apt install -y ./repo/pi-bluetooth*.deb
+    apt install -y ./repo/pi-bluetooth_0.1.4+re4son_all.deb
     systemctl enable hciuart && systemctl enable bluetooth
     printf "\t**** Bluetooth services installed\n\n"
     return 0
