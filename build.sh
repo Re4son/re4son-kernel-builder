@@ -111,6 +111,7 @@ V8_DEFAULT_CONFIG="arch/arm64/configs/re4son_pi8_defconfig"
 
 V6_CONFIG=""
 v7_CONFIG=""
+v8_CONFIG=""
 
 export DEBFULLNAME=Re4son
 export DEBEMAIL=re4son@whitedome.com.au
@@ -132,12 +133,12 @@ FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 #FIRMWARE_DIR="/opt/kernel-builder_firmware"
 V6_DIR="${REPO_ROOT}${GIT_REPO}/v6"
 V7_DIR="${REPO_ROOT}${GIT_REPO}/v7"
-V7_DIR="${REPO_ROOT}${GIT_REPO}/v8"
+V8_DIR="${REPO_ROOT}${GIT_REPO}/v8"
 HEAD_SRC_DIR="${REPO_ROOT}${GIT_REPO}/head_src_dir"
 PKG_IN="/opt/kernel-builder_pkg_in/"
 KERN_MOD_DIR_V6="/opt/kernel-builder_mod_v6"  ## Target directory for pi/pi0 modules that can be used for compiling drivers
 KERN_MOD_DIR_V7="/opt/kernel-builder_mod_v7"  ## Target directory for pi2/pi3 modules that can be used for compiling drivers
-KERN_MOD_DIR_V7="/opt/kernel-builder_mod_v8"  ## Target directory for pi2/pi3 modules that can be used for compiling drivers
+KERN_MOD_DIR_V8="/opt/kernel-builder_mod_v8"  ## Target directory for pi2/pi3 modules that can be used for compiling drivers
 NEXMON_DIR="/opt/re4son-nexmon"
 
 
