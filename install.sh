@@ -137,20 +137,29 @@ function install_kernel(){
     fi
     ## Reserved
     ## cp src dest
+
+    ##
+    ## Fix for spelling error in postrm script of package raspberrypi-re4son-firmware
+    ## so we can replace it ith the new package kalipi-re4son-firmware
+    if [ -f /var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm ]; then
+        sed -i 's/for files in/for file in/g' "/var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm"
+    fi
     printf "\n\t**** Device tree overlays installed                      ****\n"
-    exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
+    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-bootloader_*
+    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-kernel_*
     exitonerr dpkg --force-architecture -i libraspberrypi0_*
     exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
     exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
     exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
-    exitonerr dpkg --force-architecture -i raspberrypi-re4son-firmware_*
+    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
 
     ## Install nexmon firmware
     ARCH=`dpkg --print-architecture`
     printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
-    exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    if [ -f ./nexmon/${ARCH}/nexutil ]; then
+        cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    fi
     printf "\n\t**** Nexutil installed ****\n"
     
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
@@ -187,7 +196,7 @@ function remove_bluetooth {
 function install_headers() {
 
     printf "\n\t**** Installing Re4son-Kernel headers ****\n"
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel-headers_*
+    apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-kernel-headers_*
     printf "\t**** Installation completed ****\n\n"
     return 0
 }

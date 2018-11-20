@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 4.14.71 Kernel Configuration
+# Linux/arm 4.14.80 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_ARM_HAS_SG_CHAIN=y
@@ -4114,6 +4114,7 @@ CONFIG_HID_ASUS=m
 # CONFIG_HID_AUREAL is not set
 CONFIG_HID_BELKIN=m
 CONFIG_HID_BETOP_FF=m
+# CONFIG_HID_BIGBEN_FF is not set
 CONFIG_HID_CHERRY=m
 CONFIG_HID_CHICONY=m
 # CONFIG_HID_CORSAIR is not set

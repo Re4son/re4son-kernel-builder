@@ -127,7 +127,7 @@ KERNEL_BUILDER_DIR="/opt/re4son-kernel-builder"
 REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
-PKG_DIR="${PKG_TMP}/raspberrypi-firmware_${NEW_VERSION}"
+PKG_DIR="${PKG_TMP}/kalipi-firmware_${NEW_VERSION}"
 TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 KERNEL_SRC_DIR="${REPO_ROOT}${GIT_REPO}/all"
@@ -224,11 +224,8 @@ EOF
 }
 
 function clean() {
-    echo "**** Cleaning up kernel source ****"
-    cd $KERNEL_SRC_DIR
-    make mrproper
-    get_4d_obj
-    cd -
+    clean_kernel_src_dir
+    echo "**** Cleaning up kernel working dirs ****"
     if [ -d $KERNEL_OUT_V6 ]; then
 	rm -rf $KERNEL_OUT_DIR_V6
 	mkdir $KERNEL_OUT_DIR_V6
@@ -262,8 +259,22 @@ function clean() {
             echo $version > $KERNEL_OUT_DIR_V8\.version
         fi
     fi
-   echo "**** Kernel source directories cleaned up ****"
-   exit 0
+    echo "**** Kernel source directories cleaned up ****"
+    exit 0
+    if [ -d $KERNEL_HEADERS_OUT_DIR ]; then
+        rm -rf $KERNEL_HEADERS_OUT_DIR
+        mkdir -p $KERNEL_HEADERS_OUT_DIR
+        chown $SUDO_USER:$SUDO_USER $KERNEL_HEADERS_OUT_DIR
+    fi
+    cd -
+}
+
+function clean_kernel_src_dir (){
+    echo "**** Cleaning up kernel source ****"
+    cd $KERNEL_SRC_DIR
+    make mrproper
+    get_4d_obj
+    cd -
 }
 
 function clone_source() {
@@ -330,9 +341,11 @@ function setup_pkg_dir() {
     printf "\n**** SETTING UP DEBIAN PACKAGE DIRECTORY ****\n"
     mkdir $PKG_DIR
     cp -r $FIRMWARE_DIR/* $PKG_DIR
-
     # Remove the pre-compiled modules - we'll compile them ourselves
-    rm -r $PKG_DIR/modules/*
+    if [ -d  $PKG_DIR/modules ]; then
+        rm -r $PKG_DIR/modules/*
+    fi
+    mkdir -p $PKG_DIR/headers/usr/src/
 }
 
 function setup_native_v6_pkg_dir() {
@@ -359,13 +372,14 @@ function setup_native_v8_pkg_dir() {
 function get_4d_obj() {
     ## Get the object files back for the 4D-Hat drivers after a clean
     printf "\n****  RESTORING 4D-HAT OBJECT FILES    ****\n"
+    cd $KERNEL_SRC_DIR
     if [ ! -f compress-v6.o ]; then
         git checkout drivers/video/4d-hats/compress-v6.o
     fi
     if [ ! -f compress-v7.o ]; then
         git checkout drivers/video/4d-hats/compress-v7.o
     fi
-
+    cd -
 }
 
 function update_kernel_source(){
@@ -379,13 +393,35 @@ function update_kernel_source(){
     cd -
 }
 
+function prep_kernel_out_dir() {
+    kernel_out_dir=$1
+    printf "\n**** PREPARING WORKING DIRECTORY $kernel_out_dir ****\n"
+    if [ ! -d $kernel_out_dir ]; then
+        mkdir -p $kernel_out_dir 
+    fi
+    ## The following workarounds are required for a successful compilation
+    ## Copy 4D pre-compiled object files
+    get_4d_obj
+    if [ ! -d $kernel_out_dir/drivers/video/4d-hats ]; then
+        mkdir -p $kernel_out_dir/drivers/video/4d-hats 
+    fi
+    cp $KERNEL_SRC_DIR/drivers/video/4d-hats/compress-*.o $kernel_out_dir/drivers/video/4d-hats/
+    ## Copy rtl8812au files required for the compilation
+    ## The path in the driver source has to be fixed before we can renove this workaround
+    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm ]; then
+        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm
+    fi
+    cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8812au/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm/
+}
+
 function make_v6() {
     # RasPi v6 build
     printf "\n**** COMPILING V6 KERNEL (ARMEL) ****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V6
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
     if [ ! -f .config ]; then
         if [ "$V6_CONFIG" == "" ]; then
-            cp ${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
+            cp $KERNEL_SRC_DIR/${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
         else
             cp ${V6_CONFIG} $KERNEL_OUT_DIR_V6/.config
         fi
@@ -406,16 +442,18 @@ function make_v6() {
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
     cp $KERNEL_OUT_DIR_V6/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
 }
 
 function make_v7() {
     # RasPi v7 build
     printf "\n**** COMPILING V7 KERNEL (ARMHF) ****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V7
     CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
-            cp ${V7_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7/.config
+            cp $KERNEL_SRC_DIR/${V7_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7/.config
         else
             cp ${V7_CONFIG} $KERNEL_OUT_DIR_V7/.config
         fi
@@ -436,16 +474,18 @@ function make_v7() {
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
     cp $KERNEL_OUT_DIR_V7/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
 }
 
 function make_v8() {
     # RasPi v8 build
     printf "\n**** COMPILING V8 KERNEL (ARM64) ****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V8
     CCPREFIX=aarch64-linux-gnu-
     if [ ! -f .config ]; then
         if [ "$V8_CONFIG" == "" ]; then
-            cp ${V8_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V8/.config
+            cp $KERNEL_SRC_DIR/${V8_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V8/.config
         else
             cp ${V8_CONFIG} $KERNEL_OUT_DIR_V8/.config
         fi
@@ -454,27 +494,29 @@ function make_v8() {
     echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
     echo "**** COMPILING v8 KERNEL ****"
-    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
+    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} 
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V8/arch/arm/boot/zImage $PKG_DIR/boot/kernel8.img
+    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
     cp $KERNEL_OUT_DIR_V8/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
 }
 
 function make_native_v6() {
     # RasPi v6 build
     printf "\n**** COMPILING V6 KERNEL (ARMEL) NATIVELY****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V6
     if [ ! -f .config ]; then
         if [ "$V6_CONFIG" == "" ]; then
-            cp ${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
+            cp $KERNEL_SRC_DIR/${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
         else
             cp ${V6_CONFIG} $KERNEL_OUT_DIR_V6/.config
         fi
@@ -497,6 +539,7 @@ function make_native_v6() {
     ## Copy away the module dir so we cak use it for compiling drivers if we want
     cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
     cp $KERNEL_OUT_DIR_V6/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
     cp -f $KERNEL_OUT_DIR_V6/Module.symvers $KERNEL_BUILDER_DIR/extra/
     cp -f $KERNEL_OUT_DIR_V6/System.map $KERNEL_BUILDER_DIR/extra/
@@ -505,9 +548,10 @@ function make_native_v6() {
 function make_native_v7() {
     # RasPi v7 build
     printf "\n**** COMPILING V7 KERNEL (ARMHF) NATIVELY ****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V7
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
-            cp ${V7_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7/.config
+            cp $KERNEL_SRC_DIR/${V7_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7/.config
         else
             cp ${V7_CONFIG} $KERNEL_OUT_DIR_V7/.config
         fi
@@ -530,6 +574,7 @@ function make_native_v7() {
     ## Copy away the module dir so we cak use it for compiling drivers if we want
     cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
     cp $KERNEL_OUT_DIR_V7/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
     cp -f $KERNEL_OUT_DIR_V7/Module.symvers $KERNEL_BUILDER_DIR/extra/Module7.symvers
     cp -f $KERNEL_OUT_DIR_V7/System.map $KERNEL_BUILDER_DIR/extra/System7.map
@@ -538,9 +583,10 @@ function make_native_v7() {
 function make_native_v8() {
     # RasPi v8 build
     printf "\n**** COMPILING V8 KERNEL (ARM64) NATIVELY ****\n"
+    prep_kernel_out_dir $KERNEL_OUT_DIR_V8
     if [ ! -f .config ]; then
         if [ "$V8_CONFIG" == "" ]; then
-            cp ${V8_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V8/.config
+            cp $KERNEL_SRC_DIR/${V8_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V8/.config
         else
             cp ${V8_CONFIG} $KERNEL_OUT_DIR_V8/.config
         fi
@@ -549,12 +595,12 @@ function make_native_v8() {
     echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
     echo "**** COMPILING v8 KERNEL ****"
-    make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
+    make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS}
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V8/arch/arm/boot/zImage $PKG_DIR/boot/kernel8.img
+    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -563,6 +609,7 @@ function make_native_v8() {
     ## Copy away the module dir so we cak use it for compiling drivers if we want
     cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
     ## Copy our Module.symvers across
+    mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
     cp $KERNEL_OUT_DIR_V8/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
     cp -f ${V8_DIR}/Module.symvers $KERNEL_BUILDER_DIR/extra/Module8.symvers
     cp -f ${V8_DIR}/System.map $KERNEL_BUILDER_DIR/extra/System8.map
@@ -570,34 +617,40 @@ function make_native_v8() {
 
 function make_headers (){
     config=$1
-    if [ -d $KERNEL_HEADERS_OUT_DIR ]; then
-        rm -rf $KERNEL_HEADERS_OUT_DIR
-        mkdir -p $KERNEL_HEADERS_OUT_DIR
-        chown $SUDO_USER:$SUDO_USER $KERNEL_HEADERS_OUT_DIR
+    ccprefix=$2
+    cd $KERNEL_SRC_DIR
+    if [ $ccprefix == "" ]; then
+        make distclean $config modules_prepare
+    elif [ $ccprefix == "aarch64-linux-gnu-" ]; then
+	make ARCH=arm64 CROSS_COMPILE=${ccprefix} distclean $config modules_prepare
+    else
+	make ARCH=arm CROSS_COMPILE=${ccprefix} distclean $config modules_prepare
     fi
-    make O=$KERNEL_HEADERS_OUT_DIR -C $KERNEL_SRC_DIR $config modules_prepare
     cd -
 }
 
 function copy_files (){
     ver=$1
-    destdir=headers/usr/src/linux-headers-$ver
-    cd $KERNEL_HEADERS_OUT_DIR
+    destdir=$KERNEL_HEADERS_OUT_DIR/headers/usr/src/linux-headers-$ver
+    if [ -d $destdir ]; then
+        rm -rf $destdir
+    fi
     mkdir -p "$destdir"
-    mkdir -p headers/lib/modules/$ver
+    mkdir -p $KERNEL_HEADERS_OUT_DIR/headers/lib/modules/$ver
     rsync -aHAX \
-	--files-from=<(cd $HEAD_SRC_DIR; find -name Makefile\* -o -name Kconfig\* -o -name \*.pl) $KERNEL_HEADERS_OUT_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find -name Makefile\* -o -name Kconfig\* -o -name \*.pl) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm*/include include scripts -type f) $KERNEL_HEADERS_OUT_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm* -name module.lds -o -name Kbuild.platforms -o -name Platform) $KERNEL_HEADERS_OUT_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm* -name module.lds -o -name Kbuild.platforms -o -name Platform) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $HEAD_SRC_DIR; find `find arch/arm* -name include -o -name scripts -type d` -type f) $KERNEL_HEADERS_OUT_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find `find arch/arm* -name include -o -name scripts -type d` -type f) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $HEAD_SRC_DIR; find arch/arm*/include Module.symvers .config include scripts -type f) $KERNEL_HEADERS_OUT_DIR/ $destdir/
-    ln -sf "/usr/src/linux-headers-$ver" "headers/lib/modules/$ver/build"
-    cd -
+	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include .config include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
+    ln -sf "/usr/src/linux-headers-$ver" "$KERNEL_HEADERS_OUT_DIR/headers/lib/modules/$ver/build"
+    ## Module.symvers are going to be provided by the kernel build
 }
+
 
 function pkg_headers () {
     printf "\n**** Creating $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz ****\n"
@@ -653,11 +706,11 @@ function create_debs() {
     # copy debian files to package directory
     cp -r $FIRMWARE_DIR/debian $PKG_DIR
     touch $PKG_DIR/debian/files
-    cd $PKG_DIR/debian
-    sh ./gen_bootloader_postinst_preinst.sh
+    ##cd $PKG_DIR/debian
+    ##sh ./gen_bootloader_postinst_preinst.sh
 
     cd $PKG_DIR
-    dch -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
+    dch -b -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
     debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
 }
 
@@ -763,17 +816,29 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     debug_info
     breakpoint "050-Pkg dir set up"
 
+    clean_kernel_src_dir
+
     make_v6
+    make_headers $(basename $V6_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+    copy_files $UNAME_STRING
+    clean_kernel_src_dir
     breakpoint "060-Kernel v6 compiled"
 
     make_v7
     debug_info
+    make_headers $(basename $V7_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+    copy_files $UNAME_STRING7
+    clean_kernel_src_dir
     breakpoint "070-Kernel v7 compiled"
 
     make_v8
     debug_info
+    make_headers $(basename $V8_DEFAULT_CONFIG) aarch64-linux-gnu-
+    copy_files $UNAME_STRING8
+    clean_kernel_src_dir
     breakpoint "080-Kernel v8 compiled"
 
+    cp -rf $KERNEL_HEADERS_OUT_DIR/headers $PKG_DIR/
     create_debs
     debug_info
     breakpoint "090-Debian packages created"
@@ -822,8 +887,8 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V6_DEFAULT_CONFIG)
-        if [ -f ${KERNEL_BUILDER_DIR}/extra/Module.symvers ]; then
-            cp ${KERNEL_BUILDER_DIR}/extra/Module.symvers ${HEAD_SRC_DIR}/Module.symvers
+        if [ -f ${KERNEL_OUT_DIR_V6}/extra/Module.symvers ]; then
+            cp ${KERNEL_OUT_DIR_V6}/extra/Module.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
         fi
         debug_info
         breakpoint "210-headers built"
@@ -835,8 +900,8 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V7_DEFAULT_CONFIG)
-        if [ -f ${KERNEL_BUILDER_DIR}/extra/Module7.symvers ]; then
-            cp ${KERNEL_BUILDER_DIR}/extra/Module7.symvers ${HEAD_SRC_DIR}/Module.symvers
+        if [ -f ${KERNEL_OUT_DIR_V7}/extra/Module7.symvers ]; then
+            cp ${KERNEL_OUT_DIR_V8}/extra/Module7.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
         fi
         debug_info
         breakpoint "210-headers built"
@@ -850,7 +915,7 @@ if [ $MAKE_HEADERS ]; then
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V8_DEFAULT_CONFIG)
         if [ -f ${KERNEL_BUILDER_DIR}/extra/Module8.symvers ]; then
-            cp ${KERNEL_BUILDER_DIR}/extra/Module8.symvers ${HEAD_SRC_DIR}/Module.symvers
+            cp ${KERNEL_BUILDER_DIR}/extra/Module8.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
         fi
         debug_info
         breakpoint "210-headers built"
