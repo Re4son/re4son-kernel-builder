@@ -224,6 +224,9 @@ EOF
 }
 
 function clean() {
+    if [ ! -d $KERNEL_SRC_DIR ]; then
+        setup_repos
+    fi	
     clean_kernel_src_dir
     echo "**** Cleaning up kernel working dirs ****"
     if [ -d $KERNEL_OUT_V6 ]; then
@@ -273,6 +276,7 @@ function clean_kernel_src_dir (){
     echo "**** Cleaning up kernel source ****"
     cd $KERNEL_SRC_DIR
     make mrproper
+    git checkout ${GIT_BRANCH}
     get_4d_obj
     cd -
 }
@@ -281,9 +285,7 @@ function clone_source() {
     echo "**** CLONING to ${REPO_ROOT}${GIT_REPO} ****"
     echo "REPO: ${GIT_REPO}"
     echo "BRANCH: ${GIT_BRANCH}"
-    git clone --recursive https://github.com/${GIT_REPO} $KERNEL_SOURCE_DIR 
-    echo "**** COPYING HEADER SOURCE DIRECTORY ****"
-    cp -r $V6_DIR $HEAD_SRC__DIR
+    git clone --recursive https://github.com/${GIT_REPO} $KERNEL_SRC_DIR 
 }
 
 function setup_repos(){
@@ -306,6 +308,12 @@ function setup_repos(){
         mkdir -p $KERNEL_SRC_DIR
         clone_source
     fi
+    if [ ! -d ${MOD_DIR} ]; then
+	mkdir -p ${MOD_DIR}
+    fi
+    if [ ! -d $HEAD_SRC_DIR ]; then
+	mkdir -p $HEAD_SRC_DIR
+    fi	
 
 #    if [ ! -d $TOOLS_DIR ]; then
 #        echo "**** CLONING TOOL REPO ****"
@@ -611,15 +619,17 @@ function make_native_v8() {
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
     cp $KERNEL_OUT_DIR_V8/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
-    cp -f ${V8_DIR}/Module.symvers $KERNEL_BUILDER_DIR/extra/Module8.symvers
-    cp -f ${V8_DIR}/System.map $KERNEL_BUILDER_DIR/extra/System8.map
+    cp -f $KERNEL_OUT_DIR_V8/Module.symvers $KERNEL_BUILDER_DIR/extra/Module8.symvers
+    cp -f $KERNEL_OUT_DIR_V8/System.map $KERNEL_BUILDER_DIR/extra/System8.map
 }
 
 function make_headers (){
     config=$1
     ccprefix=$2
+    echo $config
+    echo $ccprefix
     cd $KERNEL_SRC_DIR
-    if [ $ccprefix == "" ]; then
+    if [ ! $ccprefix ]; then
         make distclean $config modules_prepare
     elif [ $ccprefix == "aarch64-linux-gnu-" ]; then
 	make ARCH=arm64 CROSS_COMPILE=${ccprefix} distclean $config modules_prepare
@@ -760,7 +770,7 @@ check_root
 debug_info
 breakpoint "010-Root privileges checked"
 
-while getopts "hb:cnpexr:6:7:" opt; do
+while getopts "hb:cnpexr:6:7:8:" opt; do
   case "$opt" in
   h)  usage
       exit 0
@@ -791,6 +801,8 @@ while getopts "hb:cnpexr:6:7:" opt; do
       ;;
   7)  V7_CONFIG="$OPTARG"
       ;;
+  8)  V8_CONFIG="$OPTARG"
+      ;;
   \?) usage
       exit 1
       ;;
@@ -803,6 +815,7 @@ printf "\n\t**** USING ${NUM_CPUS} AVAILABLE CORES ****\n"
 if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]; then
 
     setup_repos
+    update_kernel_source
     breakpoint "020-Repos set up"
 
     ## Lets only update the repos when I'm sure they don't break anything.
@@ -852,6 +865,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     exit 0
 
 elif [ $NATIVE ]; then
+    setup_repos
     if [ $NAT_ARCH == "armel" ]; then
         printf "\n\t**** Compiling natively on: $NAT_ARCH ****\n"
         setup_native_v6_pkg_dir
@@ -873,12 +887,13 @@ elif [ $NATIVE ]; then
         setup_native_v8_pkg_dir
         debug_info
         breakpoint "150-Pkg dir set up"
-        make_native_v7
+        make_native_v8
         breakpoint "160-Kernel v8 compiled"
         pkg_kernel
     else
         printf"\n\t#### ERROR: Architecture $ARCH not supported. ####\n"
     fi
+    exit 0
 fi
 
 if [ $MAKE_HEADERS ]; then
@@ -909,12 +924,11 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "220-headers copied"
         pkg_headers
-    fi
     elif [ $NAT_ARCH == "arm64" ]; then
         debug_info
         breakpoint "200-Ready to build headers"
         make_headers $(basename $V8_DEFAULT_CONFIG)
-        if [ -f ${KERNEL_BUILDER_DIR}/extra/Module8.symvers ]; then
+        if [ -f ${KERNEL_OUT_DIR_V8}/extra/Module8.symvers ]; then
             cp ${KERNEL_BUILDER_DIR}/extra/Module8.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
         fi
         debug_info
@@ -923,8 +937,8 @@ if [ $MAKE_HEADERS ]; then
         debug_info
         breakpoint "220-headers copied"
         pkg_headers
-    pi
-
+    fi
+    exit 0
 fi
 
 if [ $MAKE_PKG ]; then
