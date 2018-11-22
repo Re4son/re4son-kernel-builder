@@ -1,5 +1,5 @@
 # Re4son's Kernel Builder for Raspbery Pi
-###### V 1.0.1
+###### V 2.0.0
 ###### Created for kernel version 4.4 and newer
 ######             raspberry toolchain published 17-May-2016 and later
 ######             raspberry firmware released 4-May-2016 and later
@@ -39,12 +39,25 @@ usage: re4sonbuild [options]
               Default: raspberrypi/linux
     -b        The git branch to use
               Default: Default git branch of repo
-    -1        The config file to use when compiling for Raspi v1
+    -c        Set up the environment and clean the source tree
+    -6        The config file to use when compiling for Raspi v6 (ARMEL)
               Default: arch/arm/configs/bcmrpi_defconfig
-    -2        The config file to use when compiling for Raspi v2
+    -7        The config file to use when compiling for Raspi v7 (ARMHF)
+              Default: arch/arm/configs/bcm2709_defconfig
+    -7        The config file to use when compiling for Raspi v8 (ARM64)
               Default: arch/arm/configs/bcm2709_defconfig
 ```
 
+Reset the ebvironment for a fresh build:
+
+```
+~$ sudo re4sonbuild -c
+```
+Compile with default options:
+
+```
+~$ sudo re4sonbuild
+```
 Compile with default options:
 
 ```
@@ -57,7 +70,7 @@ Compile [re4son-raspberrypi-linux][1] using the `rpi-4.4.y-re4son` branch:
 ~$ sudo re4son -r https://github.com/Re4son/re4son-raspberrypi-linux -b rpi-4.1.y-re4son
 ```
 
-A `tar.gz` archive will be available in the kernel-builder folder
+A `tar.xz` archive will be available in the kernel-builder folder
 after the custom kernel has been built. Copy the archive to your Pi and extact the
 contents. Installation instructions are included in the archive.
 
