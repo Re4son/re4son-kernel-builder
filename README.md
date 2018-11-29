@@ -58,11 +58,6 @@ Compile with default options:
 ```
 ~$ sudo re4sonbuild
 ```
-Compile with default options:
-
-```
-~$ sudo re4sonbuild
-```
 
 Compile [re4son-raspberrypi-linux][1] using the `rpi-4.4.y-re4son` branch:
 
