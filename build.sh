@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.14.80"
+VERSION="4.14.89"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -26,11 +26,17 @@ V8_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             4.14.80-Re4son                    ##
+##             4.14.89-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.14.80-re4son"	 	 	                 ## 4.14.80 Commit used for firmware 1.20181112release
+GIT_BRANCH="rpi-4.14.89-re4son"	 	 	                 ## 4.14.89 kernel commit: af369f47021f11e78017c0a98e55cb934b501c36 
 FW_REPO="Re4son/RPi-Distro-firmware"
 FW_BRANCH="debian"
+###################################################
+##             4.14.80-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.14.80-re4son"	 	 	         ## 4.14.80 Commit used for firmware 1.20181112release
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="debian"
 ###################################################
 ##             4.14.69-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -507,7 +513,10 @@ function make_v8() {
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8.img
+    ##
+    ## Name the kernel "kernel81.img" for now to prevent it from automatically being loaded
+    ## To use it, just rename it to kernel8.img on the device
+    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel81.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -608,7 +617,10 @@ function make_native_v8() {
     ## mkknlimg is no longer in tools
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8.img
+    ##
+    ## Name the kernel "kernel81.img" for now to prevent it from automatically being loaded
+    ## To use it, just rename it to kernel8.img on the device
+    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel81.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source

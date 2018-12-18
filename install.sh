@@ -145,16 +145,26 @@ function install_kernel(){
         sed -i 's/for files in/for file in/g' "/var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm"
     fi
     printf "\n\t**** Device tree overlays installed                      ****\n"
-    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-bootloader_*
-    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-kernel_*
-    exitonerr dpkg --force-architecture -i libraspberrypi0_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
-    exitonerr apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
+    ## raspberrypi-re4son-firmware had a spelling mistake in postrm which we have to fix
+    ## prior to upgrading it
+    if [ -f /var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm ]; then
+	sed -i 's/for files in/for file in/g' "/var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm"
+    fi
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-bootloader_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-kernel_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi0_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-dev_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-doc_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-bin_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
 
-    ## Install nexmon firmware
     ARCH=`dpkg --print-architecture`
+    ## Move kernel8.img away on armhf systems or the bootloader will pick it over kernel7.img
+    ## To use this kernel, just load it via config.txt (kernel=kernel8-alt.img) or rename it
+    if [ ! "$ARCH" == "arm64" ]; then
+        mv /boot/kernel8.img /boot/kernel8-alt.img
+    fi
+    ## Install nexmon firmware
     printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
     if [ -f ./nexmon/${ARCH}/nexutil ]; then
