@@ -269,7 +269,6 @@ function clean() {
         fi
     fi
     echo "**** Kernel source directories cleaned up ****"
-    exit 0
     if [ -d $KERNEL_HEADERS_OUT_DIR ]; then
         rm -rf $KERNEL_HEADERS_OUT_DIR
         mkdir -p $KERNEL_HEADERS_OUT_DIR
