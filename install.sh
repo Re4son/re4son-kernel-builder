@@ -159,10 +159,11 @@ function install_kernel(){
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
 
     ARCH=`dpkg --print-architecture`
-    ## Move kernel8.img away on armhf systems or the bootloader will pick it over kernel7.img
+    ## Kernel8.img is build as kernel8-alt so that the bootloader on armhf systems wont pick it over kernel7.img
     ## To use this kernel, just load it via config.txt (kernel=kernel8-alt.img) or rename it
-    if [ ! "$ARCH" == "arm64" ]; then
-        mv /boot/kernel8.img /boot/kernel8-alt.img
+    ## We'll rename it during installation if the target system is arm64
+    if [ "$ARCH" == "arm64" ]; then
+        mv /boot/kernel8-alt.img /boot/kernel8.img
     fi
     ## Install nexmon firmware
     printf "\n\t**** Installing nexutil ****\n"
