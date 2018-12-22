@@ -617,9 +617,9 @@ function make_native_v8() {
     ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
     ##
-    ## Name the kernel "kernel81.img" for now to prevent it from automatically being loaded
+    ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel81.img
+    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
