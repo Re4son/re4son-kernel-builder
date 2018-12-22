@@ -161,9 +161,20 @@ function install_kernel(){
     ARCH=`dpkg --print-architecture`
     ## Kernel8.img is build as kernel8-alt so that the bootloader on armhf systems wont pick it over kernel7.img
     ## To use this kernel, just load it via config.txt (kernel=kernel8-alt.img) or rename it
-    ## We'll rename it during installation if the target system is arm64
-    if [ "$ARCH" == "arm64" ]; then
-        mv /boot/kernel8-alt.img /boot/kernel8.img
+    ## Let's check if a kernel8.img has been created previously
+    if [ -f /boot/kernel8.img ]; then
+	## On arm64 installations, we'll copy kernel8-alt.img across to kernel8.img as FAT doesn't support links
+	if [ "$ARCH" == "arm64" ]; then
+            cp -f /boot/kernel8-alt.img /boot/kernel8.img
+	else
+            ## On armhf and armel we'll avoid problems by getting rid of it but we'll ask the usera in case they have other plans
+	    if ask "A 64bit kernel image called kernel8.img is found on your system but can cause problems on $ARCH platforms. Shall I delete it?" "Y"; then
+	        rm -f /boot/kernel8.img
+	    else
+	        ## OK - let's update it then
+	        cp -f /boot/kernel8-alt.img /boot/kernel8.img
+	    fi
+        fi	    
     fi
     ## Install nexmon firmware
     printf "\n\t**** Installing nexutil ****\n"
