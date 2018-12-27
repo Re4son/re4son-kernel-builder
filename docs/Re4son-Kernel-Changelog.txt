@@ -5,7 +5,7 @@ re4son-kernel_current = re4son-kernel_4.14.69_current
 re4son-kernel_next = re4son-kernel_4.14.89_current
 
 
-re4son-kernel_4.14.89_current = re4son-kernel_4.14.89-20181222
+re4son-kernel_4.14.89_current = re4son-kernel_4.14.89-20181224
 re4son-kernel_4.14.80_current = re4son-kernel_4.14.80-20181125
 re4son-kernel_4.14.71_current = re4son-kernel_4.14.71-20181014
 re4son-kernel_4.14.69_current = re4son-kernel_4.14.69-20181010
@@ -21,7 +21,7 @@ re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-2016
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.14.89-20181222.tar.xz
+re4son-kernel_4.14.89-20181224.tar.xz
 ================================================
 RPi V6: Kernel 4.14.89-Re4son+ #1
 RPi V7: Kernel 4.14.89-Re4son-v7+ #1
@@ -1162,7 +1162,9 @@ CONFIG_MCP3422=m
 - ada_pi2_defconfig with kernel 4.14
 
 
-4.14.89-Re4son-v8+ #1 - 19-December-2018:
+RPi V8:
+********
+4.14.89-Re4son-v8+ #1 - 23-December-2018:
 ------------------------------------------
 - Based on 4.14.80-v8-Re4son #1
 - Bump to 4.14.89

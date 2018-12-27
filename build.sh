@@ -732,19 +732,27 @@ function create_debs() {
 
     cd $PKG_DIR
     dch -b -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
+    debuild --no-lintian -b -aarmel -us -uc
     debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+    debuild --no-lintian -b -aarm64 -us -uc
 }
 
 function create_tar() {
     cd $PKG_TMP
     mkdir re4son-kernel_${NEW_VERSION}
+    mkdir re4son-kernel_${NEW_VERSION}_armel
+    mkdir re4son-kernel_${NEW_VERSION}_armhf
+    mkdir re4son-kernel_${NEW_VERSION}_arm64
     mkdir re4son-kernel_${NEW_VERSION}/docs
     mkdir re4son-kernel_${NEW_VERSION}/dts
     mkdir re4son-kernel_${NEW_VERSION}/tools
     mkdir re4son-kernel_${NEW_VERSION}/firmware
     mkdir re4son-kernel_${NEW_VERSION}/repo
     mkdir re4son-kernel_${NEW_VERSION}/nexmon
-    cp *.deb re4son-kernel_${NEW_VERSION}
+    cp *armhf.deb re4son-kernel_${NEW_VERSION}
+    cp *armel.deb re4son-kernel_${NEW_VERSION}_armel
+    cp *armhf.deb re4son-kernel_${NEW_VERSION}_armhf
+    cp *arm64.deb re4son-kernel_${NEW_VERSION}_arm64
     cp -r $KERNEL_BUILDER_DIR/nexmon/* re4son-kernel_${NEW_VERSION}/nexmon
     cp $KERNEL_BUILDER_DIR/install.sh re4son-kernel_${NEW_VERSION}
     cp $KERNEL_BUILDER_DIR/dts/*.dts re4son-kernel_${NEW_VERSION}/dts
@@ -763,6 +771,18 @@ function create_tar() {
     mv -f re4son-kernel_${NEW_VERSION}.tar.xz $KERNEL_BUILDER_DIR
     sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz > $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
     chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz* $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}.tar.xz.sha256
+    tar cJf re4son-kernel_${NEW_VERSION}_armel.tar.xz re4son-kernel_${NEW_VERSION}_armel
+    mv -f re4son-kernel_${NEW_VERSION}_armel.tar.xz $KERNEL_BUILDER_DIR
+    sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armel.tar.xz > $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armel.tar.xz.sha256
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armel.tar.xz* $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armel.tar.xz.sha256
+    tar cJf re4son-kernel_${NEW_VERSION}_armhf.tar.xz re4son-kernel_${NEW_VERSION}_armhf
+    mv -f re4son-kernel_${NEW_VERSION}_armhf.tar.xz $KERNEL_BUILDER_DIR
+    sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armhf.tar.xz > $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armhf.tar.xz.sha256
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armhf.tar.xz* $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_armhf.tar.xz.sha256
+    tar cJf re4son-kernel_${NEW_VERSION}_arm64.tar.xz re4son-kernel_${NEW_VERSION}_arm64
+    mv -f re4son-kernel_${NEW_VERSION}_arm64.tar.xz $KERNEL_BUILDER_DIR
+    sha256sum $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_arm64.tar.xz > $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_arm64.tar.xz.sha256
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_arm64.tar.xz* $KERNEL_BUILDER_DIR/re4son-kernel_${NEW_VERSION}_arm64.tar.xz.sha256
     printf  "\n@@@@ The re4son-kernel_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
 }
 

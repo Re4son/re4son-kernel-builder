@@ -225,12 +225,34 @@ function install_headers() {
 
 function install_tools() {
     printf "\n\t**** Installing Kali-Pi tools ****\n"
-    if [ ! -f /usr/bin/kalipi-config ]; then
-        cp -f tools/kalipi-config /usr/bin 
+    if [ -f /usr/bin/kalipi-config ]; then
+        VER=`tools/kalipi-config --version`
+        VER1=${VER##* }
+        VER=`/usr/bin/kalipi-config --version`
+        VER2=${VER##* }
+        if [ $VER1 \> $VER2 ]; then 
+            cp -f tools/kalipi-config /usr/bin 
+            chmod 755 /usr/bin/kalipi-config
+        fi
+    else
+        cp -f tools/kalipi-config /usr/bin
         chmod 755 /usr/bin/kalipi-config
     fi
     if [ ! -f /usr/bin/kalipi-tft-config ]; then
         cp -f tools/kalipi-tft-config /usr/bin 
+        chmod 755 /usr/bin/kalipi-tft-config
+    fi
+    if [ -f /usr/bin/kalipi-tft-config ]; then
+        VER=`tools/kalipi-tft-config -v`
+        VER1=${VER##* }
+        VER=`/usr/bin/kalipi-tft-config -v`
+        VER2=${VER##* }
+        if [ $VER1 \> $VER2 ]; then 
+            cp -f tools/kalipi-tft-config /usr/bin 
+            chmod 755 /usr/bin/kalipi-tft-config
+        fi
+    else
+        cp -f tools/kalipi-tft-config /usr/bin
         chmod 755 /usr/bin/kalipi-tft-config
     fi
     printf "\t**** Installation completed ****\n\n"
