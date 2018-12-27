@@ -137,20 +137,51 @@ function install_kernel(){
     fi
     ## Reserved
     ## cp src dest
-    printf "\n\t**** Device tree overlays installed                      ****\n"
-    exitonerr dpkg --force-architecture -i --ignore-depends=raspberrypi-kernel raspberrypi-bootloader_*
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel_*
-    exitonerr dpkg --force-architecture -i libraspberrypi0_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-dev_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-doc_*
-    exitonerr dpkg --force-architecture -i libraspberrypi-bin_*
-    exitonerr dpkg --force-architecture -i raspberrypi-re4son-firmware_*
 
-    ## Install nexmon firmware
+    ##
+    ## Fix for spelling error in postrm script of package raspberrypi-re4son-firmware
+    ## so we can replace it ith the new package kalipi-re4son-firmware
+    if [ -f /var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm ]; then
+        sed -i 's/for files in/for file in/g' "/var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm"
+    fi
+    printf "\n\t**** Device tree overlays installed                      ****\n"
+    ## raspberrypi-re4son-firmware had a spelling mistake in postrm which we have to fix
+    ## prior to upgrading it
+    if [ -f /var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm ]; then
+	sed -i 's/for files in/for file in/g' "/var/lib/dpkg/info/raspberrypi-re4son-firmware.postrm"
+    fi
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-bootloader_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-kernel_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi0_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-dev_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-doc_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-bin_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
+
     ARCH=`dpkg --print-architecture`
+    ## Kernel8.img is build as kernel8-alt so that the bootloader on armhf systems wont pick it over kernel7.img
+    ## To use this kernel, just load it via config.txt (kernel=kernel8-alt.img) or rename it
+    ## Let's check if a kernel8.img has been created previously
+    if [ -f /boot/kernel8.img ]; then
+	## On arm64 installations, we'll copy kernel8-alt.img across to kernel8.img as FAT doesn't support links
+	if [ "$ARCH" == "arm64" ]; then
+            cp -f /boot/kernel8-alt.img /boot/kernel8.img
+	else
+            ## On armhf and armel we'll avoid problems by getting rid of it but we'll ask the usera in case they have other plans
+	    if ask "A 64bit kernel image called kernel8.img is found on your system but can cause problems on $ARCH platforms. Shall I delete it?" "Y"; then
+	        rm -f /boot/kernel8.img
+	    else
+	        ## OK - let's update it then
+	        cp -f /boot/kernel8-alt.img /boot/kernel8.img
+	    fi
+        fi	    
+    fi
+    ## Install nexmon firmware
     printf "\n\t**** Installing nexutil ****\n"
     # Install nexutil
-    exitonerr cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    if [ -f ./nexmon/${ARCH}/nexutil ]; then
+        cp -f ./nexmon/${ARCH}/nexutil /usr/bin/
+    fi
     printf "\n\t**** Nexutil installed ****\n"
     
     printf "\n\t**** Fixing unmet dependencies in Kali Linux ****\n"
@@ -187,19 +218,41 @@ function remove_bluetooth {
 function install_headers() {
 
     printf "\n\t**** Installing Re4son-Kernel headers ****\n"
-    exitonerr dpkg --force-architecture -i raspberrypi-kernel-headers_*
+    apt install -y -o Dpkg::Options::="--force-architecture" ./kalipi-kernel-headers_*
     printf "\t**** Installation completed ****\n\n"
     return 0
 }
 
 function install_tools() {
     printf "\n\t**** Installing Kali-Pi tools ****\n"
-    if [ ! -f /usr/bin/kalipi-config ]; then
-        cp -f tools/kalipi-config /usr/bin 
+    if [ -f /usr/bin/kalipi-config ]; then
+        VER=`tools/kalipi-config --version`
+        VER1=${VER##* }
+        VER=`/usr/bin/kalipi-config --version`
+        VER2=${VER##* }
+        if [ $VER1 \> $VER2 ]; then 
+            cp -f tools/kalipi-config /usr/bin 
+            chmod 755 /usr/bin/kalipi-config
+        fi
+    else
+        cp -f tools/kalipi-config /usr/bin
         chmod 755 /usr/bin/kalipi-config
     fi
     if [ ! -f /usr/bin/kalipi-tft-config ]; then
         cp -f tools/kalipi-tft-config /usr/bin 
+        chmod 755 /usr/bin/kalipi-tft-config
+    fi
+    if [ -f /usr/bin/kalipi-tft-config ]; then
+        VER=`tools/kalipi-tft-config -v`
+        VER1=${VER##* }
+        VER=`/usr/bin/kalipi-tft-config -v`
+        VER2=${VER##* }
+        if [ $VER1 \> $VER2 ]; then 
+            cp -f tools/kalipi-tft-config /usr/bin 
+            chmod 755 /usr/bin/kalipi-tft-config
+        fi
+    else
+        cp -f tools/kalipi-tft-config /usr/bin
         chmod 755 /usr/bin/kalipi-tft-config
     fi
     printf "\t**** Installation completed ****\n\n"
