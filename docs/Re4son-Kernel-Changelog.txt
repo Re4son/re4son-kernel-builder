@@ -5,7 +5,7 @@ re4son-kernel_current = re4son-kernel_4.14.89_current
 re4son-kernel_next = re4son-kernel_4.14.89_current (via repo)
 
 
-re4son-kernel_4.14.89_current = re4son-kernel_4.14.89-20190113
+re4son-kernel_4.14.89_current = re4son-kernel_4.14.89-20190114
 re4son-kernel_4.14.80_current = re4son-kernel_4.14.80-20181125
 re4son-kernel_4.14.71_current = re4son-kernel_4.14.71-20181014
 re4son-kernel_4.14.69_current = re4son-kernel_4.14.69-20181010
@@ -21,7 +21,7 @@ re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-2016
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
 
-re4son-kernel_4.14.89-20190113.tar.xz
+re4son-kernel_4.14.89-20190114.tar.xz
 ================================================
 RPi V6: Kernel 4.14.89-Re4son+ #1
 RPi V7: Kernel 4.14.89-Re4son-v7+ #1
