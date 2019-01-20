@@ -28,7 +28,6 @@ V8_VERSION=$BUILD
 ###################################################
 ##             4.19.15-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-##GIT_BRANCH="rpi-4.19.15-re4son"	 	 	                 ## 4.19.15 kernel commit: b5a33968098aa5aab149e86215de48213aa8d572 
 GIT_BRANCH="rpi-4.19.15-re4son"	 	 	                 ## 4.19.15 kernel commit: b5a33968098aa5aab149e86215de48213aa8d572 
 FW_REPO="Re4son/RPi-Distro-firmware"
 FW_BRANCH="4.19.15"
