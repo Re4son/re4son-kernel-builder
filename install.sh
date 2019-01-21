@@ -156,7 +156,8 @@ function install_kernel(){
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-dev_*
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-doc_*
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-bin_*
-    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
+    ## Nexmon is not yet working with this kernel so we don't have a firmware package. R-enable when nexmon is available:
+    ##exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
 
     ARCH=`dpkg --print-architecture`
     ## Kernel8.img is build as kernel8-alt so that the bootloader on armhf systems wont pick it over kernel7.img
