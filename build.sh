@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.14.89"
+VERSION="4.14.93"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -26,11 +26,17 @@ V8_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             4.14.89-Re4son                    ##
+##             4.14.93-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.14.89-re4son"	 	 	                 ## 4.14.89 kernel commit: af369f47021f11e78017c0a98e55cb934b501c36 
+GIT_BRANCH="rpi-4.14.93-re4son"	 	 	                 ## 4.14.93 kernel commit: 89eb09a96edf809631d01359b721ce4ac8578a1d
 FW_REPO="Re4son/RPi-Distro-firmware"
 FW_BRANCH="debian"
+###################################################
+##             4.14.89-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.14.89-re4son"	 	 	                 ## 4.14.89 kernel commit: af369f47021f11e78017c0a98e55cb934b501c36 
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="debian"
 ###################################################
 ##             4.14.80-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -235,7 +241,7 @@ function clean() {
     fi	
     clean_kernel_src_dir
     echo "**** Cleaning up kernel working dirs ****"
-    if [ -d $KERNEL_OUT_V6 ]; then
+    if [ -d $KERNEL_OUT_DIR_V6 ]; then
 	rm -rf $KERNEL_OUT_DIR_V6
 	mkdir $KERNEL_OUT_DIR_V6
 	chown $SUDO_USER:$SUDO_USER $KERNEL_OUT_DIR_V6
@@ -243,7 +249,7 @@ function clean() {
         if [ "$V6_VERSION" != "" ]; then
             echo "**** Setting version to ${V6_VERSION} ****"
             ((version = $V6_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V6\.version
+            echo $version > $KERNEL_OUT_DIR_V6\/\.version
         fi
     fi
     if [ -d $KERNEL_OUT_DIR_V7 ]; then
@@ -254,7 +260,7 @@ function clean() {
         if [ "$V7_VERSION" != "" ]; then
             echo "**** Setting version to ${V7_VERSION} ****"
             ((version = $V7_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V7\.version
+            echo $version > $KERNEL_OUT_DIR_V7\/\.version
         fi
     fi
     if [ -d $KERNEL_OUT_DIR_V8 ]; then
@@ -265,7 +271,7 @@ function clean() {
         if [ "$V8_VERSION" != "" ]; then
             echo "**** Setting version to ${V8_VERSION} ****"
             ((version = $V8_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V8\.version
+            echo $version > $KERNEL_OUT_DIR_V8\/\.version
         fi
     fi
     echo "**** Kernel source directories cleaned up ****"
