@@ -241,7 +241,7 @@ function clean() {
     fi	
     clean_kernel_src_dir
     echo "**** Cleaning up kernel working dirs ****"
-    if [ -d $KERNEL_OUT_V6 ]; then
+    if [ -d $KERNEL_OUT_DIR_V6 ]; then
 	rm -rf $KERNEL_OUT_DIR_V6
 	mkdir $KERNEL_OUT_DIR_V6
 	chown $SUDO_USER:$SUDO_USER $KERNEL_OUT_DIR_V6
@@ -249,7 +249,7 @@ function clean() {
         if [ "$V6_VERSION" != "" ]; then
             echo "**** Setting version to ${V6_VERSION} ****"
             ((version = $V6_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V6\.version
+            echo $version > $KERNEL_OUT_DIR_V6\/\.version
         fi
     fi
     if [ -d $KERNEL_OUT_DIR_V7 ]; then
@@ -260,7 +260,7 @@ function clean() {
         if [ "$V7_VERSION" != "" ]; then
             echo "**** Setting version to ${V7_VERSION} ****"
             ((version = $V7_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V7\.version
+            echo $version > $KERNEL_OUT_DIR_V7\/\.version
         fi
     fi
     if [ -d $KERNEL_OUT_DIR_V8 ]; then
@@ -271,7 +271,7 @@ function clean() {
         if [ "$V8_VERSION" != "" ]; then
             echo "**** Setting version to ${V8_VERSION} ****"
             ((version = $V8_VERSION -1))
-            echo $version > $KERNEL_OUT_DIR_V8\.version
+            echo $version > $KERNEL_OUT_DIR_V8\/\.version
         fi
     fi
     echo "**** Kernel source directories cleaned up ****"
