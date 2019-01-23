@@ -431,6 +431,13 @@ function prep_kernel_out_dir() {
         mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm
     fi
     cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8812au/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm/
+    
+    ## Copy rtl8192eu files required for the compilation
+    ## The path in the driver source has to be fixed before we can renove this workaround
+    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm ]; then
+        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm
+    fi
+    cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/
 }
 
 function make_v6() {
