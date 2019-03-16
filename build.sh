@@ -214,7 +214,7 @@ function debug_info() {
 function usage() {
   cat << EOF
 usage: re4sonbuild [options]
- This will build the Raspberry Pi Kernel.
+ This will build the Kali-Pi Kernel.
  OPTIONS:
     -h        Show this message
     -c        Clean source directories (i.e. make mrproper - run this before compiling new kernels)
@@ -735,7 +735,7 @@ function create_debs() {
 
     # tar up firmware
     cd $PKG_TMP
-    tar czf raspberrypi-firmware_${NEW_VERSION}.orig.tar.gz raspberrypi-firmware_${NEW_VERSION}
+    tar czf kalipi-firmware_${NEW_VERSION}.orig.tar.gz kalipi-firmware_${NEW_VERSION}
 
     # copy debian files to package directory
     cp -r $FIRMWARE_DIR/debian $PKG_DIR
