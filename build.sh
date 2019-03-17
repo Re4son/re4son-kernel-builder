@@ -674,18 +674,18 @@ function copy_files (){
     if [ -d $destdir ]; then
         rm -rf $destdir
     fi
-    mkdir -p "$destdir"
+    mkdir -p "$destdir"/tools/include
     mkdir -p $KERNEL_HEADERS_OUT_DIR/headers/lib/modules/$ver
     rsync -aHAX \
 	--files-from=<(cd $KERNEL_SRC_DIR; find -name Makefile\* -o -name Kconfig\* -o -name \*.pl) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include tools/include include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
 	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm* -name module.lds -o -name Kbuild.platforms -o -name Platform) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
 	--files-from=<(cd $KERNEL_SRC_DIR; find `find arch/arm* -name include -o -name scripts -type d` -type f) $KERNEL_SRC_DIR/ $destdir/
     rsync -aHAX \
-	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include .config include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
+	--files-from=<(cd $KERNEL_SRC_DIR; find arch/arm*/include .config tools/include include scripts -type f) $KERNEL_SRC_DIR/ $destdir/
     ln -sf "/usr/src/linux-headers-$ver" "$KERNEL_HEADERS_OUT_DIR/headers/lib/modules/$ver/build"
     ## Module.symvers are going to be provided by the kernel build
 }
