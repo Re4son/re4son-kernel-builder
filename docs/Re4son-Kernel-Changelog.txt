@@ -2,9 +2,10 @@ Package History:
 
 re4son-kernel_old = re4son-kernel_4.9.80_current
 re4son-kernel_current = re4son-kernel_4.14.93_current
-re4son-kernel_next = re4son-kernel_4.19.15_current
+re4son-kernel_next = re4son-kernel_4.19.29_current
 
 
+re4son-kernel_4.19.29_current = re4son-kernel_4.19.29-20190326
 re4son-kernel_4.19.15_current = re4son-kernel_4.19.15-20190123
 re4son-kernel_4.14.93_current = re4son-kernel_4.14.93-20190125
 re4son-kernel_4.14.89_current = re4son-kernel_4.14.89-20190114
@@ -22,6 +23,12 @@ re4son_kali-pi-tft_kernel_4.4.33_current = re4son_kali-pi-tft_kernel_4.4.33-2017
 re4son_kali-pi-tft_kernel_4.1.21_current = re4son_kali-pi-tft_kernel_4.1.21-20160929
 re4son_kali-pi-tft_kernel_4.1.14_current = re4son_kali-pi-tft_kernel_4.1.14-20160530
 
+
+re4son-kernel_4.19.29-20190326.tar.xz
+================================================
+RPi V6: Kernel 4.19.29-Re4son+ #6
+RPi V7: Kernel 4.19.29-Re4son-v7+ #6
+RPi V8: Kernel 4.19.29-Re4son-v8+ #6 
 
 re4son-kernel_4.19.15-20190123.tar.xz
 ================================================
@@ -590,6 +597,13 @@ Kernel history:
 
 RPi V6:
 ********
+4.19.29-Re4son+ #6 - 26-March-2019:
+------------------------------------------
+- Based on 4.19.15-Re4son #1
+- Bump to 4.19.29
+- Include Adiantum patches
+- Include nexmon patches
+
 4.14.93-Re4son+ #1 - 24-January-2019:
 ------------------------------------------
 - Based on 4.14.89-Re4son #1
@@ -877,6 +891,13 @@ RPi V6:
 
 RPi V7:
 ********
+4.19.29-Re4son-v7+ #6 - 26-March-2019:
+------------------------------------------
+- Based on 4.19.15-Re4son-v7 #1
+- Bump to 4.19.29
+- Include Adiantum patches
+- Include nexmon patches
+
 4.14.93-Re4son-v7+ #1 - 24-January-2019:
 ------------------------------------------
 - Based on 4.14.89-Re4son-v7 #1
@@ -1210,6 +1231,13 @@ CONFIG_MCP3422=m
 
 RPi V8:
 ********
+4.19.29-Re4son-v8+ #6 - 26-March-2019:
+------------------------------------------
+- Based on 4.19.15-Re4son-v8 #1
+- Bump to 4.19.29
+- Include Adiantum patches
+- Include nexmon patches
+
 4.14.93-Re4son-v8+ #1 - 24-January-2019:
 ------------------------------------------
 - Based on 4.14.89-Re4son-v8 #1
