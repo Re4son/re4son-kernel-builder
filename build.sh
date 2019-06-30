@@ -1190,6 +1190,17 @@ if [ $MAKE_HEADERS ]; then
         copy_files $UNAME_STRING7
         debug_info
         breakpoint "220-headers copied"
+	clean_kernel_src_dir
+        breakpoint "200-Ready to build headers 2"
+        make_headers $(basename $V7L_DEFAULT_CONFIG)
+        if [ -f ${KERNEL_OUT_DIR_V7L}/extra/Module7l.symvers ]; then
+            cp ${KERNEL_OUT_DIR_V7L}/extra/Module7l.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
+        fi
+        debug_info
+        breakpoint "210-headers 2 built"
+        copy_files $UNAME_STRING7L
+        debug_info
+        breakpoint "220-headers 2 copied"
         pkg_headers
     elif [ $NAT_ARCH == "arm64" ]; then
         debug_info
@@ -1203,6 +1214,17 @@ if [ $MAKE_HEADERS ]; then
         copy_files $UNAME_STRING8
         debug_info
         breakpoint "220-headers copied"
+	clean_kernel_src_dir
+        breakpoint "200-Ready to build headers 2"
+        make_headers $(basename $V8L_DEFAULT_CONFIG)
+        if [ -f ${KERNEL_OUT_DIR_V8L}/extra/Module8l.symvers ]; then
+            cp ${KERNEL_OUT_DIR_V8L}/extra/Module8l.symvers ${KERNEL_HEADERS_OUT_DIR}/headers/usr/src/linux-headers-$ver/Module.symvers
+        fi
+        debug_info
+        breakpoint "210-headers 2 built"
+        copy_files $UNAME_STRING8L
+        debug_info
+        breakpoint "220-headers 2 copied"
         pkg_headers
     fi
     exit 0
