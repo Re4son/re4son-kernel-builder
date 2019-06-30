@@ -1107,12 +1107,12 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     clean_kernel_src_dir
     breakpoint "080-Kernel v8 compiled"
 
-    make_v8l
-    debug_info
-    make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
-    copy_files $UNAME_STRING8L
-    clean_kernel_src_dir
-    breakpoint "080-Kernel v8l compiled"
+    ##make_v8l
+    ##debug_info
+    ##make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
+    ##copy_files $UNAME_STRING8L
+    ##clean_kernel_src_dir
+    ##breakpoint "080-Kernel v8l compiled"
 
     cp -rf $KERNEL_HEADERS_OUT_DIR/headers $PKG_DIR/
     create_debs
