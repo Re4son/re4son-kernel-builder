@@ -2,7 +2,7 @@
 
 PROG_NAME="$(basename $0)"
 ARGS="$@"
-VERSION="4.14-1.6.0"
+VERSION="4.19-1.1.0"
 
 function print_version() {
     printf "\tRe4son-Kernel Installer: $PROG_NAME $VERSION\n\n"
@@ -156,6 +156,7 @@ function install_kernel(){
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-dev_*
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-doc_*
     exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./libraspberrypi-bin_*
+    exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
     ## Nexmon is not yet working with this kernel so we don't have a firmware package. R-enable when nexmon is available:
     ##exitonerr apt install -y --allow-downgrades -o Dpkg::Options::="--force-architecture" ./kalipi-re4son-firmware_*
 
