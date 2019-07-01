@@ -931,6 +931,11 @@ function import_archives() {
     rm -rf $PKG_DIR/headers
     cd $PKG_IN
     for i in *.tar.xz; do printf "\n**** Extracting $i to ${PKG_DIR} ****\n"; tar -xJf $i -C ${PKG_DIR}/; done
+    ########### Temporarily remove kernel8l until we manage the partition size properly
+    rm -f $PKG_DIR/boot/kernel8l-alt.img
+    rm -rf $PKG_DIR/modules/4.19.55-Re4son-v8l+
+    rm -rf $PKG_DIR/headers/lib/modules/4.19.55-Re4son-v8l+
+    rm -rf $PKG_DIR/headers/usr/src/linux-headers-4.19.55-Re4son-v8l+
     cd -
 }
 
