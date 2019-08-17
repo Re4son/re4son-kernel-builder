@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.19.55"
+VERSION="4.19.66"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -28,11 +28,17 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             4.19.55-Re4son                    ##
+##             4.19.66-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.19.55-re4son"	 	 	                 ## 4.19.55 kernel commit: 9590e9aa6b1bc7a5946d6dae8c217bbde806133c 
+GIT_BRANCH="rpi-4.19.66-re4son"	 	 	                 ## 4.19.66 kernel commit: bd991fd87ccf2c0e1596cdd6713c1f46c6d79343 
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.19.55"
+FW_BRANCH="4.19.66"
+###################################################
+##             4.19.55-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.19.55-re4son"	 	 	                 ## 4.19.55 kernel commit: 9590e9aa6b1bc7a5946d6dae8c217bbde806133c 
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.19.55"
 ###################################################
 ##             4.19.29-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -932,10 +938,11 @@ function import_archives() {
     cd $PKG_IN
     for i in *.tar.xz; do printf "\n**** Extracting $i to ${PKG_DIR} ****\n"; tar -xJf $i -C ${PKG_DIR}/; done
     ########### Temporarily remove kernel8l until we manage the partition size properly
-    rm -f $PKG_DIR/boot/kernel8l-alt.img
-    rm -rf $PKG_DIR/modules/4.19.55-Re4son-v8l+
-    rm -rf $PKG_DIR/headers/lib/modules/4.19.55-Re4son-v8l+
-    rm -rf $PKG_DIR/headers/usr/src/linux-headers-4.19.55-Re4son-v8l+
+    ## No longer required, checking space during installation
+    ##rm -f $PKG_DIR/boot/kernel8l-alt.img
+    ##rm -rf $PKG_DIR/modules/4.19.55-Re4son-v8l+
+    ##rm -rf $PKG_DIR/headers/lib/modules/4.19.55-Re4son-v8l+
+    ##rm -rf $PKG_DIR/headers/usr/src/linux-headers-4.19.55-Re4son-v8l+
     cd -
 }
 
