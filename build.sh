@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.19.66"
+VERSION="4.19.69"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -28,11 +28,17 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             4.19.66-Re4son                    ##
+##             4.19.69-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.19.66-re4son"	 	 	                 ## 4.19.66 kernel commit: bd991fd87ccf2c0e1596cdd6713c1f46c6d79343 
+GIT_BRANCH="rpi-4.19.69-re4son"	 	 	                         ## 4.19.69 kernel commit: bd991fd87ccf2c0e1596cdd6713c1f46c6d79343 
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.19.66"
+FW_BRANCH="4.19.69"
+###################################################
+##             4.19.66-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.19.66-re4son"	 	 	                 ## 4.19.66 kernel commit: bd991fd87ccf2c0e1596cdd6713c1f46c6d79343 
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.19.66"
 ###################################################
 ##             4.19.55-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -1119,12 +1125,12 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     clean_kernel_src_dir
     breakpoint "080-Kernel v8 compiled"
 
-    ##make_v8l
-    ##debug_info
-    ##make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
-    ##copy_files $UNAME_STRING8L
-    ##clean_kernel_src_dir
-    ##breakpoint "080-Kernel v8l compiled"
+    make_v8l
+    debug_info
+    make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
+    copy_files $UNAME_STRING8L
+    clean_kernel_src_dir
+    breakpoint "080-Kernel v8l compiled"
 
     cp -rf $KERNEL_HEADERS_OUT_DIR/headers $PKG_DIR/
     create_debs
