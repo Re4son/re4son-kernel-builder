@@ -1,10 +1,11 @@
 Package History:
 
 re4son-kernel_old = re4son-kernel_4.9.80_current
-re4son-kernel_current = re4son-kernel_4.14.93_current
-re4son-kernel_next = re4son-kernel_4.19.29_current
+re4son-kernel_current = re4son-kernel_4.19.118_current
+re4son-kernel_next = re4son-kernel_4.19.118_current
 
 
+re4son-kernel_4.19.118_current = re4son-kernel_4.19.118-20200506
 re4son-kernel_4.19.29_current = re4son-kernel_4.19.29-20190326
 re4son-kernel_4.19.15_current = re4son-kernel_4.19.15-20190123
 re4son-kernel_4.14.93_current = re4son-kernel_4.14.93-20190125
