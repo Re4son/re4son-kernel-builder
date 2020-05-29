@@ -42,8 +42,8 @@ FW_BRANCH="5.4.42"
 
 
 ## defconfigs:
-V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi1_defconfig"
-V7_DEFAULT_CONFIG="arch/arm/configs/re4son_pi2_defconfig"
+V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi6_defconfig"
+V7_DEFAULT_CONFIG="arch/arm/configs/re4son_pi7_defconfig"
 V7L_DEFAULT_CONFIG="arch/arm/configs/re4son_pi7l_defconfig"
 V8_DEFAULT_CONFIG="arch/arm64/configs/re4son_pi8_defconfig"
 V8L_DEFAULT_CONFIG="arch/arm64/configs/re4son_pi8l_defconfig"
