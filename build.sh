@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.4.40"
+VERSION="5.4.42"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -28,11 +28,17 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.4.40-Re4son                    ##
+##             5.4.42-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.4.40-re4son"	 	 	                         ## 5.4.40 kernel commit: b66e1e760f4c5f7cd783c1ca4c590765274e2cbe
+GIT_BRANCH="rpi-5.4.42-re4son"	 	 	                         ## 5.4.42 kernel commit: 971a2bb14b459819db1bda8fcdf953e493242b42
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.4.40"
+FW_BRANCH="5.4.42"
+###################################################
+##             5.4.40-Re4son                    ##
+#GIT_REPO="Re4son/re4son-raspberrypi-linux"
+#GIT_BRANCH="rpi-5.4.40-re4son"	 	 	                         ## 5.4.40 kernel commit: b66e1e760f4c5f7cd783c1ca4c590765274e2cbe
+#FW_REPO="Re4son/RPi-Distro-firmware"
+#FW_BRANCH="5.4.40"
 
 
 ## defconfigs:
