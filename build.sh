@@ -19,6 +19,8 @@ DEBUG="0"
 ## Version strings:
 VERSION="5.4.42"
 BUILD="1"
+unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
+## Comment out those you don't want to build
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
 V7L_VERSION=$BUILD
@@ -246,7 +248,8 @@ function clean() {
 function clean_kernel_src_dir (){
     echo "**** Cleaning up kernel source ****"
     cd $KERNEL_SRC_DIR
-    make mrproper
+    make ARCH=arm mrproper
+    make ARCH=arm64 mrproper
     git checkout ${GIT_BRANCH}
     ##get_4d_obj
     cd -
@@ -432,10 +435,9 @@ function make_v6() {
     echo "**** COMPILING v6 KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V6/arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V6/arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*/build
     rm -f ${MOD_DIR}/lib/modules/*/source
@@ -465,10 +467,9 @@ function make_v7() {
     echo "**** COMPILING v7 KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V7/arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V7/arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
@@ -498,10 +499,9 @@ function make_v7l() {
     echo "**** COMPILING v7l KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V7L/arch/arm/boot/zImage $PKG_DIR/boot/kernel7l.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V7L/arch/arm/boot/zImage $PKG_DIR/boot/kernel7l.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7l+/source
@@ -531,13 +531,11 @@ function make_v8() {
     echo "**** COMPILING v8 KERNEL ****"
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} 
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ##
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8-alt.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V8/arch/arm/boot/Image $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -567,13 +565,11 @@ function make_v8l() {
     echo "**** COMPILING v8l KERNEL ****"
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} 
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ##
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8L/arch/arm64/boot/Image $PKG_DIR/boot/kernel8l-alt.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V8L/arch/arm/boot/Image $PKG_DIR/boot/kernel8l-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/source
@@ -596,15 +592,14 @@ function make_native_v6() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V6/.config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi6_defconfig ****"
+    cp -f $KERNEL_OUT_DIR_V6/.config $KERNEL_BUILDER_DIR/configs/re4son_pi6_defconfig
     echo "**** COMPILING v6 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V6/arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V6/arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*/build
     rm -f ${MOD_DIR}/lib/modules/*/source
@@ -631,15 +626,17 @@ function make_native_v7() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V7/.config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi7_defconfig ****"
+    cp -f $KERNEL_OUT_DIR_V7/.config $KERNEL_BUILDER_DIR/configs/re4son_pi7_defconfig
     echo "**** COMPILING v7 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V7/arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V7/arch/arm/boot/zImage $PKG_DIR/boot/kernel7.img
+    echo $KERNEL_OUT_DIR_V7
+    echo $PKG_DIR
+    ls $PKG_DIR/boot/
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
@@ -671,10 +668,9 @@ function make_native_v7l() {
     echo "**** COMPILING v7l KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    $KERNEL_SRC_DIR/scripts/mkknlimg $KERNEL_OUT_DIR_V7L/arch/arm/boot/zImage $PKG_DIR/boot/kernel7l.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V7L/arch/arm/boot/zImage $PKG_DIR/boot/kernel7l.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v7l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v7l+/source
@@ -706,13 +702,11 @@ function make_native_v8() {
     echo "**** COMPILING v8 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS}
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ##
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8-alt.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V8/arch/arm/boot/zImage $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -744,13 +738,11 @@ function make_native_v8l() {
     echo "**** COMPILING v8l KERNEL ****"
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS}
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
-    ## mkknlimg is no longer in tools
-    ## ${TOOLS_DIR}/mkimage/mkknlimg arch/arm/boot/zImage $PKG_DIR/boot/kernel.img
-    ## It is now found in the scripts directory of the Linux tree, where they are covered by the kernel licence
-    ##
     ## Name the kernel "kernel8l-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8l.img on the device
-    $KERNEL_SRC_DIR/scripts/mkknlimg --dtok $KERNEL_OUT_DIR_V8L/arch/arm64/boot/Image $PKG_DIR/boot/kernel8l-alt.img
+    ## Apparently we don't use mkknlimg anymore:
+    ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
+    cp -f $KERNEL_OUT_DIR_V8L/arch/arm/boot/zImage $PKG_DIR/boot/kernel8l-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/source
@@ -844,18 +836,12 @@ function import_archives() {
     rm -rf $PKG_DIR/headers
     cd $PKG_IN
     for i in *.tar.xz; do printf "\n**** Extracting $i to ${PKG_DIR} ****\n"; tar -xJf $i -C ${PKG_DIR}/; done
-    ########### Temporarily remove kernel8l until we manage the partition size properly
-    ## No longer required, checking space during installation
-    ##rm -f $PKG_DIR/boot/kernel8l-alt.img
-    ##rm -rf $PKG_DIR/modules/4.19.55-Re4son-v8l+
-    ##rm -rf $PKG_DIR/headers/lib/modules/4.19.55-Re4son-v8l+
-    ##rm -rf $PKG_DIR/headers/usr/src/linux-headers-4.19.55-Re4son-v8l+
     cd -
 }
 
 function create_debs() {
-    # copy overlays
-    cp -r $KERNEL_BUILDER_DIR/boot/* $PKG_DIR/boot
+    # copy aftermarket overlays
+    cp -r $KERNEL_BUILDER_DIR/boot/* $PKG_DIR/boot 2>>/dev/null
 
     # tar up firmware
     cd $PKG_TMP
@@ -999,40 +985,45 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
 
     clean_kernel_src_dir
 
-    make_v6
-    make_headers $(basename $V6_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
-    copy_files $UNAME_STRING
-    clean_kernel_src_dir
-    breakpoint "060-Kernel v6 compiled"
-
-    make_v7
-    debug_info
-    make_headers $(basename $V7_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
-    copy_files $UNAME_STRING7
-    clean_kernel_src_dir
-    breakpoint "070-Kernel v7 compiled"
-
-    make_v7l
-    debug_info
-    make_headers $(basename $V7L_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
-    copy_files $UNAME_STRING7L
-    clean_kernel_src_dir
-    breakpoint "070-Kernel v7l compiled"
-
-    make_v8
-    debug_info
-    make_headers $(basename $V8_DEFAULT_CONFIG) aarch64-linux-gnu-
-    copy_files $UNAME_STRING8
-    clean_kernel_src_dir
-    breakpoint "080-Kernel v8 compiled"
-
-    make_v8l
-    debug_info
-    make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
-    copy_files $UNAME_STRING8L
-    clean_kernel_src_dir
-    breakpoint "080-Kernel v8l compiled"
-
+    if [ ! -z "$V6_VERSION" ]; then
+        make_v6
+        make_headers $(basename $V6_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+        copy_files $UNAME_STRING
+        clean_kernel_src_dir
+        breakpoint "060-Kernel v6 compiled"
+    fi
+    if [ ! -z "$V7_VERSION" ]; then
+        make_v7
+        debug_info
+        make_headers $(basename $V7_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        copy_files $UNAME_STRING7
+        clean_kernel_src_dir
+        breakpoint "070-Kernel v7 compiled"
+    fi
+    if [ ! -z "$V7L_VERSION" ]; then
+        make_v7l
+        debug_info
+        make_headers $(basename $V7L_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        copy_files $UNAME_STRING7L
+        clean_kernel_src_dir
+        breakpoint "070-Kernel v7l compiled"
+    fi
+    if [ ! -z "$V8_VERSION" ]; then
+        make_v8
+        debug_info
+        make_headers $(basename $V8_DEFAULT_CONFIG) aarch64-linux-gnu-
+        copy_files $UNAME_STRING8
+        clean_kernel_src_dir
+        breakpoint "080-Kernel v8 compiled"
+    fi
+    if [ ! -z "$V8L_VERSION" ]; then
+        make_v8l
+        debug_info
+        make_headers $(basename $V8L_DEFAULT_CONFIG) aarch64-linux-gnu-
+        copy_files $UNAME_STRING8L
+        clean_kernel_src_dir
+        breakpoint "080-Kernel v8l compiled"
+    fi
     cp -rf $KERNEL_HEADERS_OUT_DIR/headers $PKG_DIR/
     create_debs
     debug_info
