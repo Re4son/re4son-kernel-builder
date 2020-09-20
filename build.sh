@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.4.42"
+VERSION="5.4.65"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -30,11 +30,17 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.4.42-Re4son                    ##
+##             5.4.65-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.4.42-re4son"	 	 	                         ## 5.4.42 kernel commit: 971a2bb14b459819db1bda8fcdf953e493242b42
+GIT_BRANCH="rpi-5.4.65-re4son"	 	 	                         ## 5.4.65 kernel commit: 1cbfe9ec6b3c714d1c336792dbaf867bde71d485
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.4.42"
+FW_BRANCH="5.4.65"
+###################################################
+##             5.4.42-Re4son                    ##
+#GIT_REPO="Re4son/re4son-raspberrypi-linux"
+#GIT_BRANCH="rpi-5.4.42-re4son"	 	 	                         ## 5.4.42 kernel commit: 971a2bb14b459819db1bda8fcdf953e493242b42
+#FW_REPO="Re4son/RPi-Distro-firmware"
+#FW_BRANCH="5.4.42"
 ###################################################
 ##             5.4.40-Re4son                    ##
 #GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -452,7 +458,8 @@ function make_v7() {
     # RasPi v7 build
     printf "\n**** COMPILING V7 KERNEL (ARMHF) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V7
-    CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+    ##CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+    CCPREFIX=arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
             cp $KERNEL_SRC_DIR/${V7_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7/.config
@@ -535,7 +542,7 @@ function make_v8() {
     ## To use it, just rename it to kernel8.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8/arch/arm/boot/Image $PKG_DIR/boot/kernel8-alt.img
+    cp -f $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -569,7 +576,7 @@ function make_v8l() {
     ## To use it, just rename it to kernel8.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8L/arch/arm/boot/Image $PKG_DIR/boot/kernel8l-alt.img
+    cp -f $KERNEL_OUT_DIR_V8L/arch/arm64/boot/Image $PKG_DIR/boot/kernel8l-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/source
@@ -706,7 +713,7 @@ function make_native_v8() {
     ## To use it, just rename it to kernel8.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8/arch/arm/boot/zImage $PKG_DIR/boot/kernel8-alt.img
+    cp -f $KERNEL_OUT_DIR_V8/arch/arm64/boot/zImage $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
@@ -742,7 +749,7 @@ function make_native_v8l() {
     ## To use it, just rename it to kernel8l.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8L/arch/arm/boot/zImage $PKG_DIR/boot/kernel8l-alt.img
+    cp -f $KERNEL_OUT_DIR_V8L/arch/arm64/boot/zImage $PKG_DIR/boot/kernel8l-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/source
