@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="4.19.118"
+VERSION="4.19.127"
 BUILD="1"
 V6_VERSION=$BUILD
 V7_VERSION=$BUILD
@@ -28,11 +28,17 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             4.19.118-Re4son                    ##
+##             4.19.127-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-4.19.118-re4son"	 	 	                         ## 4.19.118 kernel commit: fe2c7bf4cad4641dfb6f12712755515ab15815ca
+GIT_BRANCH="rpi-4.19.127-re4son"	 	 	                         ## 4.19.127 kernel commit: 9cbe698a7da70cf78dfcb05c39dbe8e6f8f77f66
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="4.19.118"
+FW_BRANCH="4.19.127"
+###################################################
+##             4.19.118-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-4.19.118-re4son"	 	 	                         ## 4.19.118 kernel commit: fe2c7bf4cad4641dfb6f12712755515ab15815ca
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="4.19.118"
 ###################################################
 ##             4.19.97-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
