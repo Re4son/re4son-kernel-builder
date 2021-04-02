@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.10.20"
+VERSION="5.10.2"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -30,11 +30,18 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.4.65-Re4son                    ##
+##             5.10.25-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.10.20-re4son"	 	 	                         ## 5.10.20 kernel commit: 95b18fac5a849708d553759f2d7bf76449303bf8
+GIT_BRANCH="rpi-5.10.25-re4son"	 	 	                         ## 5.10.25 kernel commit: b62f64b7df524956bef0c09566a04eec883c3214
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.10.20"
+FW_BRANCH="5.10.25"
+###################################################
+###################################################
+##             5.10.20-Re4son                    ##
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-5.10.20-re4son"	 	 	                         ## 5.10.20 kernel commit: 95b18fac5a849708d553759f2d7bf76449303bf8
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="5.10.20"
 ###################################################
 
 
@@ -426,7 +433,7 @@ function make_v6() {
     # RasPi v6 build
     printf "\n**** COMPILING V6 KERNEL (ARMEL) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V6
-    CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+    CCPREFIX=arm-linux-gnueabi-
     if [ ! -f .config ]; then
         if [ "$V6_CONFIG" == "" ]; then
             cp $KERNEL_SRC_DIR/${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
@@ -458,7 +465,6 @@ function make_v7() {
     # RasPi v7 build
     printf "\n**** COMPILING V7 KERNEL (ARMHF) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V7
-    ##CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     CCPREFIX=arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
@@ -491,7 +497,7 @@ function make_v7l() {
     # RasPi vl7 build
     printf "\n**** COMPILING V7L KERNEL (ARMHF) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V7L
-    CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+    CCPREFIX=arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7L_CONFIG" == "" ]; then
             cp $KERNEL_SRC_DIR/${V7L_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7L/.config
@@ -1013,7 +1019,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
 
     if [ ! -z "$V6_VERSION" ]; then
         make_v6
-        make_headers $(basename $V6_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+        make_headers $(basename $V6_DEFAULT_CONFIG) arm-linux-gnueabi-
         copy_files $UNAME_STRING
         clean_kernel_src_dir
         breakpoint "060-Kernel v6 compiled"
@@ -1021,7 +1027,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     if [ ! -z "$V7_VERSION" ]; then
         make_v7
         debug_info
-        make_headers $(basename $V7_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        make_headers $(basename $V7_DEFAULT_CONFIG) arm-linux-gnueabihf-
         copy_files $UNAME_STRING7
         clean_kernel_src_dir
         breakpoint "070-Kernel v7 compiled"
@@ -1029,7 +1035,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     if [ ! -z "$V7L_VERSION" ]; then
         make_v7l
         debug_info
-        make_headers $(basename $V7L_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        make_headers $(basename $V7L_DEFAULT_CONFIG) arm-linux-gnueabihf-
         copy_files $UNAME_STRING7L
         clean_kernel_src_dir
         breakpoint "070-Kernel v7l compiled"
