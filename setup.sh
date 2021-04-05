@@ -38,7 +38,11 @@ function check_root(){
 
 check_root
 apt-get update
-apt-get install -y git rsync bc flex unzip build-essential libncurses5-dev debhelper quilt devscripts crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf 
+apt-get install -y git rsync bc flex unzip build-essential libncurses5-dev debhelper quilt devscripts
+ARCH=`dpkg --print-architecture`
+if [ ${ARCH} == "amd64" ] || [ ${ARCH} == "arm64" ]; then
+    apt-get install crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf
+fi
 
 if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
