@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.10.2"
+VERSION="5.10.25"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -76,7 +76,6 @@ REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 PKG_DIR="${PKG_TMP}/kalipi-firmware_${NEW_VERSION}"
-TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 KERNEL_SRC_DIR="${REPO_ROOT}${GIT_REPO}/all"
 KERNEL_OUT_DIR_V6=/opt/kernel-builder_kernel_out/v6
@@ -296,25 +295,12 @@ function setup_repos(){
 	mkdir -p $HEAD_SRC_DIR
     fi
 
-#    if [ ! -d $TOOLS_DIR ]; then
-#        echo "**** CLONING TOOL REPO ****"
-#        git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
-#    fi
-
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
         git clone --depth 1 https://github.com/${FW_REPO} $FIRMWARE_DIR
     fi
 }
 
-
-function pull_tools() {
-    # make sure tools dir is up to date
-    printf "\n**** UPDATING TOOLS REPOSITORY ****\n"
-    cd $TOOLS_DIR
-    git pull
-    cd -
-}
 
 function pull_firmware() {
     # make sure firmware dir is up to date
@@ -622,7 +608,7 @@ function make_native_v6() {
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy away the module dir so we can use it for compiling drivers if we want
     if [ ! -d ${KERNEL_MOD_DIR}/v6 ]; then
-	mkdir ${KERNEL_MOD_DIR}/v6
+	mkdir -p ${KERNEL_MOD_DIR}/v6
     fi
     cp -r ${MOD_DIR}/lib/modules/*Re4son+/* ${KERNEL_MOD_DIR}/v6/
     ## Copy our Module.symvers across
@@ -662,7 +648,7 @@ function make_native_v7() {
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy away the module dir so we can use it for compiling drivers if we want
     if [ ! -d ${KERNEL_MOD_DIR}/v7 ]; then
-	mkdir ${KERNEL_MOD_DIR}/v7
+	mkdir -p ${KERNEL_MOD_DIR}/v7
     fi
     cp -r ${MOD_DIR}/lib/modules/*v7+/* ${KERNEL_MOD_DIR}/v7/
     ## Copy our Module.symvers across
@@ -699,7 +685,7 @@ function make_native_v7l() {
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy away the module dir so we can use it for compiling drivers if we want
     if [ ! -d ${KERNEL_MOD_DIR}/v7l ]; then
-	mkdir ${KERNEL_MOD_DIR}/v7l
+	mkdir -p ${KERNEL_MOD_DIR}/v7l
     fi
     cp -r ${MOD_DIR}/lib/modules/*v7l+/* ${KERNEL_MOD_DIR}/v7l/
     ## Copy our Module.symvers across
@@ -739,7 +725,7 @@ function make_native_v8() {
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy away the module dir so we can use it for compiling drivers if we want
     if [ ! -d ${KERNEL_MOD_DIR}/v8 ]; then
-	mkdir ${KERNEL_MOD_DIR}/v8
+	mkdir -p ${KERNEL_MOD_DIR}/v8
     fi
     cp -r ${MOD_DIR}/lib/modules/*v8+/* ${KERNEL_MOD_DIR}/v8/
     ## Copy our Module.symvers across
@@ -779,7 +765,7 @@ function make_native_v8l() {
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
     ## Copy away the module dir so we can use it for compiling drivers if we want
     if [ ! -d ${KERNEL_MOD_DIR}/v8l ]; then
-	mkdir ${KERNEL_MOD_DIR}/v8l
+	mkdir -p ${KERNEL_MOD_DIR}/v8l
     fi
     cp -r ${MOD_DIR}/lib/modules/*v8l+/* ${KERNEL_MOD_DIR}/v8l/
     ## Copy our Module.symvers across
@@ -833,6 +819,7 @@ function pkg_headers () {
     cd $KERNEL_HEADERS_OUT_DIR
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz headers
     printf  "\n@@@@ The re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz
     cd -
 }
 
@@ -841,6 +828,7 @@ function pkg_kernel() {
     cd $PKG_DIR
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz *
     printf  "\n@@@@ The re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz
     cd -
 }
 
@@ -1003,10 +991,6 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     setup_repos
     update_kernel_source
     breakpoint "020-Repos set up"
-
-    ## Lets only update the repos when I'm sure they don't break anything.
-    ##pull_tools
-    ##breakpoint "030-Tools repo updated"
 
     pull_firmware
     breakpoint "040-Firmware repo updated"

@@ -24,11 +24,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-apt-get update
-apt-get install -y git rsync bc unzip build-essential libncurses5-dev debhelper quilt devscripts emacs vim
+function check_root(){
+    if [[ $EUID -ne 0 ]]; then
+        printf "\n\t\t$(basename $0) must be run as root.\n\t\ttry: sudo ${0}\n\n"
+        exit 1
+    fi
+}
 
-## Download calibration tool to be included in kernel packages
-wget -P ./tools/ http://whitedome.com.au/download/xinput-calibrator_0.7.5-1_armhf.deb
+################################################
+################################################
+##                                            ##
+##                    MAIN                    ##
+
+check_root
+apt-get update
+apt-get install -y git rsync bc flex unzip build-essential libncurses5-dev debhelper quilt devscripts crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf 
 
 if [ -L /usr/sbin/re4sonbuild ]; then
   rm /usr/sbin/re4sonbuild
@@ -42,3 +52,13 @@ if ! grep -Fq "Re4son" ~/.bashrc; then
   echo 'export EMAIL="re4son@users.noreply.github.com"' >> ~/.bashrc
   echo 'export DEBFULLNAME="Re4son"' >> ~/.bashrc
 fi
+if ! grep -Fq "Re4son" ~/.zshrc; then
+  echo 'export EMAIL="re4son@users.noreply.github.com"' >> ~/.zshrc
+  echo 'export DEBFULLNAME="Re4son"' >> ~/.zshrc
+fi
+
+exit 0
+
+##                                            ##
+################################################
+################################################
