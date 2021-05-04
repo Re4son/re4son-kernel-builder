@@ -876,7 +876,8 @@ function create_debs() {
     cd $PKG_DIR
     dch -b -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
     debuild --no-lintian -b -aarmel -us -uc
-    debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+    ##debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+    debuild --no-lintian -b -aarmhf -us -uc
     debuild --no-lintian -b -aarm64 -us -uc
 }
 
