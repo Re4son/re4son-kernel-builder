@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.4.65"
+VERSION="5.4.83"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -32,9 +32,15 @@ V8L_VERSION=$BUILD
 ###################################################
 ##             5.4.65-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.4.65-re4son"	 	 	                         ## 5.4.65 kernel commit: 1cbfe9ec6b3c714d1c336792dbaf867bde71d485
+GIT_BRANCH="rpi-5.4.83-re4son"	 	 	                         ## 5.4.83 kernel commit: 76c49e60e742d0bebd798be972d67dd3fd007691
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.4.65"
+FW_BRANCH="5.4.83"
+###################################################
+##             5.4.65-Re4son                    ##
+#GIT_REPO="Re4son/re4son-raspberrypi-linux"
+#GIT_BRANCH="rpi-5.4.65-re4son"	 	 	                         ## 5.4.65 kernel commit: 1cbfe9ec6b3c714d1c336792dbaf867bde71d485
+#FW_REPO="Re4son/RPi-Distro-firmware"
+#FW_BRANCH="5.4.65"
 ###################################################
 ##             5.4.42-Re4son                    ##
 #GIT_REPO="Re4son/re4son-raspberrypi-linux"
@@ -47,7 +53,6 @@ FW_BRANCH="5.4.65"
 #GIT_BRANCH="rpi-5.4.40-re4son"	 	 	                         ## 5.4.40 kernel commit: b66e1e760f4c5f7cd783c1ca4c590765274e2cbe
 #FW_REPO="Re4son/RPi-Distro-firmware"
 #FW_BRANCH="5.4.40"
-
 
 ## defconfigs:
 V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi6_defconfig"
@@ -80,7 +85,6 @@ REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 PKG_DIR="${PKG_TMP}/kalipi-firmware_${NEW_VERSION}"
-TOOLS_DIR="/opt/kernel-builder_tools"
 FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
 KERNEL_SRC_DIR="${REPO_ROOT}${GIT_REPO}/all"
 KERNEL_OUT_DIR_V6=/opt/kernel-builder_kernel_out/v6
@@ -184,7 +188,7 @@ EOF
 function clean() {
     if [ ! -d $KERNEL_SRC_DIR ]; then
         setup_repos
-    fi	
+    fi
     clean_kernel_src_dir
     echo "**** Cleaning up kernel working dirs ****"
     if [ -d $KERNEL_OUT_DIR_V6 ]; then
@@ -242,12 +246,17 @@ function clean() {
             echo $version > $KERNEL_OUT_DIR_V8L\/\.version
         fi
     fi
-    echo "**** Kernel source directories cleaned up ****"
     if [ -d $KERNEL_HEADERS_OUT_DIR ]; then
         rm -rf $KERNEL_HEADERS_OUT_DIR
         mkdir -p $KERNEL_HEADERS_OUT_DIR
         chown $SUDO_USER:$SUDO_USER $KERNEL_HEADERS_OUT_DIR
     fi
+    if [ -d $KERNEL_MOD_DIR ]; then
+        rm -rf $KERNEL_MOD_DIR
+        mkdir -p $KERNEL_MOD_DIR
+        chown $SUDO_USER:$SUDO_USER $KERNEL_MOD_DIR
+    fi
+    echo "**** Kernel working directories cleaned up ****"
     cd -
 }
 
@@ -265,7 +274,7 @@ function clone_source() {
     echo "**** CLONING to ${REPO_ROOT}${GIT_REPO} ****"
     echo "REPO: ${GIT_REPO}"
     echo "BRANCH: ${GIT_BRANCH}"
-    git clone --recursive https://github.com/${GIT_REPO} $KERNEL_SRC_DIR 
+    git clone --recursive https://github.com/${GIT_REPO} $KERNEL_SRC_DIR
 }
 
 function setup_repos(){
@@ -293,12 +302,7 @@ function setup_repos(){
     fi
     if [ ! -d $HEAD_SRC_DIR ]; then
 	mkdir -p $HEAD_SRC_DIR
-    fi	
-
-#    if [ ! -d $TOOLS_DIR ]; then
-#        echo "**** CLONING TOOL REPO ****"
-#        git clone --depth 1 https://github.com/raspberrypi/tools $TOOLS_DIR
-#    fi
+    fi
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
@@ -306,14 +310,6 @@ function setup_repos(){
     fi
 }
 
-
-function pull_tools() {
-    # make sure tools dir is up to date
-    printf "\n**** UPDATING TOOLS REPOSITORY ****\n"
-    cd $TOOLS_DIR
-    git pull
-    cd -
-}
 
 function pull_firmware() {
     # make sure firmware dir is up to date
@@ -391,7 +387,7 @@ function update_kernel_source(){
     git pull
     git submodule update --init
 
-    ##get_4d_obj 
+    ##get_4d_obj
     cd -
 }
 
@@ -399,34 +395,15 @@ function prep_kernel_out_dir() {
     kernel_out_dir=$1
     printf "\n**** PREPARING WORKING DIRECTORY $kernel_out_dir ****\n"
     if [ ! -d $kernel_out_dir ]; then
-        mkdir -p $kernel_out_dir 
+        mkdir -p $kernel_out_dir
     fi
-    ## The following workarounds are required for a successful compilation
-    ## Copy 4D pre-compiled object files
-    ##get_4d_obj
-    if [ ! -d $kernel_out_dir/drivers/video/4d-hats ]; then
-        mkdir -p $kernel_out_dir/drivers/video/4d-hats 
-    fi
-    ##cp $KERNEL_SRC_DIR/drivers/video/4d-hats/compress-*.o $kernel_out_dir/drivers/video/4d-hats/
-    ## Copy rtl8812au files required for the compilation
-    ## The path in the driver source has to be fixed before we can renove this workaround
-    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm ]; then
-        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm
-    fi
-    cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8812au/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm/
-    ## Copy rtl8192eu files required for the compilation
-    ## The path in the driver source has to be fixed before we can renove this workaround
-    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm ]; then
-        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm
-    fi
-    cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/
 }
 
 function make_v6() {
     # RasPi v6 build
     printf "\n**** COMPILING V6 KERNEL (ARMEL) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V6
-    CCPREFIX=${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+    CCPREFIX=arm-linux-gnueabi-
     if [ ! -f .config ]; then
         if [ "$V6_CONFIG" == "" ]; then
             cp $KERNEL_SRC_DIR/${V6_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V6/.config
@@ -458,7 +435,6 @@ function make_v7() {
     # RasPi v7 build
     printf "\n**** COMPILING V7 KERNEL (ARMHF) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V7
-    ##CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
     CCPREFIX=arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7_CONFIG" == "" ]; then
@@ -491,7 +467,7 @@ function make_v7l() {
     # RasPi vl7 build
     printf "\n**** COMPILING V7L KERNEL (ARMHF) ****\n"
     prep_kernel_out_dir $KERNEL_OUT_DIR_V7L
-    CCPREFIX=${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+    CCPREFIX=arm-linux-gnueabihf-
     if [ ! -f .config ]; then
         if [ "$V7L_CONFIG" == "" ]; then
             cp $KERNEL_SRC_DIR/${V7L_DEFAULT_CONFIG} $KERNEL_OUT_DIR_V7L/.config
@@ -536,7 +512,8 @@ function make_v8() {
     echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
     echo "**** COMPILING v8 KERNEL ****"
-    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} 
+    ## zImage is not supported for 64bit architecture so we build Image
+    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
@@ -570,7 +547,8 @@ function make_v8l() {
     echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig
     echo "**** COMPILING v8l KERNEL ****"
-    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} 
+    ## zImage is not supported for 64bit architecture so we build Image
+    make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
@@ -612,8 +590,11 @@ function make_native_v6() {
     rm -f ${MOD_DIR}/lib/modules/*/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
-    ## Copy away the module dir so we cak use it for compiling drivers if we want
-    cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
+    ## Copy away the module dir so we can use it for compiling drivers if we want
+    if [ ! -d ${KERNEL_MOD_DIR}/v6 ]; then
+	mkdir -p ${KERNEL_MOD_DIR}/v6
+    fi
+    cp -r ${MOD_DIR}/lib/modules/*Re4son+/* ${KERNEL_MOD_DIR}/v6/
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
     cp $KERNEL_OUT_DIR_V6/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING/
@@ -649,8 +630,11 @@ function make_native_v7() {
     rm -f ${MOD_DIR}/lib/modules/*-v7+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
-    ## Copy away the module dir so we cak use it for compiling drivers if we want
-    cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
+    ## Copy away the module dir so we can use it for compiling drivers if we want
+    if [ ! -d ${KERNEL_MOD_DIR}/v7 ]; then
+	mkdir -p ${KERNEL_MOD_DIR}/v7
+    fi
+    cp -r ${MOD_DIR}/lib/modules/*v7+/* ${KERNEL_MOD_DIR}/v7/
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
     cp $KERNEL_OUT_DIR_V7/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7/
@@ -683,8 +667,11 @@ function make_native_v7l() {
     rm -f ${MOD_DIR}/lib/modules/*-v7l+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
-    ## Copy away the module dir so we cak use it for compiling drivers if we want
-    cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
+    ## Copy away the module dir so we can use it for compiling drivers if we want
+    if [ ! -d ${KERNEL_MOD_DIR}/v7l ]; then
+	mkdir -p ${KERNEL_MOD_DIR}/v7l
+    fi
+    cp -r ${MOD_DIR}/lib/modules/*v7l+/* ${KERNEL_MOD_DIR}/v7l/
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7L/
     cp $KERNEL_OUT_DIR_V7L/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING7L/
@@ -707,20 +694,24 @@ function make_native_v8() {
     echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
     echo "**** COMPILING v8 KERNEL ****"
-    make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS}
+    ## zImage is not supported for 64bit architecture so we build Image
+    make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Name the kernel "kernel8-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8/arch/arm64/boot/zImage $PKG_DIR/boot/kernel8-alt.img
+    cp -f $KERNEL_OUT_DIR_V8/arch/arm64/boot/Image $PKG_DIR/boot/kernel8-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
-    ## Copy away the module dir so we cak use it for compiling drivers if we want
-    cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
+    ## Copy away the module dir so we can use it for compiling drivers if we want
+    if [ ! -d ${KERNEL_MOD_DIR}/v8 ]; then
+	mkdir -p ${KERNEL_MOD_DIR}/v8
+    fi
+    cp -r ${MOD_DIR}/lib/modules/*v8+/* ${KERNEL_MOD_DIR}/v8/
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
     cp $KERNEL_OUT_DIR_V8/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8/
@@ -743,20 +734,24 @@ function make_native_v8l() {
     echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig ****"
     cp -f $KERNEL_OUT_DIR_V8L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig
     echo "**** COMPILING v8l KERNEL ****"
-    make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS}
+    ## zImage is not supported for 64bit architecture so we build Image
+    make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Name the kernel "kernel8l-alt.img" for now to prevent it from automatically being loaded
     ## To use it, just rename it to kernel8l.img on the device
     ## Apparently we don't use mkknlimg anymore:
     ## https://github.com/raspberrypi/linux/issues/3249#issuecomment-534134438
-    cp -f $KERNEL_OUT_DIR_V8L/arch/arm64/boot/zImage $PKG_DIR/boot/kernel8l-alt.img
+    cp -f $KERNEL_OUT_DIR_V8L/arch/arm64/boot/Image $PKG_DIR/boot/kernel8l-alt.img
     ## Remove symbolic links to non-existent headers and sources
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/build
     rm -f ${MOD_DIR}/lib/modules/*-v8l+/source
     ## Copy our modules across
     cp -r ${MOD_DIR}/lib/* ${PKG_DIR}
-    ## Copy away the module dir so we cak use it for compiling drivers if we want
-    cp -r ${MOD_DIR}/lib/modules/*/* ${KERNEL_MOD_DIR}/
+    ## Copy away the module dir so we can use it for compiling drivers if we want
+    if [ ! -d ${KERNEL_MOD_DIR}/v8l ]; then
+	mkdir -p ${KERNEL_MOD_DIR}/v8l
+    fi
+    cp -r ${MOD_DIR}/lib/modules/*v8l+/* ${KERNEL_MOD_DIR}/v8l/
     ## Copy our Module.symvers across
     mkdir -p $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8L/
     cp $KERNEL_OUT_DIR_V8L/Module.symvers $PKG_DIR/headers/usr/src/linux-headers-$UNAME_STRING8L/
@@ -808,6 +803,7 @@ function pkg_headers () {
     cd $KERNEL_HEADERS_OUT_DIR
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz headers
     printf  "\n@@@@ The re4son-headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son_headers_${NAT_ARCH}_${NEW_VERSION}.tar.xz
     cd -
 }
 
@@ -816,6 +812,7 @@ function pkg_kernel() {
     cd $PKG_DIR
     XZ_OPT="--threads=0" tar -cJf $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz *
     printf  "\n@@@@ The re4son-kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz archive should now be available in ${KERNEL_BUILDER_DIR} @@@@\n\n"
+    chown $SUDO_UID:$SUDO_GID $KERNEL_BUILDER_DIR/re4son_kernel_${NAT_ARCH}_${NEW_VERSION}.tar.xz
     cd -
 }
 
@@ -863,7 +860,8 @@ function create_debs() {
     cd $PKG_DIR
     dch -b -v ${NEW_VERSION} -D stable --force-distribution "Re4son Kernel source ${GIT_BRANCH}; firmware ${FW_BRANCH}"
     debuild --no-lintian -b -aarmel -us -uc
-    debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+    ##debuild --no-lintian -ePATH=${PATH}:${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin -b -aarmhf -us -uc
+    debuild --no-lintian -b -aarmhf -us -uc
     debuild --no-lintian -b -aarm64 -us -uc
 }
 
@@ -979,10 +977,6 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     update_kernel_source
     breakpoint "020-Repos set up"
 
-    ## Lets only update the repos when I'm sure they don't break anything.
-    ##pull_tools
-    ##breakpoint "030-Tools repo updated"
-
     pull_firmware
     breakpoint "040-Firmware repo updated"
 
@@ -994,7 +988,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
 
     if [ ! -z "$V6_VERSION" ]; then
         make_v6
-        make_headers $(basename $V6_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-
+        make_headers $(basename $V6_DEFAULT_CONFIG) arm-linux-gnueabi-
         copy_files $UNAME_STRING
         clean_kernel_src_dir
         breakpoint "060-Kernel v6 compiled"
@@ -1002,7 +996,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     if [ ! -z "$V7_VERSION" ]; then
         make_v7
         debug_info
-        make_headers $(basename $V7_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        make_headers $(basename $V7_DEFAULT_CONFIG) arm-linux-gnueabihf-
         copy_files $UNAME_STRING7
         clean_kernel_src_dir
         breakpoint "070-Kernel v7 compiled"
@@ -1010,7 +1004,7 @@ if [ ! $NATIVE ] && [ ! $MAKE_HEADERS ] && [ ! $MAKE_PKG ] && [ ! $MAKE_NEXMON ]
     if [ ! -z "$V7L_VERSION" ]; then
         make_v7l
         debug_info
-        make_headers $(basename $V7L_DEFAULT_CONFIG) ${TOOLS_DIR}/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-
+        make_headers $(basename $V7L_DEFAULT_CONFIG) arm-linux-gnueabihf-
         copy_files $UNAME_STRING7L
         clean_kernel_src_dir
         breakpoint "070-Kernel v7l compiled"
