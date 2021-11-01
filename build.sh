@@ -18,7 +18,7 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="5.4.83"
-BUILD="1"
+BUILD="2"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
 V6_VERSION=$BUILD
@@ -70,6 +70,7 @@ V8_CONFIG=""
 
 export DEBFULLNAME=Re4son
 export DEBEMAIL=re4son@kali.org
+export KBUILD_BUILD_TIMESTAMP="Debian kali-pi (`date +%Y-%m-%d`)"
 
 UNAME_STRING="${VERSION}-Re4son+"
 UNAME_STRING7="${VERSION}-Re4son-v7+"
