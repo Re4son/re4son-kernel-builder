@@ -18,7 +18,7 @@ DEBUG="0"
 
 ## Version strings:
 VERSION="5.4.83"
-BUILD="2"
+BUILD="3"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
 V6_VERSION=$BUILD
