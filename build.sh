@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.10.25"
+VERSION="5.10.103"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -30,20 +30,11 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.10.25-Re4son                    ##
+##             5.10.103-Re4son                   ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.10.25-re4son"	 	 	                         ## 5.10.25 kernel commit: b62f64b7df524956bef0c09566a04eec883c3214
+GIT_BRANCH="rpi-5.10.103-re4son"	 	 	                 ## 5.10.103 kernel commit: dc6771425e9604650d1d57f7c69948be405f59a5
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.10.25"
-###################################################
-###################################################
-##             5.10.20-Re4son                    ##
-##GIT_REPO="Re4son/re4son-raspberrypi-linux"
-##GIT_BRANCH="rpi-5.10.20-re4son"	 	 	                         ## 5.10.20 kernel commit: 95b18fac5a849708d553759f2d7bf76449303bf8
-##FW_REPO="Re4son/RPi-Distro-firmware"
-##FW_BRANCH="5.10.20"
-###################################################
-
+FW_BRANCH="5.10.103"
 
 ## defconfigs:
 V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi6_defconfig"
@@ -61,6 +52,7 @@ V8_CONFIG=""
 
 export DEBFULLNAME=Re4son
 export DEBEMAIL=re4son@kali.org
+export KBUILD_BUILD_TIMESTAMP="Debian kali-pi (`date +%Y-%m-%d`)"
 
 UNAME_STRING="${VERSION}-Re4son+"
 UNAME_STRING7="${VERSION}-Re4son-v7+"
@@ -387,31 +379,6 @@ function prep_kernel_out_dir() {
     printf "\n**** PREPARING WORKING DIRECTORY $kernel_out_dir ****\n"
     if [ ! -d $kernel_out_dir ]; then
         mkdir -p $kernel_out_dir
-    fi
-    ## The following workarounds are required for a successful compilation
-    ## Copy 4D pre-compiled object files
-    ##get_4d_obj
-    if [ ! -d $kernel_out_dir/drivers/video/4d-hats ]; then
-        mkdir -p $kernel_out_dir/drivers/video/4d-hats
-    fi
-    if [ -f $KERNEL_SRC_DIR/drivers/video/4d-hats/compress-*.o ]; then
-        cp $KERNEL_SRC_DIR/drivers/video/4d-hats/compress-*.o $kernel_out_dir/drivers/video/4d-hats/
-    fi
-    ## Copy rtl8812au files required for the compilation
-    ## The path in the driver source has to be fixed before we can renove this workaround
-    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm ]; then
-        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm
-    fi
-    if [ -f $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8812au/hal/phydm/phydm.mk ]; then
-        cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8812au/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8812au/hal/phydm/
-    fi
-    ## Copy rtl8192eu files required for the compilation
-    ## The path in the driver source has to be fixed before we can renove this workaround
-    if [ ! -d $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm ]; then
-        mkdir -p $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm
-    fi
-    if [ -f $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/phydm.mk ]; then
-        cp -rf $KERNEL_SRC_DIR/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/phydm.mk $kernel_out_dir/drivers/net/wireless/realtek/rtl8192eu/hal/phydm/
     fi
 }
 
