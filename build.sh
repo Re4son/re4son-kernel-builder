@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.10.103"
+VERSION="5.15.32"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -30,11 +30,11 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.10.103-Re4son                   ##
+##             5.15.32-Re4son                   ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.10.103-re4son"	 	 	                 ## 5.10.103 kernel commit: dc6771425e9604650d1d57f7c69948be405f59a5
+GIT_BRANCH="rpi-5.15.32-re4son"	 	 	                 ## 5.15.32 kernel commit: c0ae64b0f72fab1dea85ded2f8afe2ea7982c1b5
 FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.10.103"
+FW_BRANCH="5.15.32"
 
 ## defconfigs:
 V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi6_defconfig"
