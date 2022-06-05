@@ -30,7 +30,13 @@ V8L_VERSION=$BUILD
 
 ## Repos
 ###################################################
-##             5.15.32-Re4son                   ##
+##             5.15.44-Re4son                    ##
+GIT_REPO="Re4son/re4son-raspberrypi-linux"
+GIT_BRANCH="rpi-5.15.44-re4son"	 	 	                 ## 5.15.44 kernel commit: ea7fe1b21ea73146b1d49ac5f554fbd0ac5de9de
+FW_REPO="Re4son/RPi-Distro-firmware"
+FW_BRANCH="5.15.44"
+###################################################
+##             5.15.32-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 GIT_BRANCH="rpi-5.15.32-re4son"	 	 	                 ## 5.15.32 kernel commit: c0ae64b0f72fab1dea85ded2f8afe2ea7982c1b5
 FW_REPO="Re4son/RPi-Distro-firmware"
