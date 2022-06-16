@@ -17,7 +17,7 @@
 DEBUG="0"
 
 ## Version strings:
-VERSION="5.15.32"
+VERSION="5.15.44"
 BUILD="1"
 unset V6_VERSION V7_VERSION V7L_VERSION V8_VERSION V8L_VERSION
 ## Comment out those you don't want to build
@@ -37,10 +37,10 @@ FW_REPO="Re4son/RPi-Distro-firmware"
 FW_BRANCH="5.15.44"
 ###################################################
 ##             5.15.32-Re4son                    ##
-GIT_REPO="Re4son/re4son-raspberrypi-linux"
-GIT_BRANCH="rpi-5.15.32-re4son"	 	 	                 ## 5.15.32 kernel commit: c0ae64b0f72fab1dea85ded2f8afe2ea7982c1b5
-FW_REPO="Re4son/RPi-Distro-firmware"
-FW_BRANCH="5.15.32"
+##GIT_REPO="Re4son/re4son-raspberrypi-linux"
+##GIT_BRANCH="rpi-5.15.32-re4son"	 	 	                 ## 5.15.32 kernel commit: c0ae64b0f72fab1dea85ded2f8afe2ea7982c1b5
+##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_BRANCH="5.15.32"
 
 ## defconfigs:
 V6_DEFAULT_CONFIG="arch/arm/configs/re4son_pi6_defconfig"
@@ -402,8 +402,8 @@ function make_v6() {
     fi
     ##make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR menuconfig
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR olddefconfig
-    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V6/.config $KERNEL_BUILDER_DIR/configs/re4son_pi1_defconfig
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING ****"
+    cp -f $KERNEL_OUT_DIR_V6/.config $PKG_DIR/boot/config-$UNAME_STRING
     echo "**** COMPILING v6 KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -434,8 +434,8 @@ function make_v7() {
     fi
     ##make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR menuconfig
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR olddefconfig
-    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V7/.config $KERNEL_BUILDER_DIR/configs/re4son_pi2_defconfig
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING7 ****"
+    cp -f $KERNEL_OUT_DIR_V7/.config $PKG_DIR/boot/config-$UNAME_STRING7
     echo "**** COMPILING v7 KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -466,8 +466,8 @@ function make_v7l() {
     fi
     ##make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR menuconfig
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR olddefconfig
-    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi7l_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V7L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi7l_defconfig
+    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING7L ****"
+    cp -f $KERNEL_OUT_DIR_V7L/.config $PKG_DIR/boot/config-$UNAME_STRING7L
     echo "**** COMPILING v7l KERNEL ****"
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make ARCH=arm CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -498,8 +498,8 @@ function make_v8() {
     fi
     ##make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR menuconfig
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR olddefconfig
-    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
+    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING8 ****"
+    cp -f $KERNEL_OUT_DIR_V8/.config $PKG_DIR/boot/config-$UNAME_STRING8
     echo "**** COMPILING v8 KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
@@ -533,8 +533,8 @@ function make_v8l() {
     fi
     ##make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR menuconfig
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR olddefconfig
-    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V8L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig
+    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING8L ****"
+    cp -f $KERNEL_OUT_DIR_V8L/.config $PKG_DIR/boot/config-$UNAME_STRING8L
     echo "**** COMPILING v8l KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make ARCH=arm64 CROSS_COMPILE=${CCPREFIX} O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
@@ -566,9 +566,9 @@ function make_native_v6() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR menuconfig
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $PKG_DIR/boot/ ****"
+    cp -f $KERNEL_OUT_DIR_V6/.config $PKG_DIR/boot/$UNAME_STRING
     echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi6_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V6/.config $KERNEL_BUILDER_DIR/configs/re4son_pi6_defconfig
-    echo "**** COMPILING v6 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Apparently we don't use mkknlimg anymore:
@@ -603,8 +603,8 @@ function make_native_v7() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi7_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V7/.config $KERNEL_BUILDER_DIR/configs/re4son_pi7_defconfig
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $PKG_DIR/boot/ ****"
+    cp -f $KERNEL_OUT_DIR_V7/.config $PKG_DIR/boot/$UNAME_STRING
     echo "**** COMPILING v7 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -643,8 +643,8 @@ function make_native_v7l() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi7l_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V7L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi7l_defconfig
+    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $PKG_DIR/boot/ ****"
+    cp -f $KERNEL_OUT_DIR_V7L/.config $PKG_DIR/boot/$UNAME_STRING
     echo "**** COMPILING v7l KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -680,8 +680,8 @@ function make_native_v8() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V8/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8_defconfig
+    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $PKG_DIR/boot/ ****"
+    cp -f $KERNEL_OUT_DIR_V8/.config $PKG_DIR/boot/$UNAME_STRING
     echo "**** COMPILING v8 KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
@@ -720,8 +720,8 @@ function make_native_v8l() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig ****"
-    cp -f $KERNEL_OUT_DIR_V8L/.config $KERNEL_BUILDER_DIR/configs/re4son_pi8l_defconfig
+    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $PKG_DIR/boot/ ****"
+    cp -f $KERNEL_OUT_DIR_V8L/.config $PKG_DIR/boot/$UNAME_STRING
     echo "**** COMPILING v8l KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
