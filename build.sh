@@ -566,9 +566,8 @@ function make_native_v6() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $PKG_DIR/boot/ ****"
-    cp -f $KERNEL_OUT_DIR_V6/.config $PKG_DIR/boot/$UNAME_STRING
-    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $KERNEL_BUILDER_DIR/configs/re4son_pi6_defconfig ****"
+    echo "**** SAVING A COPY OF YOUR v6 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING ****"
+    cp -f $KERNEL_OUT_DIR_V6/.config $PKG_DIR/boot/config-$UNAME_STRING
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V6 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
     ## Apparently we don't use mkknlimg anymore:
@@ -603,8 +602,8 @@ function make_native_v7() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $PKG_DIR/boot/ ****"
-    cp -f $KERNEL_OUT_DIR_V7/.config $PKG_DIR/boot/$UNAME_STRING
+    echo "**** SAVING A COPY OF YOUR v7 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING7 ****"
+    cp -f $KERNEL_OUT_DIR_V7/.config $PKG_DIR/boot/config-$UNAME_STRING7
     echo "**** COMPILING v7 KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7 -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -643,8 +642,8 @@ function make_native_v7l() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $PKG_DIR/boot/ ****"
-    cp -f $KERNEL_OUT_DIR_V7L/.config $PKG_DIR/boot/$UNAME_STRING
+    echo "**** SAVING A COPY OF YOUR v7l CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING7L ****"
+    cp -f $KERNEL_OUT_DIR_V7L/.config $PKG_DIR/boot/config-$UNAME_STRING7L
     echo "**** COMPILING v7l KERNEL ****"
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR -j${NUM_CPUS} -k zImage modules dtbs
     make O=$KERNEL_OUT_DIR_V7L -C $KERNEL_SRC_DIR INSTALL_MOD_PATH=${MOD_DIR} -j${NUM_CPUS} modules_install
@@ -680,8 +679,8 @@ function make_native_v8() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $PKG_DIR/boot/ ****"
-    cp -f $KERNEL_OUT_DIR_V8/.config $PKG_DIR/boot/$UNAME_STRING
+    echo "**** SAVING A COPY OF YOUR v8 CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING8 ****"
+    cp -f $KERNEL_OUT_DIR_V8/.config $PKG_DIR/boot/config-$UNAME_STRING8
     echo "**** COMPILING v8 KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make O=$KERNEL_OUT_DIR_V8 -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
@@ -720,8 +719,8 @@ function make_native_v8l() {
         fi
     fi
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR menuconfig
-    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $PKG_DIR/boot/ ****"
-    cp -f $KERNEL_OUT_DIR_V8L/.config $PKG_DIR/boot/$UNAME_STRING
+    echo "**** SAVING A COPY OF YOUR v8l CONFIG TO $PKG_DIR/boot/config-$UNAME_STRING8L ****"
+    cp -f $KERNEL_OUT_DIR_V8L/.config $PKG_DIR/boot/config-$UNAME_STRING8L
     echo "**** COMPILING v8l KERNEL ****"
     ## zImage is not supported for 64bit architecture so we build Image
     make O=$KERNEL_OUT_DIR_V8L -C $KERNEL_SRC_DIR -j${NUM_CPUS} Image modules dtbs
