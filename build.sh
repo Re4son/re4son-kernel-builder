@@ -33,13 +33,13 @@ V8L_VERSION=$BUILD
 ##             5.15.44-Re4son                    ##
 GIT_REPO="Re4son/re4son-raspberrypi-linux"
 GIT_BRANCH="rpi-5.15.44-re4son"	 	 	                 ## 5.15.44 kernel commit: ea7fe1b21ea73146b1d49ac5f554fbd0ac5de9de
-FW_REPO="Re4son/RPi-Distro-firmware"
+FW_REPO="Re4son/kalipi-firmware"
 FW_BRANCH="5.15.44"
 ###################################################
 ##             5.15.32-Re4son                    ##
 ##GIT_REPO="Re4son/re4son-raspberrypi-linux"
 ##GIT_BRANCH="rpi-5.15.32-re4son"	 	 	                 ## 5.15.32 kernel commit: c0ae64b0f72fab1dea85ded2f8afe2ea7982c1b5
-##FW_REPO="Re4son/RPi-Distro-firmware"
+##FW_REPO="Re4son/kalipi-firmware"
 ##FW_BRANCH="5.15.32"
 
 ## defconfigs:
@@ -74,7 +74,7 @@ REPO_ROOT="/opt/kernel-builder_repos/"
 MOD_DIR=`mktemp -d`
 PKG_TMP=`mktemp -d`
 PKG_DIR="${PKG_TMP}/kalipi-firmware_${NEW_VERSION}"
-FIRMWARE_DIR="/opt/kernel-builder_RPi-Distro-firmware"
+FIRMWARE_DIR="/opt/kernel-builder_kalipi-firmware"
 KERNEL_SRC_DIR="${REPO_ROOT}${GIT_REPO}/all"
 KERNEL_OUT_DIR_V6=/opt/kernel-builder_kernel_out/v6
 KERNEL_OUT_DIR_V7=/opt/kernel-builder_kernel_out/v7
@@ -295,7 +295,7 @@ function setup_repos(){
 
     if [ ! -d $FIRMWARE_DIR ]; then
         echo "**** CLONING RPI-DISTRO-FIRMWARE REPO ****"
-        git clone --depth 1 https://github.com/${FW_REPO} $FIRMWARE_DIR
+        git clone --filter=tree:0 https://github.com/${FW_REPO} $FIRMWARE_DIR
     fi
 }
 
@@ -1139,6 +1139,7 @@ if [ $MAKE_PKG ]; then
     debug_info
     breakpoint "310-Pkg dir set up"
 
+    mkdir -p ${PKG_IN}
     ls -l ${PKG_IN}
     breakpoint "320-Ready to import archives"
 
