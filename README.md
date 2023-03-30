@@ -8,11 +8,11 @@
 
 ## Compiling The Raspberry Pi Kernel
 
-Clone the git repo to /opt/kernel-builder
+Clone the git repo to /opt/re4son-kernel-builder
 
 ```
-$ sudo git clone https://github.com/Re4son/re4son-kernel-builder.git /opt/kernel-builder
-$ cd kernel-builder
+$ sudo git clone https://github.com/Re4son/re4son-kernel-builder.git /opt/re4son-kernel-builder
+$ cd re4son-kernel-builder
 ```
 
 If running on a 64bit architecture, install additional 32bit packages required by the toolchain
@@ -21,13 +21,13 @@ If running on a 64bit architecture, install additional 32bit packages required b
 $ sudo apt-get install lib32z1 lib32ncurses5 libc6-i386 lib32stdc++6
 ```
 
-Setup the kernel-builder
+Setup the re4son-kernel-builder
 
 ```
 $ ./setup.sh
 ```
 edit build.sh and set the variable KERNEL-BUILDER_DIR= to the kernel builder directory.
-default is "/opt/kernel-builder"
+default is "/opt/re4son-kernel-builder"
 
 ```
 ~$ sudo re4sonbuild -h
@@ -44,7 +44,7 @@ usage: re4sonbuild [options]
               Default: arch/arm/configs/bcmrpi_defconfig
     -7        The config file to use when compiling for Raspi v7 (ARMHF)
               Default: arch/arm/configs/bcm2709_defconfig
-    -7        The config file to use when compiling for Raspi v8 (ARM64)
+    -8        The config file to use when compiling for Raspi v8 (ARM64)
               Default: arch/arm/configs/bcm2709_defconfig
 ```
 
@@ -58,16 +58,16 @@ Compile with default options:
 ```
 ~$ sudo re4sonbuild
 ```
-Compile with default options:
+Compile with custom options:
 
 ```
-~$ sudo re4sonbuild
+~$ sudo re4sonbuild -8 custom_config
 ```
 
 Compile [re4son-raspberrypi-linux][1] using the `rpi-4.4.y-re4son` branch:
 
 ```
-~$ sudo re4son -r https://github.com/Re4son/re4son-raspberrypi-linux -b rpi-4.1.y-re4son
+~$ sudo re4son -r https://github.com/Re4son/re4son-raspberrypi-linux -b rpi-4.4.y-re4son
 ```
 
 A `tar.xz` archive will be available in the kernel-builder folder
