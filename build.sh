@@ -836,8 +836,7 @@ function create_debs() {
     cp -r $KERNEL_BUILDER_DIR/boot/* $PKG_DIR/boot 2>>/dev/null
 
     # tar up firmware
-    cd $PKG_TMP
-    tar czf kalipi-firmware_${NEW_VERSION}.orig.tar.gz kalipi-firmware_${NEW_VERSION}
+    tar czf kalipi-firmware_${NEW_VERSION}.orig.tar.gz -C $PKG_DIR/.. $(basename $PKG_DIR)
 
     # copy debian files to package directory
     cp -r $FIRMWARE_DIR/debian $PKG_DIR
@@ -854,7 +853,7 @@ function create_debs() {
 }
 
 function create_tar() {
-    cd $PKG_TMP
+    cd $PKG_DIR/..
     mkdir re4son-kernel_${NEW_VERSION}
     mkdir re4son-kernel_${NEW_VERSION}_armel
     mkdir re4son-kernel_${NEW_VERSION}_armhf
